@@ -1,0 +1,9 @@
+{
+  "attempted": true,
+  "exit_code": 0,
+  "unlocked": true,
+  "method": "PTC official protk_unlock",
+  "requires_toolkit_development_license": false,
+  "target_creo": "10.0.0.0",
+  "cross_machine_verified": false
+}

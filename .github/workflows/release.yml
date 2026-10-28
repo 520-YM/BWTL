@@ -1,0 +1,41 @@
+name: Versioned preview release
+on:
+  push:
+    branches: [main]
+    paths: [VERSION, 'dist/**', '.github/workflows/release.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify and publish the prepared release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(tr -d '\r\n' < VERSION)"
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?$ ]]
+          tag="v$version"
+          sha256sum --check SHA256SUMS.txt
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release already exists; it will not be overwritten."
+            exit 0
+          fi
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "Tag already exists without a release; investigate rather than overwrite it."
+            exit 1
+          fi
+          gh release create "$tag" \
+            "dist/BWTL-$version-windows-x64.zip" \
+            "dist/BWTL-owner-data-$version.zip" \
+            archive/v18-local-snapshot.tar.xz SHA256SUMS.txt \
+            --target "$GITHUB_SHA" --prerelease \
+            --title "霸威天龙 $version" \
+            --notes-file "docs/releases/$version.md"

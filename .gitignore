@@ -1,0 +1,8 @@
+build/
+data/
+settings.ini
+protk.dat
+*.obj
+*.lib
+*.exp
+__pycache__/

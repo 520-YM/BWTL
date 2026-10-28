@@ -1,0 +1,5 @@
+# Preserve exact release and backup bytes for SHA-256 verification.
+* -text
+*.dll binary
+*.zip binary
+*.xz binary

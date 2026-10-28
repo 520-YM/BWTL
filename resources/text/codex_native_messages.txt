@@ -1,0 +1,9 @@
+CodexNativeLabel
+Codex Native
+#
+CodexNativeHelp
+Open the native Creo assistant window
+#
+CodexNativeDescription
+Native modeless assistant window. No browser. AI is not connected yet.
+#

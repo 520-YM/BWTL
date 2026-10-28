@@ -1,0 +1,551 @@
+{
+  "scope": "Complete local creo-native-window directory; no external credentials, licenses, SDKs or templates",
+  "files": [
+    {
+      "path": "assistant-mapkeys.pro",
+      "bytes": 120,
+      "sha256": "adfaf98b5299bfbb2cdf57958cf329acfb17fc9b8dfc46c624a852af9d5f0d98"
+    },
+    {
+      "path": "build.cmd",
+      "bytes": 972,
+      "sha256": "bee1f7c5caa17b64e728c632767fc9f011f233809ff4abb65075fda61069f865"
+    },
+    {
+      "path": "codex_native.dll",
+      "bytes": 3043328,
+      "sha256": "37486cc829b686b4a2aa17d3aa66c8b1a48e12a0ddf77683869bcc74c3034c39"
+    },
+    {
+      "path": "codex_native_ai.dll",
+      "bytes": 3047936,
+      "sha256": "05266bfa27b110df77d6012b73742ea23b3b7135fdf8c8be5947f6409cab23d4"
+    },
+    {
+      "path": "codex_native_ai_v10.dll",
+      "bytes": 3217408,
+      "sha256": "72cd5e895d2a115b5fd7ff49ab49874547e61c87ad4526e0ee1e2f631a2c9eb4"
+    },
+    {
+      "path": "codex_native_ai_v11.dll",
+      "bytes": 3197952,
+      "sha256": "caf936927909bbf13c9dcff9d1477e6bdb233a7ba2a73008099d01ff32135d64"
+    },
+    {
+      "path": "codex_native_ai_v12.dll",
+      "bytes": 3201536,
+      "sha256": "0314af14df007119ce91591ffa3b52b7b11e12772ab055efd8cdb5a7d8249bf0"
+    },
+    {
+      "path": "codex_native_ai_v13.dll",
+      "bytes": 3208192,
+      "sha256": "b27d0327973555a4656257e2445970d262e032a677100e89dc34064b8f95f732"
+    },
+    {
+      "path": "codex_native_ai_v14.dll",
+      "bytes": 3209216,
+      "sha256": "b2032f00d310dfbdeeea6189a02981043334679ff2fb0bdbe069995c0c5bd0ac"
+    },
+    {
+      "path": "codex_native_ai_v15.dll",
+      "bytes": 3316224,
+      "sha256": "136e1a209c1f5e9dda79c10c5011b019b2992012d9409fe2cae11bcc2a6db1b1"
+    },
+    {
+      "path": "codex_native_ai_v16.dll",
+      "bytes": 3324928,
+      "sha256": "305d56662cd7df2e109f394e7b2c79a33c198cade483effcd524d767ec16abcf"
+    },
+    {
+      "path": "codex_native_ai_v17.dll",
+      "bytes": 3327488,
+      "sha256": "10350a046b73aa34a7f1610e5157e414a7756c3098fef67255c467fc82c5b654"
+    },
+    {
+      "path": "codex_native_ai_v18.dll",
+      "bytes": 3332096,
+      "sha256": "32e2ed1eed475c11b606febc2094c4048553b4d95089a9ce9cf5374176bc0a0c"
+    },
+    {
+      "path": "codex_native_ai_v18_named.dll",
+      "bytes": 3332096,
+      "sha256": "c71a4df5ff3b852bff042fa1e6be4836293cea563a0a5b1f7512a94bf0243114"
+    },
+    {
+      "path": "codex_native_ai_v18_named_versioned.dll",
+      "bytes": 3332096,
+      "sha256": "1ce682700b3f0a3658eba41a11c84b01e8a52a47492ff674f958b70b99522654"
+    },
+    {
+      "path": "codex_native_ai_v2.dll",
+      "bytes": 3047936,
+      "sha256": "d2f108887166dbd9c4e74ec8877f827ebf406a3fccf5f6f8c1c85b0af2203921"
+    },
+    {
+      "path": "codex_native_ai_v3.dll",
+      "bytes": 3054080,
+      "sha256": "b9f333eaac166a70bec90bdd061613f1bbd3d24cd720fdf5929776ff1de7f0a3"
+    },
+    {
+      "path": "codex_native_ai_v4.dll",
+      "bytes": 3164160,
+      "sha256": "bc3039b2e209c57f012402c9414d1df61da1af38b9df15b5f43946f4a05c5694"
+    },
+    {
+      "path": "codex_native_ai_v5.dll",
+      "bytes": 3165696,
+      "sha256": "29ec21d16e54088d50ea4ff453d594d0ebd2d167756faa1e1ae21f1294e76800"
+    },
+    {
+      "path": "codex_native_ai_v6.dll",
+      "bytes": 3214336,
+      "sha256": "c843faec72eaf5114180f5a7b84db7333bc9c577484e67fc04be3a1771b44016"
+    },
+    {
+      "path": "codex_native_ai_v7.dll",
+      "bytes": 3215872,
+      "sha256": "7cb7e46394f4f3e4b82f4f78d45309cf05728a961f96db2131c07ce82c975a31"
+    },
+    {
+      "path": "codex_native_ai_v8.dll",
+      "bytes": 3217920,
+      "sha256": "031227cbf9c508c4333afcade6a95cc7deb38a1025f1a0e87e45b44a394089c9"
+    },
+    {
+      "path": "codex_native_ai_v9.dll",
+      "bytes": 3218432,
+      "sha256": "9f6ef4b6cdd1304a51c42be9dc8d3fe46d59336d54593cd1ff71889263db71c5"
+    },
+    {
+      "path": "data/chat-history.md",
+      "bytes": 17027,
+      "sha256": "01ebdc434b6ee201b68e287a7f0c601794a211a56ca275b529c8a2217b5218b1"
+    },
+    {
+      "path": "data/memory.txt",
+      "bytes": 363,
+      "sha256": "4229dfbe08ab4ce13578ab362bddb8ca767542aba3b88f5d0996e263fc61dfcf"
+    },
+    {
+      "path": "data/pending-plan.txt",
+      "bytes": 3,
+      "sha256": "f1945cd6c19e56b3c1c78943ef5ec18116907a4ca1efc40a57d48ab1db7adfc5"
+    },
+    {
+      "path": "data/recent-context.txt",
+      "bytes": 14185,
+      "sha256": "77d2fefef6fc218bc6fd38059f210311da711b34a2a813e27d85ebf923f86ee9"
+    },
+    {
+      "path": "data/功能表.md",
+      "bytes": 12231,
+      "sha256": "a41115340fecebb8945f70ed5af6aa311aa369bf09b9ac1c3ff3be9bfba08f64"
+    },
+    {
+      "path": "installed.png",
+      "bytes": 65455,
+      "sha256": "e29c7a847e73a89fdf1baf5dc8881940adacd42416801d97a78d75d953696c1a"
+    },
+    {
+      "path": "protk.before-ai.dat",
+      "bytes": 263,
+      "sha256": "d1f0d7d2b37ba20f6315eed7f3eb631442b851b03849790f0566ab9d97a680a5"
+    },
+    {
+      "path": "protk.before-input-update.dat",
+      "bytes": 266,
+      "sha256": "3fb9b9384f1a90391c83667f8068fde471a8e3b35e367a1a8e2ef15d6c2a96a8"
+    },
+    {
+      "path": "protk.before-memory.dat",
+      "bytes": 278,
+      "sha256": "31b77048a64261456c36276eea4666f7110dbb687b51a7234b29fced1cf3b3ed"
+    },
+    {
+      "path": "protk.before-modeling.dat",
+      "bytes": 278,
+      "sha256": "2329bfbbf7ed021b31f0d4a6233edf22ad7b64d5a1023d219e5d55b5312a0ed4"
+    },
+    {
+      "path": "protk.before-rename.dat",
+      "bytes": 279,
+      "sha256": "79c6a515c788ebc9aadfc74b32313d62abdbb312b13a95e4323374a844c63714"
+    },
+    {
+      "path": "protk.before-v10.dat",
+      "bytes": 278,
+      "sha256": "cdebeda17723869a410d91fc5f3d740a8f818f9f085d4a599c7fc07d7ec72ebb"
+    },
+    {
+      "path": "protk.before-v11.dat",
+      "bytes": 279,
+      "sha256": "cdc0b4af8a3aa5feca8717fd88c8ed6fe88f13598f1ea30ca767063568424981"
+    },
+    {
+      "path": "protk.before-v12.dat",
+      "bytes": 279,
+      "sha256": "4eaf20079d60ec2f77db461322558413a4a9061f7ffe1b62acbc22fbd19b2c7c"
+    },
+    {
+      "path": "protk.before-v13.dat",
+      "bytes": 279,
+      "sha256": "5ed7c3d1f19211f2cb6f70278ba1bff3abf6bdc3d93165f65a22f69da4ae6981"
+    },
+    {
+      "path": "protk.before-v14.dat",
+      "bytes": 279,
+      "sha256": "931c8ed96499ffd7ad9b63ff05a021cd41c9601faa1a3a35a0b8969dd1fa3ce6"
+    },
+    {
+      "path": "protk.before-v15.dat",
+      "bytes": 279,
+      "sha256": "a761575c1cb7901a28f6e2104a092948f18b92583d4743932a183952912c4773"
+    },
+    {
+      "path": "protk.before-v16.dat",
+      "bytes": 279,
+      "sha256": "4787af0992a8e13a56d4eb0a867c2219ab3e0763ef50f10388a90088fb91a2f1"
+    },
+    {
+      "path": "protk.before-v17.dat",
+      "bytes": 279,
+      "sha256": "aecbab85ee9d467328c868c7335f4a814a8670ccceafed27233e097aeacd1fc0"
+    },
+    {
+      "path": "protk.before-v18.dat",
+      "bytes": 279,
+      "sha256": "95c59657df888bd9c6d8f686a2b8388a09e4f4741dc51aba2b1a792749ed2045"
+    },
+    {
+      "path": "protk.before-v5.dat",
+      "bytes": 278,
+      "sha256": "19bd7c4634c884bf0dda6bfd70a477e52ec72a91590eea0a7b732c768138160d"
+    },
+    {
+      "path": "protk.before-v6.dat",
+      "bytes": 278,
+      "sha256": "c4df7841c386cfe57f47279cbc92b1962d7346edde7b9e34e2f4c3f6254c8e5a"
+    },
+    {
+      "path": "protk.before-v7.dat",
+      "bytes": 278,
+      "sha256": "2d4d73eaa457aaab1bacb346a73a8e32331ac3b57a566962c2de1e5e36f50685"
+    },
+    {
+      "path": "protk.before-v8.dat",
+      "bytes": 278,
+      "sha256": "d09b67c52f38af2e7f95d72905caf91f1b333bc67e34e133c77711b6fb4d0802"
+    },
+    {
+      "path": "protk.before-v9.dat",
+      "bytes": 278,
+      "sha256": "767ae10b7e5c2ccb66f34e3887506e8e7cc5f4d5dcaac2e3d28eab0d0e11e649"
+    },
+    {
+      "path": "protk.before-version-label.dat",
+      "bytes": 285,
+      "sha256": "38bd2d38c4e181e1d4b0cb95f93d9bd5421c61c5827af21cdaabfe236541752c"
+    },
+    {
+      "path": "protk.dat",
+      "bytes": 295,
+      "sha256": "fe7084a05ac00daef6eeeb50b6267d4efd42e680050659ede5e42017b0dc7275"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5009,
+      "sha256": "d0f20cb6b06adeb180ea9b795a2b0d0d283fb71397c6eada40f7dc1b1a560fec"
+    },
+    {
+      "path": "ribbon-installed.ui",
+      "bytes": 79378,
+      "sha256": "0c86021ceb512138d553f9e06a720841873a34692303f8b6031769662961b881"
+    },
+    {
+      "path": "runtime.log",
+      "bytes": 40073,
+      "sha256": "cecadfcebef70d46b74f459e1e3df623619447fd142eb95d4415a6a2455f4937"
+    },
+    {
+      "path": "section-errors.txt",
+      "bytes": 46,
+      "sha256": "2b4f78aaade9566cb529ffda81318584706d6673f087e1bd8d26d8327f3b9a6e"
+    },
+    {
+      "path": "src/assistant.before-input-update.c",
+      "bytes": 11425,
+      "sha256": "d344b1a09a2ed84cf0a4a1bdac78cfdb1a87afea9c7dd5ec3bb9ba45acac7cc0"
+    },
+    {
+      "path": "src/assistant.before-scroll-fix.c",
+      "bytes": 23013,
+      "sha256": "063ab3e44daf81f5b5ee9de3ebf47aa49ed8535138213cb4a06d5905bd741f54"
+    },
+    {
+      "path": "src/assistant.c",
+      "bytes": 31138,
+      "sha256": "94e64cfa803d60f2f965dcc40faa2e25e8ebe38ef8cf374a87534578a3ed421b"
+    },
+    {
+      "path": "src/chat_store.h",
+      "bytes": 3393,
+      "sha256": "12e1cf93731b1c679a264d4a5d23bb150325495e97837b2f8330bfcf64b3beee"
+    },
+    {
+      "path": "src/chat_style.h",
+      "bytes": 4630,
+      "sha256": "cba21bae145222d9dec8c9aeb3edf0d4108d4a5b242066a81351f9120c927e06"
+    },
+    {
+      "path": "src/model_plan.h",
+      "bytes": 5234,
+      "sha256": "2404b3f20779ad2e473837b059f6abc6485d6376bc13e23eaa13bbfbc3962248"
+    },
+    {
+      "path": "src/native_chat_ui.h",
+      "bytes": 12105,
+      "sha256": "7755e5a7f2f0087935e0d029d80781c45accf13a69095e74197457f68b941b3a"
+    },
+    {
+      "path": "src/native_model.h",
+      "bytes": 22904,
+      "sha256": "3c7e2ee18605eb9e6151d58662bb80ae542a216c815cfea36329776b205a2ec5"
+    },
+    {
+      "path": "src/part_command.h",
+      "bytes": 5677,
+      "sha256": "ef71cdeb00c3a699ee056d42d7671435f55199006b0a057a3cce4e6b87f2f05f"
+    },
+    {
+      "path": "src/part_prompt.h",
+      "bytes": 4675,
+      "sha256": "5741605f290cf492e36481f2a29b47c8cd10f5b518aa380a51ecffc0982b0938"
+    },
+    {
+      "path": "src/part_selfcheck.h",
+      "bytes": 6117,
+      "sha256": "97d1af0a2565376c0880957c1f44447dd06cd641cf7beb3cb7a0f50924adee14"
+    },
+    {
+      "path": "src/part_tools.h",
+      "bytes": 37772,
+      "sha256": "a63ffb2fa01dbcabfa6a605c386e586e631cc35c3dcc881affb870ec244aa8b2"
+    },
+    {
+      "path": "text/chinese_cn/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text/chinese_cn/resource/codex_native_assistant.res",
+      "bytes": 641,
+      "sha256": "6274979745929d516bf0f53a9215610997658386985d4e5626dde1be8cf392ea"
+    },
+    {
+      "path": "text/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text/resource/codex_native_assistant.res",
+      "bytes": 641,
+      "sha256": "6274979745929d516bf0f53a9215610997658386985d4e5626dde1be8cf392ea"
+    },
+    {
+      "path": "text/usascii/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text/usascii/resource/codex_native_assistant.res",
+      "bytes": 641,
+      "sha256": "6274979745929d516bf0f53a9215610997658386985d4e5626dde1be8cf392ea"
+    },
+    {
+      "path": "text-input-v2/chinese_cn/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-input-v2/chinese_cn/resource/codex_native_assistant.res",
+      "bytes": 674,
+      "sha256": "39a0ce1e7f8cb375951dea0f616d5b78c057c8b4eb184f05c61fb7cf7217cd13"
+    },
+    {
+      "path": "text-input-v2/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-input-v2/resource/codex_native_assistant.res",
+      "bytes": 674,
+      "sha256": "39a0ce1e7f8cb375951dea0f616d5b78c057c8b4eb184f05c61fb7cf7217cd13"
+    },
+    {
+      "path": "text-input-v2/text/chinese_cn/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-input-v2/text/chinese_cn/resource/codex_native_assistant.res",
+      "bytes": 674,
+      "sha256": "39a0ce1e7f8cb375951dea0f616d5b78c057c8b4eb184f05c61fb7cf7217cd13"
+    },
+    {
+      "path": "text-input-v2/text/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-input-v2/text/resource/codex_native_assistant.res",
+      "bytes": 674,
+      "sha256": "39a0ce1e7f8cb375951dea0f616d5b78c057c8b4eb184f05c61fb7cf7217cd13"
+    },
+    {
+      "path": "text-input-v2/text/usascii/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-input-v2/text/usascii/resource/codex_native_assistant.res",
+      "bytes": 674,
+      "sha256": "39a0ce1e7f8cb375951dea0f616d5b78c057c8b4eb184f05c61fb7cf7217cd13"
+    },
+    {
+      "path": "text-input-v2/usascii/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-input-v2/usascii/resource/codex_native_assistant.res",
+      "bytes": 674,
+      "sha256": "39a0ce1e7f8cb375951dea0f616d5b78c057c8b4eb184f05c61fb7cf7217cd13"
+    },
+    {
+      "path": "text-model-v5/text/chinese_cn/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-model-v5/text/chinese_cn/resource/codex_native_assistant.res",
+      "bytes": 758,
+      "sha256": "5f3ccec79d9b18a075f948d5655b30b2cef1c20c0cda80b7f3e14b0960c01bef"
+    },
+    {
+      "path": "text-model-v5/text/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-model-v5/text/resource/codex_native_assistant.res",
+      "bytes": 758,
+      "sha256": "5f3ccec79d9b18a075f948d5655b30b2cef1c20c0cda80b7f3e14b0960c01bef"
+    },
+    {
+      "path": "text-model-v5/text/usascii/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-model-v5/text/usascii/resource/codex_native_assistant.res",
+      "bytes": 758,
+      "sha256": "5f3ccec79d9b18a075f948d5655b30b2cef1c20c0cda80b7f3e14b0960c01bef"
+    },
+    {
+      "path": "text-model-v6/text/chinese_cn/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-model-v6/text/chinese_cn/resource/codex_native_assistant.res",
+      "bytes": 680,
+      "sha256": "921575dff00fa2c0889cfe205102c0c025f9334aa84ff43c0bf38191ba670913"
+    },
+    {
+      "path": "text-model-v6/text/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-model-v6/text/resource/codex_native_assistant.res",
+      "bytes": 680,
+      "sha256": "921575dff00fa2c0889cfe205102c0c025f9334aa84ff43c0bf38191ba670913"
+    },
+    {
+      "path": "text-model-v6/text/usascii/codex_native_messages.txt",
+      "bytes": 184,
+      "sha256": "4a4a517b2b1312fc6e5a429fdf476d9673c56466c52782dc9168ac33fb8fd7fa"
+    },
+    {
+      "path": "text-model-v6/text/usascii/resource/codex_native_assistant.res",
+      "bytes": 680,
+      "sha256": "921575dff00fa2c0889cfe205102c0c025f9334aa84ff43c0bf38191ba670913"
+    },
+    {
+      "path": "v10修复与验证.md",
+      "bytes": 2553,
+      "sha256": "1fb870f3ed6d1834b4c87fe51aaf65dd5f9cb9403ba84d3b978ade4ee7f1a73c"
+    },
+    {
+      "path": "v11聊天滚动修复.md",
+      "bytes": 1948,
+      "sha256": "c1d7cf51583442d586295d377c7f8a115a0db17288441faa6c3de907a08fab52"
+    },
+    {
+      "path": "v12输入与界面修复.txt",
+      "bytes": 476,
+      "sha256": "ad9474a9341dccdab39e9d1b3c9f0b88116d210b5674e305db5c46decf811d99"
+    },
+    {
+      "path": "v13模板空模型说明.md",
+      "bytes": 1416,
+      "sha256": "58ae852cd5b1768611483a5a9a4ffa81ba34ce7fbf13d1471ded4a4b1362afca"
+    },
+    {
+      "path": "v14模型激活修复.txt",
+      "bytes": 568,
+      "sha256": "67d06221e440479b0f3ef8fd08247f03cba7493feeeb893650fd0be3b1d17b12"
+    },
+    {
+      "path": "v15零件工具与开发进度.md",
+      "bytes": 6384,
+      "sha256": "d6536e2c676e887284d9b3e7dd41d555a7445b47d063857fee39e911fd67834c"
+    },
+    {
+      "path": "v16当前模型操作说明.md",
+      "bytes": 2974,
+      "sha256": "9a93fd1a32f7823f4f2f30388df9d9309c4032f595e22a8ece44835a3d047ea0"
+    },
+    {
+      "path": "v17基本信息显示.md",
+      "bytes": 1209,
+      "sha256": "e829e2df1ee58e58ddc034e5285d21d092a08ffc516f98aaff3ad64e8dbb66ad"
+    },
+    {
+      "path": "v18消息分区说明.md",
+      "bytes": 1150,
+      "sha256": "cac9de8a74e825fcdbdd4c71c37232df96b793fb9b2b71f04194656320c6d769"
+    },
+    {
+      "path": "validation-v10.log",
+      "bytes": 9319,
+      "sha256": "0240e84ca901fd6cd4fa075f78547ddab9f99407306a15fd42a55c40ab1486d0"
+    },
+    {
+      "path": "建模使用说明.md",
+      "bytes": 4414,
+      "sha256": "2043b985dada53d378bb47adf889928d7bcf00b45d6bde632f86598b387dea20"
+    },
+    {
+      "path": "模板与自动建模说明.md",
+      "bytes": 7442,
+      "sha256": "3f4be4c9c50b5bcba73d08d2362800a1839d29106d1fcdb80bc73701cff73fa0"
+    },
+    {
+      "path": "记忆使用说明.md",
+      "bytes": 2862,
+      "sha256": "da6e4da49b3c6cac9ea856bb4f6dfe90e9db19e31d3856b46c194c0c1223351b"
+    }
+  ],
+  "excluded": []
+}
