@@ -1,0 +1,1166 @@
+[
+  {
+    "symbol": "ai_cleanup",
+    "file": "src/功能/assistant/ai_cleanup.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "trace",
+    "file": "src/功能/assistant/trace.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "execute_part_command",
+    "file": "src/功能/assistant/execute_part_command.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "append_card",
+    "file": "src/功能/assistant/append_card.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "append",
+    "file": "src/功能/assistant/append.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "save_turn",
+    "file": "src/功能/assistant/save_turn.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "save_pending_plan",
+    "file": "src/功能/assistant/save_pending_plan.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "show_pending_plan",
+    "file": "src/功能/assistant/show_pending_plan.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "execute_model_plan",
+    "file": "src/功能/assistant/execute_model_plan.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "verify_active_command",
+    "file": "src/功能/assistant/verify_active_command.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "build_pending_command",
+    "file": "src/功能/assistant/build_pending_command.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "memory_command",
+    "file": "src/功能/assistant/memory_command.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "read_model",
+    "file": "src/功能/assistant/read_model.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "ai_send",
+    "file": "src/功能/assistant/ai_send.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "ai_poll",
+    "file": "src/功能/assistant/ai_poll.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "run_local",
+    "file": "src/功能/assistant/run_local.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "on_closed",
+    "file": "src/功能/assistant/on_closed.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "close_window",
+    "file": "src/功能/assistant/close_window.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "access_command",
+    "file": "src/功能/assistant/access_command.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "send_native_command",
+    "file": "src/功能/assistant/send_native_command.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "inspect_native_command",
+    "file": "src/功能/assistant/inspect_native_command.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_backend_proc",
+    "file": "src/功能/assistant/native_backend_proc.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_send_action",
+    "file": "src/功能/assistant/native_send_action.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_read_action",
+    "file": "src/功能/assistant/native_read_action.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_close_action",
+    "file": "src/功能/assistant/native_close_action.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_poll_action",
+    "file": "src/功能/assistant/native_poll_action.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "open_window",
+    "file": "src/功能/assistant/open_window.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "user_initialize",
+    "file": "src/功能/assistant/user_initialize.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "user_terminate",
+    "file": "src/功能/assistant/user_terminate.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "store_path",
+    "file": "src/功能/chat_store/store_path.inc",
+    "original": "src/chat_store.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "store_init",
+    "file": "src/功能/chat_store/store_init.inc",
+    "original": "src/chat_store.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "store_tail_add",
+    "file": "src/功能/chat_store/store_tail_add.inc",
+    "original": "src/chat_store.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "store_read",
+    "file": "src/功能/chat_store/store_read.inc",
+    "original": "src/chat_store.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "store_write",
+    "file": "src/功能/chat_store/store_write.inc",
+    "original": "src/chat_store.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "store_log",
+    "file": "src/功能/chat_store/store_log.inc",
+    "original": "src/chat_store.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "store_forget",
+    "file": "src/功能/chat_store/store_forget.inc",
+    "original": "src/chat_store.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "chat_rtf_add",
+    "file": "src/功能/chat_style/chat_rtf_add.inc",
+    "original": "src/chat_style.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "chat_rtf_text",
+    "file": "src/功能/chat_style/chat_rtf_text.inc",
+    "original": "src/chat_style.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "chat_line_role",
+    "file": "src/功能/chat_style/chat_line_role.inc",
+    "original": "src/chat_style.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "chat_rtf_build",
+    "file": "src/功能/chat_style/chat_rtf_build.inc",
+    "original": "src/chat_style.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "chat_stream_read",
+    "file": "src/功能/chat_style/chat_stream_read.inc",
+    "original": "src/chat_style.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "chat_render",
+    "file": "src/功能/chat_style/chat_render.inc",
+    "original": "src/chat_style.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_name",
+    "file": "src/功能/foundation_plan/fd_name.inc",
+    "original": "src/foundation_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_reference_token",
+    "file": "src/功能/foundation_plan/fd_reference_token.inc",
+    "original": "src/foundation_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_entity_token",
+    "file": "src/功能/foundation_plan/fd_entity_token.inc",
+    "original": "src/foundation_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_shape_valid",
+    "file": "src/功能/foundation_plan/fd_shape_valid.inc",
+    "original": "src/foundation_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "foundation_plan_valid",
+    "file": "src/功能/foundation_plan/foundation_plan_valid.inc",
+    "original": "src/foundation_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "foundation_request",
+    "file": "src/功能/foundation_prompt/foundation_request.inc",
+    "original": "src/foundation_prompt.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "foundation_reset",
+    "file": "src/功能/foundation_tools/foundation_reset.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_collect_geom",
+    "file": "src/功能/foundation_tools/fd_collect_geom.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_feature_ids",
+    "file": "src/功能/foundation_tools/fd_feature_ids.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_was_feature",
+    "file": "src/功能/foundation_tools/fd_was_feature.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_feature_geom",
+    "file": "src/功能/foundation_tools/fd_feature_geom.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_plane_data",
+    "file": "src/功能/foundation_tools/fd_plane_data.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_ref_resolve",
+    "file": "src/功能/foundation_tools/fd_ref_resolve.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_ref_free",
+    "file": "src/功能/foundation_tools/fd_ref_free.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_begin",
+    "file": "src/功能/foundation_tools/fd_begin.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_ref_element",
+    "file": "src/功能/foundation_tools/fd_ref_element.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_create",
+    "file": "src/功能/foundation_tools/fd_create.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_verify",
+    "file": "src/功能/foundation_tools/fd_verify.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_cleanup",
+    "file": "src/功能/foundation_tools/fd_cleanup.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_create_datum",
+    "file": "src/功能/foundation_tools/fd_create_datum.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_section_from_tree",
+    "file": "src/功能/foundation_tools/fd_section_from_tree.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_sketch_open",
+    "file": "src/功能/foundation_tools/fd_sketch_open.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_sketch_free",
+    "file": "src/功能/foundation_tools/fd_sketch_free.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_entity_reference",
+    "file": "src/功能/foundation_tools/fd_entity_reference.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_same_refs",
+    "file": "src/功能/foundation_tools/fd_same_refs.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_constraint_evidence",
+    "file": "src/功能/foundation_tools/fd_constraint_evidence.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_constraint_create",
+    "file": "src/功能/foundation_tools/fd_constraint_create.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_dimension_create",
+    "file": "src/功能/foundation_tools/fd_dimension_create.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_shape_append",
+    "file": "src/功能/foundation_tools/fd_shape_append.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_section_solve",
+    "file": "src/功能/foundation_tools/fd_section_solve.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_sketch_setup",
+    "file": "src/功能/foundation_tools/fd_sketch_setup.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_sketch_create",
+    "file": "src/功能/foundation_tools/fd_sketch_create.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_sketch_info",
+    "file": "src/功能/foundation_tools/fd_sketch_info.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_dimensions_capture",
+    "file": "src/功能/foundation_tools/fd_dimensions_capture.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_sketch_edit",
+    "file": "src/功能/foundation_tools/fd_sketch_edit.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_reference_item",
+    "file": "src/功能/foundation_tools/fd_reference_item.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fd_reference_feature",
+    "file": "src/功能/foundation_tools/fd_reference_feature.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "foundation_references",
+    "file": "src/功能/foundation_tools/foundation_references.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "foundation_execute",
+    "file": "src/功能/foundation_tools/foundation_execute.inc",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "history_score",
+    "file": "src/功能/history_context/history_score.inc",
+    "original": "src/history_context.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "history_context_write_mode",
+    "file": "src/功能/history_context/history_context_write_mode.inc",
+    "original": "src/history_context.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "history_context_write",
+    "file": "src/功能/history_context/history_context_write.inc",
+    "original": "src/history_context.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_request_current",
+    "file": "src/功能/model_plan/model_request_current.inc",
+    "original": "src/model_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_empty_request",
+    "file": "src/功能/model_plan/model_empty_request.inc",
+    "original": "src/model_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_plan_valid",
+    "file": "src/功能/model_plan/model_plan_valid.inc",
+    "original": "src/model_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_plan_parse",
+    "file": "src/功能/model_plan/model_plan_parse.inc",
+    "original": "src/model_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_plan_volume",
+    "file": "src/功能/model_plan/model_plan_volume.inc",
+    "original": "src/model_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_plan_update",
+    "file": "src/功能/model_plan/model_plan_update.inc",
+    "original": "src/model_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_plan_format",
+    "file": "src/功能/model_plan/model_plan_format.inc",
+    "original": "src/model_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_layout",
+    "file": "src/功能/native_chat_ui/native_layout.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_ui_history",
+    "file": "src/功能/native_chat_ui/native_ui_history.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_prompt_set",
+    "file": "src/功能/native_chat_ui/native_prompt_set.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_prompt_get",
+    "file": "src/功能/native_chat_ui/native_prompt_get.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_schedule_poll",
+    "file": "src/功能/native_chat_ui/native_schedule_poll.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_stop_poll",
+    "file": "src/功能/native_chat_ui/native_stop_poll.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_prompt_proc",
+    "file": "src/功能/native_chat_ui/native_prompt_proc.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_window_proc",
+    "file": "src/功能/native_chat_ui/native_window_proc.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_ui_create",
+    "file": "src/功能/native_chat_ui/native_ui_create.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_ui_thread_main",
+    "file": "src/功能/native_chat_ui/native_ui_thread_main.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_ui_open_threaded",
+    "file": "src/功能/native_chat_ui/native_ui_open_threaded.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_ui_stop_thread",
+    "file": "src/功能/native_chat_ui/native_ui_stop_thread.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "template_surface",
+    "file": "src/功能/native_model/template_surface.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "template_feature",
+    "file": "src/功能/native_model/template_feature.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "template_empty",
+    "file": "src/功能/native_model/template_empty.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_element",
+    "file": "src/功能/native_model/model_element.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_circle",
+    "file": "src/功能/native_model/model_circle.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_section_origin",
+    "file": "src/功能/native_model/model_section_origin.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_section_dimension",
+    "file": "src/功能/native_model/model_section_dimension.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_section_errors",
+    "file": "src/功能/native_model/model_section_errors.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_section",
+    "file": "src/功能/native_model/model_section.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_create_empty",
+    "file": "src/功能/native_model/model_create_empty.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_remove_feature",
+    "file": "src/功能/native_model/model_remove_feature.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_build_internal",
+    "file": "src/功能/native_model/model_build_internal.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_create",
+    "file": "src/功能/native_model/model_create.inc",
+    "original": "src/native_model.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_number",
+    "file": "src/功能/part_command/part_number.inc",
+    "original": "src/part_command.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_integer",
+    "file": "src/功能/part_command/part_integer.inc",
+    "original": "src/part_command.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_name",
+    "file": "src/功能/part_command/part_name.inc",
+    "original": "src/part_command.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_tokens",
+    "file": "src/功能/part_command/part_tokens.inc",
+    "original": "src/part_command.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_command_parse",
+    "file": "src/功能/part_command/part_command_parse.inc",
+    "original": "src/part_command.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_selfcheck",
+    "file": "src/功能/part_selfcheck/part_selfcheck.inc",
+    "original": "src/part_selfcheck.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_text_add",
+    "file": "src/功能/part_tools/part_text_add.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_text_quote",
+    "file": "src/功能/part_tools/part_text_quote.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_close",
+    "file": "src/功能/part_tools/part_close.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_snapshot_clear",
+    "file": "src/功能/part_tools/part_snapshot_clear.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_geometry_visit",
+    "file": "src/功能/part_tools/part_geometry_visit.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_feature_visit",
+    "file": "src/功能/part_tools/part_feature_visit.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_dimension_visit",
+    "file": "src/功能/part_tools/part_dimension_visit.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_parameter_visit",
+    "file": "src/功能/part_tools/part_parameter_visit.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_target_get",
+    "file": "src/功能/part_tools/part_target_get.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_request_target_get",
+    "file": "src/功能/part_tools/part_request_target_get.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_snapshot_take_mode",
+    "file": "src/功能/part_tools/part_snapshot_take_mode.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_snapshot_take",
+    "file": "src/功能/part_tools/part_snapshot_take.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_snapshot_take_basic",
+    "file": "src/功能/part_tools/part_snapshot_take_basic.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_param_format",
+    "file": "src/功能/part_tools/part_param_format.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_basic_material",
+    "file": "src/功能/part_tools/part_basic_material.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_snapshot_format_basic",
+    "file": "src/功能/part_tools/part_snapshot_format_basic.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_snapshot_format_selected",
+    "file": "src/功能/part_tools/part_snapshot_format_selected.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_snapshot_format",
+    "file": "src/功能/part_tools/part_snapshot_format.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_context_sections",
+    "file": "src/功能/part_tools/part_context_sections.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_check_binding",
+    "file": "src/功能/part_tools/part_check_binding.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_health_visit",
+    "file": "src/功能/part_tools/part_health_visit.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_health",
+    "file": "src/功能/part_tools/part_health.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_regenerate",
+    "file": "src/功能/part_tools/part_regenerate.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_regenerate_context",
+    "file": "src/功能/part_tools/part_regenerate_context.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_find_feature",
+    "file": "src/功能/part_tools/part_find_feature.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_change_dimensions",
+    "file": "src/功能/part_tools/part_change_dimensions.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_param_equal",
+    "file": "src/功能/part_tools/part_param_equal.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_param_parse",
+    "file": "src/功能/part_tools/part_param_parse.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_change_parameter",
+    "file": "src/功能/part_tools/part_change_parameter.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_target_available",
+    "file": "src/功能/part_tools/part_target_available.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_toggle_feature",
+    "file": "src/功能/part_tools/part_toggle_feature.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_extrude_current",
+    "file": "src/功能/part_tools/part_extrude_current.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "part_execute",
+    "file": "src/功能/part_tools/part_execute.inc",
+    "original": "src/part_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "prompt_finalize_utf8",
+    "file": "src/功能/prompt_encoding/prompt_finalize_utf8.inc",
+    "original": "src/prompt_encoding.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "runtime_init",
+    "file": "src/功能/runtime_paths/runtime_init.inc",
+    "original": "src/runtime_paths.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "runtime_open",
+    "file": "src/功能/runtime_paths/runtime_open.inc",
+    "original": "src/runtime_paths.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "runtime_exe_exists",
+    "file": "src/功能/runtime_paths/runtime_exe_exists.inc",
+    "original": "src/runtime_paths.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "runtime_codex",
+    "file": "src/功能/runtime_paths/runtime_codex.inc",
+    "original": "src/runtime_paths.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "solid_plan_valid",
+    "file": "src/功能/solid_plan/solid_plan_valid.inc",
+    "original": "src/solid_plan.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sd_body_count",
+    "file": "src/功能/solid_tools/sd_body_count.inc",
+    "original": "src/solid_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sd_sketch_ref",
+    "file": "src/功能/solid_tools/sd_sketch_ref.inc",
+    "original": "src/solid_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sd_existing_body",
+    "file": "src/功能/solid_tools/sd_existing_body.inc",
+    "original": "src/solid_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sd_projection_reference",
+    "file": "src/功能/solid_tools/sd_projection_reference.inc",
+    "original": "src/solid_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sd_mark_section",
+    "file": "src/功能/solid_tools/sd_mark_section.inc",
+    "original": "src/solid_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sd_create",
+    "file": "src/功能/solid_tools/sd_create.inc",
+    "original": "src/solid_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sd_edit",
+    "file": "src/功能/solid_tools/sd_edit.inc",
+    "original": "src/solid_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sd_is_command",
+    "file": "src/功能/solid_tools/sd_is_command.inc",
+    "original": "src/solid_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "datum_plane",
+    "file": "src/功能/foundation_tools/datum_plane.inc",
+    "original": "foundation_tools/fd_create_datum.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "datum_axis",
+    "file": "src/功能/foundation_tools/datum_axis.inc",
+    "original": "foundation_tools/fd_create_datum.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "datum_point",
+    "file": "src/功能/foundation_tools/datum_point.inc",
+    "original": "foundation_tools/fd_create_datum.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "datum_csys",
+    "file": "src/功能/foundation_tools/datum_csys.inc",
+    "original": "foundation_tools/fd_create_datum.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "datum_curve",
+    "file": "src/功能/foundation_tools/datum_curve.inc",
+    "original": "foundation_tools/fd_create_datum.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "part_display",
+    "file": "src/功能/part_tools/part_display.inc",
+    "original": "part_tools/part_execute.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "part_copy",
+    "file": "src/功能/part_tools/part_copy.inc",
+    "original": "part_tools/part_execute.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "part_rename",
+    "file": "src/功能/part_tools/part_rename.inc",
+    "original": "part_tools/part_execute.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "part_save",
+    "file": "src/功能/part_tools/part_save.inc",
+    "original": "part_tools/part_execute.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "part_step",
+    "file": "src/功能/part_tools/part_step.inc",
+    "original": "part_tools/part_execute.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "references",
+    "file": "src/功能/foundation_tools/references.inc",
+    "original": "foundation_tools/foundation_execute.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "sketch_begin",
+    "file": "src/功能/foundation_tools/sketch_begin.inc",
+    "original": "foundation_tools/foundation_execute.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "sketch_add",
+    "file": "src/功能/foundation_tools/sketch_add.inc",
+    "original": "foundation_tools/foundation_execute.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "solid_revolve",
+    "file": "src/功能/solid_tools/solid_revolve.inc",
+    "original": "solid_tools/sd_create.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "solid_extrude",
+    "file": "src/功能/solid_tools/solid_extrude.inc",
+    "original": "solid_tools/sd_create.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "sketch_move",
+    "file": "src/功能/solid_tools/sketch_move.inc",
+    "original": "solid_tools/sd_edit.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "sketch_project",
+    "file": "src/功能/solid_tools/sketch_project.inc",
+    "original": "solid_tools/sd_edit.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "sketch_remove",
+    "file": "src/功能/solid_tools/sketch_remove.inc",
+    "original": "solid_tools/sd_edit.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "sketch_add_edit",
+    "file": "src/功能/foundation_tools/sketch_add_edit.inc",
+    "original": "foundation_tools/fd_sketch_edit.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "sketch_dim_edit",
+    "file": "src/功能/foundation_tools/sketch_dim_edit.inc",
+    "original": "foundation_tools/fd_sketch_edit.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "sketch_constraint",
+    "file": "src/功能/foundation_tools/sketch_constraint.inc",
+    "original": "foundation_tools/fd_sketch_edit.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "shape_line",
+    "file": "src/功能/foundation_tools/shape_line.inc",
+    "original": "foundation_tools/fd_shape_append.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "shape_rectangle",
+    "file": "src/功能/foundation_tools/shape_rectangle.inc",
+    "original": "foundation_tools/fd_shape_append.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "shape_circle",
+    "file": "src/功能/foundation_tools/shape_circle.inc",
+    "original": "foundation_tools/fd_shape_append.inc",
+    "kind": "operation-block"
+  },
+  {
+    "symbol": "shape_arc",
+    "file": "src/功能/foundation_tools/shape_arc.inc",
+    "original": "foundation_tools/fd_shape_append.inc",
+    "kind": "operation-block"
+  }
+]

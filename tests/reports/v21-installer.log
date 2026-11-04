@@ -1,0 +1,23 @@
+PASS: first install version
+PASS: GBK Chinese and third-party config preserved
+PASS: one managed registration
+PASS: complete original history imported byte-for-byte
+PASS: all original memories imported
+PASS: feature guide imported
+PASS: settings uses destination machine data path
+PASS: pending CAD command not replayed
+PASS: same-version repair does not duplicate history
+PASS: same-version repair does not invent rollback target
+PASS: upgrade tracks previous version
+PASS: upgrade retains destination user chats
+PASS: upgrade imports new owner history delta
+PASS: owner delta imported once
+PASS: rollback changes active version
+PASS: rollback switches native DLL path
+PASS: uninstall removes managed registration
+PASS: uninstall retains other plugins
+PASS: uninstall retains full chat database
+PASS: tampered payload rejected
+PASS: legacy BWTL registration retired without duplicate load
+PASS: legacy migration preserves unrelated plugin
+SETUP TESTS PASSED: 22; artifacts: C:\Users\Marvel\Documents\Codex\2026-10-27\wo\work\setup-test-20261029-225756-6967

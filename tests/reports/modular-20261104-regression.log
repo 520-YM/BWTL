@@ -1,0 +1,17 @@
+test_model_plan.c
+尝试对“FileSystem”提供程序执行 InitializeDefaultDrives 操作失败。
+MODEL PLAN VALIDATION / VOLUME / INVALID AND MULTIPLE ACTIONS PASS
+test_part_command.c
+PART COMMAND: strict parsing, stale protocol reset, UTF-16 strings, paths, malformed numbers and conflicting actions PASS
+test_foundation_protocol.c
+foundation protocol: 33 valid + 18 invalid + 2 mixed-command cases passed
+test_solid_protocol.c
+SOLID PROTOCOL: 12 valid, 15 invalid and mixed-command rejection PASS
+test_prompt_encoding.c
+UTF8: 4000 Chinese/emoji lines valid; invalid surrogate rejected PASS
+test_history_context.c
+HISTORY: feature guide, older matching history, bounded retrieval and protocol exclusion PASS
+COMPACT HISTORY: redundant guide omitted, relevant history and safety retained PASS
+test_chat_store.c
+WRITE PASS
+RESTORE / FORGET / HISTORY / BOUNDS / NEW CHAT / FAILURE PASS

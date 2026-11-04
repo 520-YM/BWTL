@@ -1,0 +1,28 @@
+{
+  "title": "Codex · 霸威天龙聊天记录",
+  "thread_id": "01a17ca1-9750-7ec3-9190-c7a013dbd073",
+  "generated_at": "2026-11-04T17:50:17.547405+08:00",
+  "source_first_timestamp": "2026-10-27T09:12:42.400Z",
+  "source_last_timestamp": "2026-11-04T09:50:16.360Z",
+  "source_snapshot_sha256": "bf8d72d9a98f90139755369c7f64699ee34e6992b5b6af1b2b697440fc2bacc6",
+  "source_snapshot_bytes": 97924770,
+  "counts": {
+    "user_messages": 118,
+    "assistant_messages": 106,
+    "activities": 0,
+    "user_attachments": 36,
+    "confirmation_questions": 9,
+    "confirmation_replies": 9,
+    "tool_images": 0
+  },
+  "public_records": 233,
+  "unique_images": 36,
+  "verification": "User/assistant UI-message IDs matched; all retained final-response IDs covered; confirmation pairs matched; all user attachments recovered; no message text shortened; execution records and tool screenshots excluded.",
+  "scope": "按用户修订要求，本页仅保留这条Codex聊天截至生成时刻的用户消息、助手每轮最终答复、确认问答和用户上传的原始图片。已排除助手进度/过程消息、工具执行日志及工具截图。保留消息的原文未改写；生成后的新消息不在此快照内。",
+  "html_bytes": 12196696,
+  "json_bytes": 12189012,
+  "html_sha256": "e34da634c3f820c4642b72a348ac37fc4aa972550783dc694553482331f84907",
+  "missing_user_attachments": 0,
+  "missing_tool_images": 0,
+  "html_roundtrip_verified": true
+}

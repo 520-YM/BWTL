@@ -1,0 +1,433 @@
+ENTER_INITIALIZE: 0
+FOUNDATION_SELFTEST_STARTED: 0
+Read requested default template: 0
+Load requested template: 0
+Read template model type: 0
+Read template subtype: 0
+Inspect original template features: 0
+Check template has no solid geometry: 0
+Copy requested empty template: 0
+Verify copied model subtype: 0
+Inspect copied template features: 0
+Original template feature count: 4
+Copied template feature count: 4
+Copied datum planes: 3
+Copied coordinate systems: 1
+Verify copy remains empty: 0
+Verify copy remains empty: 0
+resolve test model: 0
+prepare datum transaction: 0
+resolve plane: 0
+verify plane geometry: 0
+plane constraints: 0
+plane constraint: 0
+plane offset type: 0
+plane reference: 0
+plane offset: 0
+create datum feature: 0
+verify datum state and parents: 0
+verify created datum geometry: 0
+read created plane: 0
+prepare datum transaction: 0
+resolve axis reference: 0
+resolve axis reference: 0
+first axis plane: 0
+second axis plane: 0
+axis constraints: 0
+axis constraint: 0
+axis through type: 0
+axis reference: 0
+axis constraint: 0
+axis through type: 0
+axis reference: 0
+create datum feature: 0
+verify datum state and parents: 0
+verify created datum geometry: 0
+prepare datum transaction: 0
+resolve coordinate system: 0
+point type: 0
+point Cartesian: 0
+point csys: 0
+point dimensions: 0
+point array: 0
+point entry: 0
+point name: 0
+set point name: 0
+point coordinate: 0
+point coordinate: 0
+point coordinate: 0
+create datum feature: 0
+verify datum state and parents: 0
+verify created datum geometry: 0
+prepare datum transaction: 0
+resolve coordinate system: 0
+csys origin array: 0
+csys origin: 0
+csys origin reference: 0
+csys offset type: 0
+csys moves: 0
+csys move: 0
+csys move kind: 0
+csys move value: 0
+csys move: 0
+csys move kind: 0
+csys move value: 0
+csys move: 0
+csys move kind: 0
+csys move value: 0
+csys move: 0
+csys move kind: 0
+csys move value: 0
+csys move: 0
+csys move kind: 0
+csys move value: 0
+csys move: 0
+csys move kind: 0
+csys move value: 0
+csys orientation method: 0
+create datum feature: 0
+verify datum state and parents: 0
+verify created datum geometry: 0
+prepare datum transaction: 0
+resolve coordinate system: 0
+equation curve kind: 0
+curve csys: 0
+curve Cartesian: 0
+curve parameter start: 0
+curve parameter end: 0
+curve equation element: 0
+curve equation: 0
+create datum feature: 0
+verify datum state and parents: 0
+verify created datum geometry: 0
+point XYZ matches actual source coordinate system: 0
+csys translation and 30 degree Z rotation verified: 0
+curve endpoints verified in actual source coordinate system: 0
+coordinate and curve numerical verification: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation epsilon: 0
+foundation epsilon: 0
+foundation constraint create: -5
+foundation epsilon: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation constraint create: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation epsilon: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation constraint create: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation constraint create: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation constraint create: 0
+foundation epsilon: 0
+foundation constraint create: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation constraint create: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation constraint create: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation epsilon: 0
+prepare private weak radius for equal-radius test: 0
+foundation constraint create: 0
+foundation epsilon: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+foundation epsilon: 0
+foundation resolve with intent manager: 0
+foundation epsilon: 0
+foundation constraint create: 0
+expected rejection leaves model stamp unchanged: 0
+prepare datum transaction: -5
+expected rejection leaves model stamp unchanged: 0
+expected rejection leaves model stamp unchanged: 0
+prepare datum transaction: 0
+resolve coordinate system: 0
+point type: 0
+point Cartesian: 0
+point csys: 0
+point dimensions: 0
+point array: 0
+point entry: 0
+point name: 0
+set point name: 0
+point coordinate: 0
+point coordinate: 0
+point coordinate: 0
+create datum feature: 0
+verify datum state and parents: 0
+verify created datum geometry: 0
+expected rejection leaves model stamp unchanged: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+Read configured solid template: 0
+Load configured template: 0
+Verify empty template: 0
+Copy template to new part: 0
+Collect copied template datums: 0
+Template datum planes: 3
+Template coordinate systems: 1
+Read model unit system: 0
+Read length unit: 0
+Resolve millimetres: 0
+Convert millimetres: 0
+Allocate independent 2D sketch: 0
+Read sketch intent-manager mode: 0
+Initialize sketch coordinate system: 0
+Sketch outer circle: 0
+Dimension outer diameter: 0
+Allocate sketch diagnostics: 0
+Set scale-aware sketch tolerance: 0
+Autodimension and solve dimensioned sketch: 0
+Regenerate solved sketch: 0
+Solve independent 2D sketch: 0
+Model item: 0
+Model selection: 0
+Create options: 0
+Allocate base feature tree: 0
+Base feature type: 0
+Base extrusion form: 0
+Base depth: 0
+Base from: 0
+Base from type: 0
+Base from value: 0
+Base to: 0
+Base to type: 0
+Base to value: 0
+Create base incomplete extrusion: 0
+Extract base tree: 0
+Allocate base sketch path: 0
+Base sketch path: 0
+Get base sketch: 0
+Get base placeholder: 0
+Assign solved base sketch: 0
+Complete base extrusion: 0
+Regenerate new part: 0
+Verify template feature references: 0
+Extrusion parent feature count: 0
+Check resulting volume: 0
+create private solid cylinder: 0
+prepare datum transaction: 0
+resolve axis reference: 0
+axis cylinder handle: 0
+axis cylinder type: 0
+axis constraints: 0
+axis constraint: 0
+axis through type: 0
+axis reference: 0
+create datum feature: 0
+verify datum state and parents: 0
+verify created datum geometry: 0
+prepare datum transaction: 0
+resolve plane: 0
+verify plane geometry: 0
+plane constraints: 0
+plane constraint: 0
+plane offset type: 0
+plane reference: 0
+plane offset: 0
+create datum feature: 0
+verify datum state and parents: 0
+verify created datum geometry: 0
+read created plane: 0
+prepare referenced sketch: 0
+set sketch plane and orientation: 0
+create incomplete referenced sketch: 0
+extract referenced sketch tree: 0
+get owned sketch section: 0
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+foundation constraint create: -5
+create sketch geometry and dimensions: 0
+foundation epsilon: 0
+solve referenced sketch: 0
+complete referenced sketch: 0
+verify sketch feature and parent datums: 0
+FOUNDATION_SELFTEST_FAILURES: 0
+FOUNDATION_SELFTEST_DONE: 0

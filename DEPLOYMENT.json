@@ -1,9 +1,24 @@
 {
+  "version": "0.21.2-preview.1",
   "attempted": true,
   "exit_code": 0,
   "unlocked": true,
   "method": "PTC official protk_unlock",
   "requires_toolkit_development_license": false,
   "target_creo": "10.0.0.0",
-  "cross_machine_verified": false
+  "cross_machine_verified": false,
+  "native_cases": 94,
+  "native_successful_cases": 87,
+  "expected_rejections": 7,
+  "protocol_cases": 28,
+  "binary_sha256": "63297023405f83127b1e2f7034695a68cadd7b73e55039f4ccc9a319539c6b19",
+  "installer_tests": 84,
+  "history_retrieval_test": "passed",
+  "cad_backend_change": "v21.2 keeps the frozen v21.1 tools and adds self-contained Creo ribbon loading plus installer diagnostics",
+  "native_startup_check": "Final v21.2 DLL compiled and officially unlocked. The bundled Chinese ribbon resource returned 0 in an isolated Creo10 native load probe; no user Creo session or model was modified.",
+  "installer_tests_note": "Passed before final packaging: 22 installation/upgrade/rollback checks, 44 uninstall checks and 18 additional installer diagnostics/safety checks.",
+  "protocol_scope": "28 new 11-15 parser checks; prior protocol tests retained",
+  "local_ui_patch": "Prompt encoding repair: explicit strict UTF16-to-UTF8 finalization; 4000 Chinese/emoji lines and invalid surrogate rejection passed. No live AI or CAD execution.",
+  "source_refactor": "2026-11-04: 194 separate implementation files; v21.1 tools remain frozen. Reviewed v21.2 change is limited to version labels and self-contained ribbon loading.",
+  "runtime_version": "v21.2"
 }

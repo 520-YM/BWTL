@@ -1,0 +1,86 @@
+{
+  "standard": "BWTL-DEV-001",
+  "standard_version": "1.0",
+  "captured_date": "2026-10-30",
+  "version": "0.21.0-preview.3",
+  "creo": "10.0.0.0",
+  "status": "Reference fingerprints only; runtime module switches not implemented",
+  "source_files": [
+    {
+      "path": "src/assistant.c",
+      "sha256": "9297613cc808ccae8dfc53ebef0e47dc7f89d0dbcf9275ac9d9fc1131d6fcb6e"
+    },
+    {
+      "path": "src/chat_store.h",
+      "sha256": "12e1cf93731b1c679a264d4a5d23bb150325495e97837b2f8330bfcf64b3beee"
+    },
+    {
+      "path": "src/chat_style.h",
+      "sha256": "69a55300203e4530b149f04d4789dbd1359824e12ea1f8c5ce71e46e2dc14937"
+    },
+    {
+      "path": "src/foundation_plan.h",
+      "sha256": "8e302f458f290ecf6eda3febbfc9465b5e72157eaca86f5e176a63ab17a5a326"
+    },
+    {
+      "path": "src/foundation_prompt.h",
+      "sha256": "aff10fc19e4b880f083470d1132d57c2307d6e602f878a3a9d792ee13cc63946"
+    },
+    {
+      "path": "src/foundation_tools.h",
+      "sha256": "ef4613f7f6e1ae167872ba25600d5de5b243246ebebd5f055f59e86370f9eca7"
+    },
+    {
+      "path": "src/history_context.h",
+      "sha256": "5681c257343f7a53758baa5783144ac5eb546c3de4ad1624bb44e77e7e8ebed0"
+    },
+    {
+      "path": "src/model_plan.h",
+      "sha256": "2404b3f20779ad2e473837b059f6abc6485d6376bc13e23eaa13bbfbc3962248"
+    },
+    {
+      "path": "src/native_chat_ui.h",
+      "sha256": "13c740a5f315d4e5d7ff2be286f1d4f80314e48c370065db41cf4581f05d9eb7"
+    },
+    {
+      "path": "src/native_model.h",
+      "sha256": "d6ff172026451a11cb1e7bb8e0743409f626bb54212b70bdf1b1371c3d9e275c"
+    },
+    {
+      "path": "src/part_command.h",
+      "sha256": "8c70a2bb208a8a6e74dbf3bc57a9378da100dcd512127a6b6ec2b00eaa2faa9e"
+    },
+    {
+      "path": "src/part_prompt.h",
+      "sha256": "5e769c814b14beb02c91ab8946780b0df6075e206154a2ec446251948f82e269"
+    },
+    {
+      "path": "src/part_selfcheck.h",
+      "sha256": "312d417a73b8676857b91052a44828355097e4869dc6fe473db3d3f1345d4db2"
+    },
+    {
+      "path": "src/part_tools.h",
+      "sha256": "afa5040a4562646141f61057253a7608379bb0eb46bd41ddad0a94391d5d3ba1"
+    },
+    {
+      "path": "src/runtime_paths.h",
+      "sha256": "d547578b636a5a7f32a2dd9539028b874ed190ad605e585eb26f81e9fc3e7572"
+    },
+    {
+      "path": "src/solid_plan.h",
+      "sha256": "c261a5f1dcec42237cbed850b7ad12ce1869dda9538dc05556690cac68426b43"
+    },
+    {
+      "path": "src/solid_prompt.h",
+      "sha256": "b0e5f137168ae9f23ad0e8c9a48fab65601c37c4669ea388fee9f2753cdd5a03"
+    },
+    {
+      "path": "src/solid_tools.h",
+      "sha256": "6315cbd5a66bc14d0d8f27c882d279e4a83a571f1f20de0a87eff25dd203d1e8"
+    }
+  ],
+  "binary": {
+    "path": "bin/BWTL.dll",
+    "sha256": "e06b9d148e91e0628a080771a585146611257607dd0a11eae97b714cf3f197ce"
+  }
+}

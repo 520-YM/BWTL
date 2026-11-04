@@ -1,0 +1,45 @@
+PASS: mode 0 standalone entry files
+PASS: mode 0 registration removed
+PASS: mode 0 other plugin retained
+PASS: mode 0 program choice respected
+PASS: mode 0 data choice respected
+PASS: mode 0 backup data choice respected
+PASS: mode 0 unrelated file retained
+PASS: mode 1 standalone entry files
+PASS: locked DLL refuses deletion
+PASS: locked DLL leaves registration intact
+PASS: junction refuses deletion
+PASS: junction target untouched
+PASS: mode 1 registration removed
+PASS: mode 1 other plugin retained
+PASS: mode 1 program choice respected
+PASS: mode 1 data choice respected
+PASS: mode 1 backup data choice respected
+PASS: mode 1 unrelated file retained
+PASS: retained data has cleanup entry
+PASS: cleanup entry can later remove retained data
+PASS: mode 2 standalone entry files
+PASS: external data state path refused
+PASS: external file unchanged
+PASS: mode 2 registration removed
+PASS: mode 2 other plugin retained
+PASS: mode 2 program choice respected
+PASS: mode 2 data choice respected
+PASS: mode 2 backup data choice respected
+PASS: mode 2 unrelated file retained
+PASS: mode 2 seed data removed
+PASS: mode 2 embedded archives removed
+PASS: mode 3 standalone entry files
+PASS: mode 3 registration removed
+PASS: mode 3 other plugin retained
+PASS: mode 3 program choice respected
+PASS: mode 3 data choice respected
+PASS: mode 3 backup data choice respected
+PASS: mode 3 unrelated file retained
+PASS: mode 3 seed data removed
+PASS: mode 3 embedded archives removed
+PASS: dialog checked without showing user window
+PASS: GUI defaults to remove program
+PASS: GUI defaults to keep data
+PASS: GUI cancel does not execute uninstall
+UNINSTALL TESTS PASSED: 44; artifacts: C:\Users\Marvel\Documents\Codex\2026-10-27\wo\work\uninstall-v21_1-20261102-192139

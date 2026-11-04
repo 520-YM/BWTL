@@ -1,0 +1,228 @@
+CREO_OP REFERENCES ai_prt_261029_160450_1 
+RESULT=0
+本次实际模型参照（最多96项）：
+SURFACE:2 名称=RIGHT，平面
+SURFACE:4 名称=TOP，平面
+SURFACE:6 名称=FRONT，平面
+CSYS:PRT_CSYS（ID=8）
+
+CREO_OP DATUM_PLANE ai_prt_261029_160450_1 TEST_PLANE PLANE:TOP 25
+RESULT=0
+已在当前零件创建偏移基准面：TEST_PLANE。特征、参照父子关系及重生成检查通过，实体体积保持，未保存。
+CREO_OP DATUM_AXIS ai_prt_261029_160450_1 TEST_AXIS PLANES PLANE:TOP PLANE:RIGHT
+RESULT=0
+已在当前零件创建基准轴：TEST_AXIS。特征、参照父子关系及重生成检查通过，实体体积保持，未保存。
+CREO_OP DATUM_POINT ai_prt_261029_160450_1 TEST_POINT CSYS:PRT_CSYS 10 20 30
+RESULT=0
+已在当前零件创建基准点：TEST_POINT。特征、参照父子关系及重生成检查通过，实体体积保持，未保存。
+CREO_OP DATUM_CSYS ai_prt_261029_160450_1 TEST_CSYS CSYS:PRT_CSYS 10 20 30 0 0 30
+RESULT=0
+已在当前零件创建坐标系：TEST_CSYS。特征、参照父子关系及重生成检查通过，实体体积保持，未保存。
+CREO_OP DATUM_CURVE ai_prt_261029_160450_1 TEST_CURVE CSYS:PRT_CSYS 0 0 0 30 20 10
+RESULT=0
+已在当前零件创建直线基准曲线：TEST_CURVE。特征、参照父子关系及重生成检查通过，实体体积保持，未保存。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_LINE PLANE:TOP PLANE:RIGHT LINE 0 0 40 0
+RESULT=0
+已在当前零件创建关联草绘 TEST_LINE（LINE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_RECT PLANE:TOP PLANE:RIGHT RECT 0 0 80 60
+RESULT=0
+已在当前零件创建关联草绘 TEST_RECT（RECT），图元编号 0 起连续4条矩形边。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_CIRCLE PLANE:TOP PLANE:RIGHT CIRCLE 0 0 10
+RESULT=0
+已在当前零件创建关联草绘 TEST_CIRCLE（CIRCLE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_ARC PLANE:TOP PLANE:RIGHT ARC 0 0 10 0 90
+RESULT=0
+已在当前零件创建关联草绘 TEST_ARC（ARC），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_INFO ai_prt_261029_160450_1 TEST_LINE
+RESULT=0
+草绘 TEST_LINE（坐标和线性尺寸已换算毫米）：
+图元0 直线：(0,0) → (40,0)
+尺寸0：类型1，值40毫米
+约束0：类型1，有效
+
+CREO_OP SKETCH_INFO ai_prt_261029_160450_1 TEST_RECT
+RESULT=0
+草绘 TEST_RECT（坐标和线性尺寸已换算毫米）：
+图元0 直线：(0,0) → (80,0)
+图元1 直线：(80,0) → (80,60)
+图元2 直线：(80,60) → (0,60)
+图元3 直线：(0,60) → (0,0)
+尺寸0：类型1，值60毫米
+尺寸1：类型1，值80毫米
+约束0：类型0，有效
+约束1：类型0，有效
+约束2：类型0，有效
+约束3：类型0，有效
+约束4：类型1，有效
+约束5：类型2，有效
+约束6：类型1，有效
+约束7：类型2，有效
+
+CREO_OP SKETCH_DIM ai_prt_261029_160450_1 TEST_LINE LENGTH 0 NONE 55
+RESULT=0
+草绘 TEST_LINE 已设置强尺寸。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_DIM ai_prt_261029_160450_1 TEST_CIRCLE DIAMETER 0 NONE 30
+RESULT=0
+草绘 TEST_CIRCLE 已设置强尺寸。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_DIM ai_prt_261029_160450_1 TEST_ARC RADIUS 0 NONE 15
+RESULT=0
+草绘 TEST_ARC 已设置强尺寸。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_LINE HORIZONTAL 0
+RESULT=0
+草绘 TEST_LINE 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_LINE LINE 10 20 40 35
+RESULT=0
+草绘 TEST_LINE 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_LINE PARALLEL 0 1
+RESULT=0
+草绘 TEST_LINE 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_INFO ai_prt_261029_160450_1 TEST_LINE
+RESULT=0
+草绘 TEST_LINE（坐标和线性尺寸已换算毫米）：
+图元0 直线：(0,0) → (55,0)
+图元1 直线：(6.50655565,28) → (43.4934443,28)
+尺寸0：类型1，值55毫米
+尺寸2：类型2，值28毫米
+尺寸5：类型1，值36.9868887毫米
+尺寸6：类型7，值6.50655565毫米
+约束0：类型1，有效
+约束7：类型1，有效
+
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_ANGLE PLANE:TOP PLANE:RIGHT LINE 0 0 40 0
+RESULT=0
+已在当前零件创建关联草绘 TEST_ANGLE（LINE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_ANGLE LINE 40 0 60 20
+RESULT=0
+草绘 TEST_ANGLE 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_DIM ai_prt_261029_160450_1 TEST_ANGLE ANGLE 0 1 60
+RESULT=0
+草绘 TEST_ANGLE 已设置强尺寸。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_DIST PLANE:TOP PLANE:RIGHT CIRCLE 10 10 5
+RESULT=0
+已在当前零件创建关联草绘 TEST_DIST（CIRCLE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_DIST CIRCLE 40 20 7
+RESULT=0
+草绘 TEST_DIST 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_DIM ai_prt_261029_160450_1 TEST_DIST DISTANCE_X 0:CENTER 1:CENTER 35
+RESULT=0
+草绘 TEST_DIST 已设置强尺寸。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_DIM ai_prt_261029_160450_1 TEST_DIST DISTANCE_Y 0:CENTER 1:CENTER 12
+RESULT=0
+草绘 TEST_DIST 已设置强尺寸。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_VERT PLANE:TOP PLANE:RIGHT LINE 0 0 20 30
+RESULT=0
+已在当前零件创建关联草绘 TEST_VERT（LINE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_VERT VERTICAL 0
+RESULT=0
+草绘 TEST_VERT 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_ORTHO PLANE:TOP PLANE:RIGHT LINE 0 0 40 0
+RESULT=0
+已在当前零件创建关联草绘 TEST_ORTHO（LINE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_ORTHO LINE 0 20 30 35
+RESULT=0
+草绘 TEST_ORTHO 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_ORTHO PERPENDICULAR 0 1
+RESULT=0
+草绘 TEST_ORTHO 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_EQUAL PLANE:TOP PLANE:RIGHT LINE 0 0 40 0
+RESULT=0
+已在当前零件创建关联草绘 TEST_EQUAL（LINE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_EQUAL LINE 10 20 40 35
+RESULT=0
+草绘 TEST_EQUAL 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_EQUAL EQUAL_LENGTH 0 1
+RESULT=0
+草绘 TEST_EQUAL 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_EQUAL COINCIDENT 0:END 1:START
+RESULT=0
+草绘 TEST_EQUAL 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_TANGENT PLANE:TOP PLANE:RIGHT CIRCLE 0 0 10
+RESULT=0
+已在当前零件创建关联草绘 TEST_TANGENT（CIRCLE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_TANGENT LINE 0 20 40 20
+RESULT=0
+草绘 TEST_TANGENT 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_TANGENT TANGENT 0 1
+RESULT=0
+草绘 TEST_TANGENT 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_SYMMETRY PLANE:TOP PLANE:RIGHT LINE -10 10 -10 30
+RESULT=0
+已在当前零件创建关联草绘 TEST_SYMMETRY（LINE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_SYMMETRY LINE 10 5 10 35
+RESULT=0
+草绘 TEST_SYMMETRY 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_SYMMETRY CENTERLINE 0 -40 0 40
+RESULT=0
+草绘 TEST_SYMMETRY 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_SYMMETRY SYMMETRY 0:START 1:START 2
+RESULT=0
+草绘 TEST_SYMMETRY 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_RADII PLANE:TOP PLANE:RIGHT CIRCLE 0 0 10
+RESULT=0
+已在当前零件创建关联草绘 TEST_RADII（CIRCLE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_RADII CIRCLE 30 20 5
+RESULT=0
+草绘 TEST_RADII 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_RADII EQUAL_RADIUS 0 1
+RESULT=0
+草绘 TEST_RADII 已添加或核对几何约束。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_CREATE ai_prt_261029_160450_1 TEST_LINEAR PLANE:TOP PLANE:RIGHT CIRCLE 10 10 5
+RESULT=0
+已在当前零件创建关联草绘 TEST_LINEAR（CIRCLE），图元编号 0。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_LINEAR CIRCLE 40 20 7
+RESULT=0
+草绘 TEST_LINEAR 已添加图元。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_DIM ai_prt_261029_160450_1 TEST_LINEAR DISTANCE 0:CENTER 1:CENTER 45
+RESULT=0
+草绘 TEST_LINEAR 已设置强尺寸。已对实际提交的草绘读回验证并重生成，未保存。图元编号可通过读取该草绘查看。
+CREO_OP SKETCH_INFO ai_prt_261029_160450_1 TEST_SYMMETRY
+RESULT=0
+草绘 TEST_SYMMETRY（坐标和线性尺寸已换算毫米）：
+图元0 直线：(-10,10) → (-10,30)
+图元1 直线：(10,10) → (10,40)
+图元2 中心线：(0,8.5) → (0,41.5)
+尺寸0：类型1，值20毫米
+尺寸1：类型1，值30毫米
+尺寸2：类型2，值20毫米
+尺寸3：类型8，值10毫米
+约束0：类型2，有效
+约束2：类型2，有效
+约束5：类型2，有效
+约束11：类型14，有效
+
+CREO_OP SKETCH_CONSTRAINT ai_prt_261029_160450_1 TEST_LINE VERTICAL 0
+RESULT=-4
+草绘操作未完成：create and read back sketch constraint，错误码-4。未提交对模型的修改；未保存。
+CREO_OP DATUM_PLANE ai_prt_261029_160450_1 TEST_PLANE PLANE:TOP 10
+RESULT=-5
+基准操作未完成：validate feature request，错误码-5。未创建或已核对移除本次新增特征；未保存。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 TEST_LINE LINE 0 0 0 0
+RESULT=-2
+协议校验拒绝，未调用Creo写接口。
+CREO_OP REFERENCES ai_prt_261029_160450_1 TOP
+RESULT=0
+已核对参照 TOP：几何ID4、类型5、所属特征3。此参照已记录用于下一次操作；模型变化后会失效。
+CREO_OP DATUM_POINT ai_prt_261029_160450_1 STALE_POINT CSYS:PRT_CSYS 2 4 6
+RESULT=0
+已在当前零件创建基准点：STALE_POINT。特征、参照父子关系及重生成检查通过，实体体积保持，未保存。
+CREO_OP REFERENCES ai_prt_261029_160450_1 SELECTED
+RESULT=-8
+
+CREO_OP SKETCH_BEGIN ai_prt_261029_160450_1 DRAFT_SKETCH PLANE:TOP PLANE:RIGHT
+RESULT=0
+已准备草绘 DRAFT_SKETCH，平面PLANE:TOP、方向参照PLANE:RIGHT。尚未创建空特征；收到第一组图元后会原子创建并验证关联草绘。
+CREO_OP SKETCH_ADD ai_prt_261029_160450_1 DRAFT_SKETCH RECT 0 0 20 30
+RESULT=0
+已在当前零件创建关联草绘 DRAFT_SKETCH（RECT），图元编号 0 起连续4条矩形边。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP DATUM_AXIS ai_261029_160453_1 CYLINDER_AXIS CYLINDER SURFACE:78
+RESULT=0
+已在当前零件创建基准轴：CYLINDER_AXIS。特征、参照父子关系及重生成检查通过，实体体积保持，未保存。
+CREO_OP DATUM_PLANE ai_261029_160453_1 SOLID_PLANE PLANE:TOP 12
+RESULT=0
+已在当前零件创建偏移基准面：SOLID_PLANE。特征、参照父子关系及重生成检查通过，实体体积保持，未保存。
+CREO_OP SKETCH_CREATE ai_261029_160453_1 SOLID_SKETCH PLANE:TOP PLANE:RIGHT RECT -10 -8 20 16
+RESULT=0
+已在当前零件创建关联草绘 SOLID_SKETCH（RECT），图元编号 0 起连续4条矩形边。草绘求解、尺寸与参照父子关系检查通过，未保存。
+CREO_OP REFERENCES ai_261029_160453_1 AXIS:CYLINDER_AXIS
+RESULT=0
+已核对参照 AXIS:CYLINDER_AXIS：几何ID90、类型21、所属特征87。此参照已记录用于下一次操作；模型变化后会失效。

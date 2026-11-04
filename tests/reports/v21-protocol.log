@@ -1,0 +1,7 @@
+**********************************************************************
+** Visual Studio 2019 Developer Command Prompt v16.11.58
+** Copyright (c) 2021 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+test_solid_protocol.c
+SOLID PROTOCOL: 12 valid, 15 invalid and mixed-command rejection PASS
