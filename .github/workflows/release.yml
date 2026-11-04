@@ -2,7 +2,7 @@ name: Versioned preview release
 on:
   push:
     branches: [main]
-    paths: [VERSION, 'dist/**', '.github/workflows/release.yml']
+    paths: [VERSION, 'dist/**', 'docs/releases/**', '.github/workflows/release.yml']
   workflow_dispatch:
 permissions:
   contents: write
