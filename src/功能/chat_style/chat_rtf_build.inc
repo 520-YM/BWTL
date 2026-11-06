@@ -2,7 +2,7 @@ static char *chat_rtf_build(const wchar_t *source,int cell_width){
     size_t count=wcslen(source);const wchar_t *line=source;
     ChatRtf r={0};int in_cell=0,body_started=0,pending_blank=0;char format[512];
     r.capacity=count*64+16384;r.text=(char *)calloc(r.capacity,1);if(!r.text)return NULL;
-    chat_rtf_add(&r,"{\\rtf1\\ansi\\ansicpg1252\\deff0\\uc1{\\fonttbl{\\f0 Microsoft YaHei UI;}}"
+    chat_rtf_add(&r,"{\\rtf1\\ansi\\ansicpg1252\\deff0\\uc1{\\fonttbl{\\f0 Microsoft YaHei UI;}{\\f1 Consolas;}}"
         "{\\colortbl;\\red248\\green250\\blue252;\\red232\\green241\\blue255;"
         "\\red232\\green246\\blue240;\\red242\\green236\\blue255;"
         "\\red255\\green246\\blue226;\\red235\\green240\\blue245;"
@@ -19,7 +19,7 @@ static char *chat_rtf_build(const wchar_t *source,int cell_width){
                 "\\f0\\fs20\\cf7\\highlight%d\\b ",role+1,cell_width,role+1);
             chat_rtf_add(&r,format);chat_rtf_text(&r,headings[role],wcslen(headings[role]));
             chat_rtf_add(&r,"\\b0\\par ");in_cell=1;body_started=0;pending_blank=0;
-            if(n>prefix){chat_rtf_text(&r,line+prefix,n-prefix);body_started=1;}
+            if(n>prefix){chat_rtf_markup(&r,line+prefix,n-prefix);body_started=1;}
         }else {
             size_t k=0;while(k<n&&(line[k]==L' '||line[k]==L'\t'))k++;
             if(in_cell){
@@ -27,7 +27,7 @@ static char *chat_rtf_build(const wchar_t *source,int cell_width){
                    beginning/end of a message. Insert breaks before content. */
                 if(k==n){if(body_started)pending_blank=1;}
                 else {if(body_started)chat_rtf_add(&r,pending_blank?"\\par\\par ":"\\par ");
-                    chat_rtf_text(&r,line,n);body_started=1;pending_blank=0;}
+                    chat_rtf_markup(&r,line,n);body_started=1;pending_blank=0;}
             }else {chat_rtf_text(&r,line,n);if(end)chat_rtf_add(&r,"\\par ");}
         }
         if(!end)break;line=end+1;

@@ -49,8 +49,11 @@ static int request_requires_current=0;
 #include "part_prompt.h"
 #include "foundation_prompt.h"
 #include "solid_prompt.h"
+#include "machining_prompt.h"
 static void append(const wchar_t *text);
 static void append_card(const wchar_t *role,const wchar_t *text);
+#include "smart_session.h"
+#include "development_client.h"
 
 #include "功能/assistant/execute_part_command.inc"
 
@@ -70,6 +73,7 @@ static void append_card(const wchar_t *role,const wchar_t *text);
 #include "功能/assistant/show_pending_plan.inc"
 
 
+#include "功能/native_model/model_create_centered_cylinder.inc"
 #include "功能/assistant/execute_model_plan.inc"
 
 
@@ -110,6 +114,7 @@ static HWND native_backend_window;
 #include "功能/assistant/inspect_native_command.inc"
 
 
+#include "功能/assistant/native_workdir_action.inc"
 #include "功能/assistant/native_backend_proc.inc"
 
 
@@ -124,6 +129,8 @@ static HWND native_backend_window;
 
 #include "功能/assistant/native_poll_action.inc"
 
+#include "功能/assistant/native_company_action.inc"
+#include "功能/assistant/native_feature_list_action.inc"
 
 #include "功能/assistant/open_window.inc"
 

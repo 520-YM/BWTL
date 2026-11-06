@@ -8,7 +8,7 @@
   (PushButton Close)
  )
  (Resources
-  (.Label "Codex Native Assistant")
+  (.Label "BWTL")
   (.Resizeable True)
   (Heading.Label "Codex AI / Template modeling / Auto execute")
   (History.Columns 64)

@@ -8,6 +8,9 @@ static int solid_plan_valid(int n,wchar_t a[][PART_TOKEN_MAX]){
         if(!wcscmp(a[5],L"THROUGH"))return !wcscmp(a[4],L"CUT")&&!wcscmp(a[6],L"0")?1:-1;
         return !wcscmp(a[5],L"BLIND")&&part_number(a[6],&v)&&v>=0.01&&v<=1000000?1:-1;
     }
-    if(!wcscmp(a[0],L"SOLID_REVOLVE"))return n==7&&fd_name(a[2])&&fd_name(a[3])&&fd_reference_token(a[4])&&part_number(a[5],&v)&&v>=0.01&&v<=360&&(!wcscmp(a[6],L"POS")||!wcscmp(a[6],L"NEG"))?1:-1;
+    if(!wcscmp(a[0],L"SOLID_REVOLVE")||!wcscmp(a[0],L"SOLID_REVOLVE_CUT"))
+        return n==7&&fd_name(a[2])&&fd_name(a[3])&&fd_reference_token(a[4])&&
+            (wcscmp(a[0],L"SOLID_REVOLVE_CUT")||!wcsncmp(a[4],L"AXIS:",5))&&
+            part_number(a[5],&v)&&v>=0.01&&v<=360&&(!wcscmp(a[6],L"POS")||!wcscmp(a[6],L"NEG"))?1:-1;
     return 0;
 }

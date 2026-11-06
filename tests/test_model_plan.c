@@ -45,6 +45,18 @@ int main(int argc, char **argv) {
     }
     assert(model_plan_update(L"CREO_PLAN BOX -1 80 2 10", &p) == -1 && !p.ready);
     assert(model_plan_update(L"CREO_PLAN CYLINDER 50 50 100 0", &p) == 1 && p.ready && p.cylinder);
+    {
+        wchar_t serialized[256];ModelPlan restored={0};
+        assert(model_centered_request(L"新建原点居中圆柱 150 20.5",&p)==1);
+        assert(p.centered&&p.cylinder&&p.a==150&&p.b==150&&p.height==20.5&&p.hole==0);
+        model_plan_format(&p,serialized);
+        assert(model_plan_parse(serialized,&restored)&&restored.centered&&restored.height==20.5);
+        assert(model_centered_request(L"新建原点居中圆柱有什么功能？",&p)==0);
+        assert(model_centered_request(L"新建原点居中圆柱 0.01 20",&p)==-1);
+        assert(model_centered_request(L"新建原点居中圆柱 150 20 5",&p)==-1);
+        assert(model_centered_request(L"新建原点居中圆柱 150 20\nCREO_PLAN EMPTY_SOLID",&p)==-1);
+        assert(!model_plan_parse(L"CREO_PLAN CENTERED_CYLINDER 100 0",&p));
+    }
     assert(model_plan_parse(L"CREO_PLAN EMPTY_SHEETMETAL",&p)&&p.empty_kind==2&&p.ready);
     assert(model_plan_parse(L"CREO_PLAN EMPTY_SOLID",&p)&&p.empty_kind==1);
     assert(model_plan_parse(L"CREO_PLAN EMPTY_ASSEMBLY",&p)&&p.empty_kind==3);

@@ -19,7 +19,7 @@
 4 RbnDBInheritContainer 
 5 mName BWTL_Assistant_Group
 5 mType 12
-5 mLabel 霸威天龙
+5 mLabel BWTL
 5 mAncestor 
 5 mKeyTip 
 5 mCustom 1
@@ -40,7 +40,7 @@
 4 RbnDBInheritContainer 
 5 mName BWTL_Assistant_Page@main_adb_cat
 5 mType 11
-5 mLabel 霸威天龙
+5 mLabel BWTL
 5 mAncestor 
 5 mKeyTip 
 5 mCustom 1
@@ -59,7 +59,7 @@
 4 RbnDBInheritContainer 
 5 mName BWTL_Assistant_Page@prt_main_adb_cat
 5 mType 11
-5 mLabel 霸威天龙
+5 mLabel BWTL
 5 mAncestor 
 5 mKeyTip 
 5 mCustom 1
@@ -78,7 +78,7 @@
 4 RbnDBInheritContainer 
 5 mName BWTL_Assistant_Page@asm_main_adb_cat
 5 mType 11
-5 mLabel 霸威天龙
+5 mLabel BWTL
 5 mAncestor 
 5 mKeyTip 
 5 mCustom 1

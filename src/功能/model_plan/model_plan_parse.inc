@@ -21,15 +21,19 @@ static int model_plan_parse(const wchar_t *answer, ModelPlan *p) {
             }
             if (wcscmp(token, L"BOX") == 0) candidate.cylinder = 0;
             else if (wcscmp(token, L"CYLINDER") == 0) candidate.cylinder = 1;
+            else if (wcscmp(token, L"CENTERED_CYLINDER") == 0) candidate.centered = candidate.cylinder = 1;
             else return 0;
-            for (i = 0; i < 4; ++i) {
+            for (i = 0; i < (candidate.centered ? 2 : 4); ++i) {
                 token = wcstok_s(NULL, L" \t\r", &state);
                 if (!token) return 0;
                 values[i] = wcstod(token, &number_end);
                 if (number_end == token || *number_end) return 0;
             }
             if (wcstok_s(NULL, L" \t\r", &state)) return 0;
-            candidate.a = values[0]; candidate.b = values[1]; candidate.height = values[2]; candidate.hole = values[3];
+            candidate.a = values[0];
+            candidate.b = candidate.centered ? values[0] : values[1];
+            candidate.height = candidate.centered ? values[1] : values[2];
+            candidate.hole = candidate.centered ? 0 : values[3];
             if (!model_plan_valid(&candidate)) return 0;
         }
 line_complete:

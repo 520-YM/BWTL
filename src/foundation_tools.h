@@ -133,6 +133,7 @@ typedef struct {ProMdl model;PartText *out;int count;} FdRefList;
 #include "功能/foundation_tools/foundation_references.inc"
 
 #include "solid_tools.h"
+#include "machining_tools.h"
 
 #include "功能/foundation_tools/foundation_execute.inc"
 

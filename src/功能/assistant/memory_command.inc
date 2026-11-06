@@ -2,8 +2,8 @@ static int memory_command(const wchar_t *value) {
     wchar_t candidate[12000];
     const wchar_t *entry = NULL;
     int forget = 0;
-    if (wcscmp(value, L"查看记忆") == 0) { append(L"已保存的长期记忆："); append(memory[0] ? memory : L"暂无。输入“记住：内容”保存。"); return 1; }
-    if (wcscmp(value, L"查看历史") == 0) { append(L"完整聊天保存在 settings.ini 指定的数据目录（默认插件目录 data）中的 chat-history.md；下方显示最近对话："); append(conversation[0] ? conversation : L"暂无。"); return 1; }
+    if (wcscmp(value, L"查看记忆") == 0) { append(memory[0] ? memory : L"暂无长期记忆。输入“记住：内容”保存。"); return 1; }
+    if (wcscmp(value, L"查看历史") == 0) { append(conversation[0] ? conversation : L"暂无最近对话。"); return 1; }
     if (wcscmp(value, L"新对话") == 0) {
         if (ai_process) { append(L"请等待 AI 回答完成，再开始新对话。"); return 1; }
         if (!store_ready || !store_write(L"recent-context.txt", L"")) { append(L"新对话创建失败，旧上下文已保留。"); return 1; }

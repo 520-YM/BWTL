@@ -4,7 +4,7 @@
 #include <wctype.h>
 #include <stdlib.h>
 #include <math.h>
-typedef struct { int cylinder; double a, b, height, hole; int ready; int empty_kind; } ModelPlan;
+typedef struct { int cylinder; double a, b, height, hole; int ready; int empty_kind; int centered; } ModelPlan;
 /* Host routing guard: a current-model request must not silently become a
    new file merely because an AI returned the older CREO_PLAN protocol. */
 
@@ -19,6 +19,7 @@ typedef struct { int cylinder; double a, b, height, hole; int ready; int empty_k
 /* Accept one exact whole line, never eval generated code or commands. */
 
 #include "功能/model_plan/model_plan_parse.inc"
+#include "功能/model_plan/model_centered_request.inc"
 
 
 #include "功能/model_plan/model_plan_volume.inc"

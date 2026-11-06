@@ -1162,5 +1162,139 @@
     "file": "src/功能/foundation_tools/shape_arc.inc",
     "original": "foundation_tools/fd_shape_append.inc",
     "kind": "operation-block"
+  },
+  {
+    "symbol": "runtime_isolation_verify",
+    "file": "src/功能/runtime_paths/runtime_isolation_verify.inc",
+    "original": "src/runtime_paths.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "runtime_isolation_begin",
+    "file": "src/功能/runtime_paths/runtime_isolation_begin.inc",
+    "original": "src/runtime_paths.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "runtime_isolation_end",
+    "file": "src/功能/runtime_paths/runtime_isolation_end.inc",
+    "original": "src/runtime_paths.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_edge",
+    "file": "src/功能/machining_tools/mc_edge.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_execute",
+    "file": "src/功能/machining_tools/mc_execute.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_hole",
+    "file": "src/功能/machining_tools/mc_hole.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_reference_item",
+    "file": "src/功能/machining_tools/mc_references.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_reference_feature",
+    "file": "src/功能/machining_tools/mc_references.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_references",
+    "file": "src/功能/machining_tools/mc_references.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_tree_value",
+    "file": "src/功能/machining_tools/mc_verify.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_edge_size",
+    "file": "src/功能/machining_tools/mc_verify.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_hole_wall",
+    "file": "src/功能/machining_tools/mc_verify.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_verify",
+    "file": "src/功能/machining_tools/mc_verify.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "mc_cleanup",
+    "file": "src/功能/machining_tools/mc_verify.inc",
+    "original": "src/machining_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smart_policy",
+    "kind": "module",
+    "file": "src/smart_policy.h"
+  },
+  {
+    "symbol": "smart_session",
+    "kind": "module",
+    "file": "src/smart_session.h"
+  },
+  {
+    "symbol": "native_attachments",
+    "kind": "module",
+    "file": "src/native_attachments.h"
+  },
+  {
+    "symbol": "development_client",
+    "kind": "module",
+    "file": "src/development_client.h"
+  },
+  {
+    "symbol": "Start-BWTLDevelopment",
+    "kind": "development-worker",
+    "file": "scripts/Start-BWTLDevelopment.ps1"
+  },
+  {
+    "symbol": "chat_rtf_markup",
+    "kind": "function",
+    "file": "src/功能/chat_style/chat_rtf_markup.inc"
+  },
+  {
+    "symbol": "model_centered_request",
+    "kind": "function",
+    "file": "src/功能/model_plan/model_centered_request.inc"
+  },
+  {
+    "symbol": "model_create_centered_cylinder",
+    "kind": "function",
+    "file": "src/功能/native_model/model_create_centered_cylinder.inc"
+  },
+  {
+    "symbol": "native_workdir_menu",
+    "kind": "function",
+    "file": "src/功能/native_chat_ui/native_workdir_menu.inc"
+  },
+  {
+    "symbol": "working_directory_command",
+    "kind": "function",
+    "file": "src/功能/assistant/native_workdir_action.inc"
   }
 ]

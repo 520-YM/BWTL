@@ -1,5 +1,6 @@
 static int foundation_plan_valid(int n,wchar_t args[][PART_TOKEN_MAX]){
     const wchar_t *verb=args[0];double a[6];int i;
+    {int result=machining_plan_valid(n,args);if(result)return result;}
     {int result=solid_plan_valid(n,args);if(result)return result;}
     if(!wcscmp(verb,L"REFERENCES"))return n==2||(n==3&&fd_reference_token(args[2]))?1:-1;
     if(wcscmp(verb,L"DATUM_PLANE")&&wcscmp(verb,L"DATUM_AXIS")&&wcscmp(verb,L"DATUM_POINT")&&wcscmp(verb,L"DATUM_CSYS")&&wcscmp(verb,L"DATUM_CURVE")&&wcscmp(verb,L"SKETCH_BEGIN")&&wcscmp(verb,L"SKETCH_CREATE")&&wcscmp(verb,L"SKETCH_ADD")&&wcscmp(verb,L"SKETCH_DIM")&&wcscmp(verb,L"SKETCH_CONSTRAINT")&&wcscmp(verb,L"SKETCH_INFO"))return 0;

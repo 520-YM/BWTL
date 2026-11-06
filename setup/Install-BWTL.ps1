@@ -1,5 +1,5 @@
 ﻿[CmdletBinding()]
-param([string]$PackageRoot,[string]$InstallRoot,[string]$ConfigPath,[string]$CodexPath,[switch]$Silent,[switch]$PlanOnly,[switch]$Uninstall,[switch]$Rollback,[switch]$NoShortcuts,[switch]$DeleteProgramFiles,[switch]$DeleteData,[switch]$Diagnose,[switch]$DisableLegacyBridge)
+param([string]$PackageRoot,[string]$InstallRoot,[string]$ConfigPath,[string]$CodexPath,[switch]$Silent,[switch]$PlanOnly,[switch]$Uninstall,[switch]$Rollback,[switch]$NoShortcuts,[switch]$DeleteProgramFiles,[switch]$DeleteData,[switch]$Diagnose,[switch]$PreserveData,[string]$CreoExecutable=(Join-Path $env:ProgramFiles 'PTC\Creo 10.0.0.0\Parametric\bin\parametric.exe'))
 $ErrorActionPreference='Stop'
 if(-not $PackageRoot){$PackageRoot=Split-Path -Parent $MyInvocation.MyCommand.Path}
 $script:utf8=[Text.UTF8Encoding]::new($false)
@@ -50,6 +50,12 @@ function Verify-Payload {
 }
 function Add-Seed($Data,$Seed,$Version){
     New-Item -ItemType Directory -Force -Path $Data|Out-Null
+    if(Test-Path -LiteralPath (Join-Path $InstallRoot 'instance.json')){
+        Get-ChildItem -LiteralPath $Seed -Filter '*.md' -File | Where-Object {$_.Name -notin @('chat-history.md','imported-owner-history.md')} | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $Data $_.Name) -Force
+        }
+        return
+    }
     $history=Join-Path $Seed 'chat-history.md';$dest=Join-Path $Data 'chat-history.md';$previous=Join-Path $Data 'imported-owner-history.md'
     if(Test-Path -LiteralPath $history){
         $source=[IO.File]::ReadAllText($history);$prior=if(Test-Path -LiteralPath $previous){[IO.File]::ReadAllText($previous)}else{''}
@@ -70,19 +76,44 @@ function Set-Registration($VersionDirectory){
     $registration=Join-Path $InstallRoot 'protk.dat';$native=Native-Path $VersionDirectory;$dll=Join-Path $native 'bin\BWTL.dll';$resources=Join-Path $native 'resources'
     [IO.File]::WriteAllText($registration,"NAME BWTL`r`nSTARTUP dll`r`nEXEC_FILE $dll`r`nTEXT_DIR $resources`r`nALLOW_STOP TRUE`r`nDELAY_START FALSE`r`nEND`r`n",$script:utf8)
 }
+function Get-Isolation($Root){
+    $path=Join-Path $Root 'isolation.json'
+    if(Test-Path -LiteralPath $path){return Get-Content -LiteralPath $path -Raw -Encoding UTF8|ConvertFrom-Json}
+    if(Test-Path -LiteralPath (Join-Path $Root 'active.json')){throw '此安装使用旧的共享配置。请先按发行说明迁移到 BWTL 专用配置。'}
+    $profile=$Root.TrimEnd('\')+'-Profile'
+    [pscustomobject]@{
+        ProfileRoot=$profile;Home=(Join-Path $profile 'home');Alternate=(Join-Path $profile 'alternate')
+        Workspace=(Join-Path $profile 'workspace');Cache=(Join-Path $profile 'cache')
+        Temp=(Join-Path $profile 'temp');Logs=(Join-Path $profile 'logs')
+        Config=(Join-Path $profile 'home\config.pro');CreoExecutable=[IO.Path]::GetFullPath($CreoExecutable)
+    }
+}
 function Invoke-Install {
-    $InstallRoot=[IO.Path]::GetFullPath($InstallRoot);$ConfigPath=[IO.Path]::GetFullPath($ConfigPath)
+    $InstallRoot=[IO.Path]::GetFullPath($InstallRoot).TrimEnd('\')
+    $isolationPath=Join-Path $InstallRoot 'isolation.json'
+    $newProfile=-not(Test-Path -LiteralPath $isolationPath)
+    $isolation=Get-Isolation $InstallRoot
+    $ConfigPath=if($ConfigPath){[IO.Path]::GetFullPath($ConfigPath)}else{$isolation.Config}
+    if($ConfigPath -ine $isolation.Config){throw '本版本只允许更新BWTL专用配置，不修改旧Codex–Creo注册。'}
     [void](Assert-ManagedTree $InstallRoot)
     if($InstallRoot.TrimEnd('\') -ieq $PackageRoot.TrimEnd('\') -or $InstallRoot.StartsWith($PackageRoot.TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase)){throw '安装目录不能位于安装包临时解压目录内。'}
     if($ConfigPath.StartsWith($InstallRoot.TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Creo配置文件不能放在插件安装目录内。'}
     Assert-Path $InstallRoot;Assert-Path $ConfigPath;if($CodexPath){Assert-Path $CodexPath;if(-not(Test-Path -LiteralPath $CodexPath -PathType Leaf) -or [IO.Path]::GetFileName($CodexPath) -ine 'codex.exe'){throw '请选择有效的 codex.exe。'}}
-    if([IO.Path]::GetFileName($ConfigPath) -ine 'config.pro' -or -not(Test-Path -LiteralPath (Split-Path -Parent $ConfigPath))){throw '请选择 Creo 启动时实际读取的 config.pro。'}
+    if([IO.Path]::GetFileName($ConfigPath) -ine 'config.pro' -or (-not $newProfile -and -not(Test-Path -LiteralPath (Split-Path -Parent $ConfigPath)))){throw 'BWTL 专用 config.pro 路径无效。'}
+    if($newProfile -and (Test-Path -LiteralPath $isolation.ProfileRoot)){throw 'BWTL 专用配置目录已存在。请选择另一安装目录或恢复原 isolation.json。'}
+    if(-not(Test-Path -LiteralPath $isolation.CreoExecutable -PathType Leaf)){throw '未找到 Creo Parametric，请填写 parametric.exe 的完整路径。'}
     if(-not [Environment]::Is64BitOperatingSystem){throw '本安装包需要64位Windows。'}
     Verify-Payload
     foreach($required in @('resources/ribbon/toolkitribbonui.rbn','resources/text/ribbon/toolkitribbonui.rbn','bin/BWTL.dll')){if(-not(Test-Path -LiteralPath (Join-Path $PackageRoot $required))){throw ('安装包缺少必要组件：'+$required)}}
     $version=([IO.File]::ReadAllText((Join-Path $PackageRoot 'VERSION'))).Trim();if($version -notmatch '^\d+\.\d+\.\d+(?:-[\w.]+)?$'){throw '版本号无效。'}
     $versionDirectory=Join-Path $InstallRoot ('versions\'+$version);$data=Join-Path $InstallRoot 'data';$activePath=Join-Path $InstallRoot 'active.json'
     if($PlanOnly){return [pscustomobject]@{Version=$version;InstallRoot=$InstallRoot;Config=$ConfigPath;Data=$data;VersionDirectory=$versionDirectory}}
+    if($newProfile){
+        New-Item -ItemType Directory -Force -Path $InstallRoot,$isolation.Home,$isolation.Alternate,$isolation.Workspace,$isolation.Cache,$isolation.Temp,$isolation.Logs|Out-Null
+        $logs=Native-Path $isolation.Logs
+        [IO.File]::WriteAllText($ConfigPath,"trail_dir $logs`r`n",$script:utf8)
+        Write-Json $isolationPath $isolation
+    }
     $stamp=Get-Date -Format 'yyyyMMdd-HHmmss-ffff';$backup=Join-Path $InstallRoot ('backups\'+$stamp)
     New-Item -ItemType Directory -Force -Path $backup|Out-Null
     $prior=$null;if(Test-Path -LiteralPath $activePath){$prior=Get-Content -LiteralPath $activePath -Raw -Encoding UTF8|ConvertFrom-Json;Copy-Item -LiteralPath $activePath -Destination (Join-Path $backup 'active.json')}
@@ -95,8 +126,8 @@ function Invoke-Install {
     try{
         if(Test-Path -LiteralPath $versionDirectory){
             if((Get-FileHash -LiteralPath (Join-Path $versionDirectory 'payload-manifest.json')).Hash -ne (Get-FileHash -LiteralPath (Join-Path $PackageRoot 'payload-manifest.json')).Hash){throw '相同版本号已有不同内容，拒绝覆盖；请使用新版本号。'}
-        }else{New-Item -ItemType Directory -Force -Path $versionDirectory|Out-Null;$createdVersion=$true;foreach($name in @('bin','resources','src','docs','tests','setup','compatibility','archive','seed','VERSION','CHANGELOG.md','README.md','DEPLOYMENT.json','payload-manifest.json','build.cmd')){$path=Join-Path $PackageRoot $name;if(Test-Path -LiteralPath $path){Copy-Item -LiteralPath $path -Destination (Join-Path $versionDirectory $name) -Recurse}}}
-        Add-Seed $data (Join-Path $PackageRoot 'seed') $version
+        }else{New-Item -ItemType Directory -Force -Path $versionDirectory|Out-Null;$createdVersion=$true;foreach($name in @('bin','resources','src','docs','tests','setup','scripts','compatibility','archive','seed','VERSION','CHANGELOG.md','README.md','DEPLOYMENT.json','payload-manifest.json','build.cmd','AGENTS.md')){$path=Join-Path $PackageRoot $name;if(Test-Path -LiteralPath $path){Copy-Item -LiteralPath $path -Destination (Join-Path $versionDirectory $name) -Recurse}}}
+        if(-not $PreserveData -or -not $prior){Add-Seed $data (Join-Path $PackageRoot 'seed') $version}
         if(-not $CodexPath -and $prior -and $prior.CodexPath){$CodexPath=$prior.CodexPath}
         [IO.File]::WriteAllText((Join-Path $versionDirectory 'settings.ini'),"[Runtime]`r`nCodexPath=$CodexPath`r`nDataDirectory=$data`r`n",[Text.Encoding]::Unicode)
         Set-Registration $versionDirectory
@@ -105,14 +136,19 @@ function Invoke-Install {
             $legacy='(?im)^([ \t]*protkdat[ \t]+[^\r\n]*creo-native-window[\\/]protk\.dat[^\r\n]*)\r?$'
             [regex]::Replace($old.Text,$legacy,'! BWTL migrated legacy registration: $1').TrimEnd()+"`r`n"+$block
         }
-        if($DisableLegacyBridge){$new=[regex]::Replace($new,'(?im)^([ \t]*protkdat[ \t]+[^\r\n]*[\\/]CreoSafeResident\.dat[^\r\n]*)','! BWTL disabled legacy bridge: $1')}
         [IO.File]::WriteAllText($ConfigPath,$new,$old.Encoding)
         $state=[ordered]@{Version=$version;Directory=$versionDirectory;Config=$ConfigPath;CodexPath=$CodexPath;Data=$data;PreviousVersion=if($prior -and $prior.Version -ne $version){$prior.Version}elseif($prior){$prior.PreviousVersion}else{''};PreviousDirectory=if($prior -and $prior.Version -ne $version){$prior.Directory}elseif($prior){$prior.PreviousDirectory}else{''};Installed=(Get-Date -Format o);Backup=$backup}
         Write-Json $activePath $state
         foreach($file in @('Install-BWTL.ps1','Install-Support.ps1','Manage.cmd','BWTL-Manage.exe','BWTL-Uninstall.exe')){Copy-Item -LiteralPath (Join-Path $PackageRoot ('setup\'+$file)) -Destination (Join-Path $InstallRoot $file) -Force}
+        foreach($file in @('Start-BWTL.ps1','Enable-BWTLIsolation.ps1')){Copy-Item -LiteralPath (Join-Path $PackageRoot ('scripts\'+$file)) -Destination (Join-Path $InstallRoot $file) -Force}
         if(-not $NoShortcuts){
             $menu=Join-Path ([Environment]::GetFolderPath('Programs')) '霸威天龙';New-Item -ItemType Directory -Force -Path $menu|Out-Null;$shell=New-Object -ComObject WScript.Shell
             foreach($item in @(@('安装管理与升级',''),@('卸载霸威天龙','-Uninstall'),@('回退上一版本','-Rollback'),@('导出安装诊断','-Diagnose'))){$shortcut=$shell.CreateShortcut((Join-Path $menu ($item[0]+'.lnk')));$shortcut.TargetPath=Join-Path $InstallRoot 'BWTL-Manage.exe';$shortcut.Arguments=$item[1];$shortcut.WindowStyle=7;$shortcut.Save()}
+            $launcher=Join-Path $InstallRoot 'Start-BWTL.ps1'
+            $shortcut=$shell.CreateShortcut((Join-Path $menu 'Creo（BWTL）.lnk'))
+            $shortcut.TargetPath=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+            $shortcut.Arguments='-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$launcher+'" -InstallRoot "'+$InstallRoot+'" -NextAvailable'
+            $shortcut.IconLocation=$isolation.CreoExecutable+',0';$shortcut.Save()
         }
         return $state
     }catch{
@@ -141,8 +177,8 @@ function Remove-OwnedShortcuts {
     if($NoShortcuts){return}
     $menu=Join-Path ([Environment]::GetFolderPath('Programs')) '霸威天龙';if(-not(Test-Path -LiteralPath $menu)){return}
     $shell=New-Object -ComObject WScript.Shell
-    foreach($name in @('安装管理与升级','卸载（保留聊天）','卸载霸威天龙','回退上一版本','导出安装诊断')){
-        $path=Join-Path $menu ($name+'.lnk');if(Test-Path -LiteralPath $path){$link=$shell.CreateShortcut($path);if($link.TargetPath.StartsWith($InstallRoot.TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase) -or $link.Arguments.Contains('"'+(Join-Path $InstallRoot 'Install-BWTL.ps1')+'"')){Remove-Item -LiteralPath $path -Force}}
+    foreach($name in @('安装管理与升级','卸载（保留聊天）','卸载霸威天龙','回退上一版本','导出安装诊断','Creo（BWTL）')){
+        $path=Join-Path $menu ($name+'.lnk');if(Test-Path -LiteralPath $path){$link=$shell.CreateShortcut($path);if($link.TargetPath.StartsWith($InstallRoot.TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase) -or $link.Arguments.Contains('"'+(Join-Path $InstallRoot 'Install-BWTL.ps1')+'"') -or $link.Arguments.Contains('"'+(Join-Path $InstallRoot 'Start-BWTL.ps1')+'"')){Remove-Item -LiteralPath $path -Force}}
     }
     if(@(Get-ChildItem -LiteralPath $menu -Force).Count -eq 0){Remove-Item -LiteralPath $menu}
 }
@@ -198,24 +234,22 @@ if($Uninstall -or $Rollback){
     if($Uninstall){$dialog=New-UninstallDialog;try{if($dialog.ShowDialog() -ne 'OK'){return};$DeleteProgramFiles=$dialog.Controls['DeleteProgramFiles'].Checked;$DeleteData=$dialog.Controls['DeleteData'].Checked}finally{$dialog.Dispose()}}
     try{$result=Invoke-Manage;[Windows.Forms.MessageBox]::Show($result,'霸威天龙')|Out-Null}catch{[Windows.Forms.MessageBox]::Show(('卸载/回退未完成：'+$_.Exception.Message),'霸威天龙')|Out-Null};return
 }
-if($Silent -or $PlanOnly){if(-not $ConfigPath){$candidates=@(Get-Candidates);if($candidates.Count -eq 1){$ConfigPath=$candidates[0]}else{throw '检测到多个或没有配置文件，请传入 -ConfigPath。'}};Invoke-Install;return}
+if($Silent -or $PlanOnly){Invoke-Install;return}
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [Windows.Forms.Application]::EnableVisualStyles()
 $form=New-Object Windows.Forms.Form;$form.Text='霸威天龙 · 安装与升级';$form.Size=New-Object Drawing.Size(690,535);$form.StartPosition='CenterScreen';$form.Font=New-Object Drawing.Font('Microsoft YaHei UI',10);$form.FormBorderStyle='FixedDialog';$form.MaximizeBox=$false
 function Label($Text,$X,$Y,$W=600){$l=New-Object Windows.Forms.Label;$l.Text=$Text;$l.SetBounds($X,$Y,$W,30);$form.Controls.Add($l)}
 Label '霸威天龙：原生Creo助手 · 完整工具与聊天记忆' 20 18
-Label '选择 Creo 实际读取的 config.pro（自动检测；有多个时请确认）' 20 62
-$configBox=New-Object Windows.Forms.ComboBox;$configBox.SetBounds(20,95,535,30);foreach($candidate in @(Get-Candidates)){$configBox.Items.Add($candidate)|Out-Null};if($ConfigPath){$configBox.Text=$ConfigPath}elseif($configBox.Items.Count){$configBox.SelectedIndex=0};$form.Controls.Add($configBox)
-$browse=New-Object Windows.Forms.Button;$browse.Text='浏览';$browse.SetBounds(565,94,85,31);$browse.Add_Click({$d=New-Object Windows.Forms.OpenFileDialog;$d.Filter='Creo配置|config.pro|所有文件|*.*';if($d.ShowDialog() -eq 'OK'){$configBox.Text=$d.FileName}});$form.Controls.Add($browse)
+Label 'Creo 启动程序 parametric.exe（首次安装时使用）' 20 62
+$creoBox=New-Object Windows.Forms.TextBox;$creoBox.SetBounds(20,95,630,30);$creoBox.Text=$CreoExecutable;$form.Controls.Add($creoBox)
 Label '安装目录（按用户安装，默认无需管理员）' 20 137
 $rootBox=New-Object Windows.Forms.TextBox;$rootBox.Text=$InstallRoot;$rootBox.SetBounds(20,168,630,30);$form.Controls.Add($rootBox)
 Label 'Codex引擎路径（可留空自动检测；AI使用者需在本机登录）' 20 207
 $codexBox=New-Object Windows.Forms.TextBox;$codexBox.Text=$CodexPath;$codexBox.SetBounds(20,238,630,30);$form.Controls.Add($codexBox)
-Label '默认导入完整历史与记忆；升级保留后续聊天。使用新电脑的Creo模板。' 20 281
+Label '新安装创建专用配置；升级保留已有聊天和记忆。' 20 281
 $status=New-Object Windows.Forms.Label;$status.SetBounds(20,435,630,50);$form.Controls.Add($status)
 $install=New-Object Windows.Forms.Button;$install.Text='一键安装 / 升级';$install.SetBounds(490,375,160,40);$form.Controls.Add($install)
-$legacyBox=New-Object Windows.Forms.CheckBox;$legacyBox.Text='停用所选配置中的旧 CreoSafeResident 桥接（可选，先备份）';$legacyBox.SetBounds(20,317,630,30);$legacyBox.Checked=$false;$form.Controls.Add($legacyBox)
 $uninstallButton=New-Object Windows.Forms.Button;$uninstallButton.Text='卸载 / 数据清理';$uninstallButton.SetBounds(20,375,150,40);$form.Controls.Add($uninstallButton)
 $uninstallButton.Add_Click({try{Start-BwtlManagement '-Uninstall' $rootBox.Text}catch{[Windows.Forms.MessageBox]::Show($_.Exception.Message,'霸威天龙')|Out-Null}})
 $diagnoseButton=New-Object Windows.Forms.Button;$diagnoseButton.Text='导出诊断';$diagnoseButton.SetBounds(180,375,130,40);$form.Controls.Add($diagnoseButton)
@@ -223,6 +257,6 @@ $diagnoseButton.Add_Click({try{$report=Export-BwtlDiagnostics $rootBox.Text;[Win
 $rollbackButton=New-Object Windows.Forms.Button;$rollbackButton.Text='回退上一版';$rollbackButton.SetBounds(320,375,140,40);$form.Controls.Add($rollbackButton)
 $rollbackButton.Add_Click({try{Start-BwtlManagement '-Rollback' $rootBox.Text}catch{[Windows.Forms.MessageBox]::Show($_.Exception.Message,'霸威天龙')|Out-Null}})
 $install.Add_Click({
-    $install.Enabled=$false;try{$script:InstallRoot=$rootBox.Text;$script:ConfigPath=$configBox.Text;$script:CodexPath=$codexBox.Text;$script:DisableLegacyBridge=$legacyBox.Checked;$status.Text='正在校验并安装…';$form.Refresh();$result=Invoke-Install;$status.Text='安装完成：'+$result.Version;[Windows.Forms.MessageBox]::Show("安装文件和注册已写入。请保存工作后重启Creo，查找顶部霸威天龙选项卡；备用入口依次按 c、d、x。若仍无入口，请点击导出诊断。`n完整历史、记忆和功能索引已导入。AI需本机Codex登录；当前Creo窗口未被操作。",'霸威天龙')|Out-Null}catch{$status.Text='安装未完成';[Windows.Forms.MessageBox]::Show($_.Exception.Message,'霸威天龙')|Out-Null}finally{$install.Enabled=$true}
+    $install.Enabled=$false;try{$script:InstallRoot=$rootBox.Text;$script:CreoExecutable=$creoBox.Text;$script:CodexPath=$codexBox.Text;$status.Text='正在校验并安装…';$form.Refresh();$result=Invoke-Install;$status.Text='安装完成：'+$result.Version;[Windows.Forms.MessageBox]::Show("从开始菜单打开「Creo（BWTL）」，然后点击 Creo 顶部的 BWTL。AI 使用本机已登录的 Codex。",'BWTL')|Out-Null}catch{$status.Text='安装未完成';[Windows.Forms.MessageBox]::Show($_.Exception.Message,'BWTL')|Out-Null}finally{$install.Enabled=$true}
 })
 [void]$form.ShowDialog()

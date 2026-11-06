@@ -1,5 +1,5 @@
 CodexNativeLabel
-Codex Native
+BWTL
 #
 CodexNativeHelp
 Open the native Creo assistant window

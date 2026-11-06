@@ -11,6 +11,20 @@ static void trace(const char *label,int e){FILE *f=fopen("v21-native-result.log"
 #include "../src/native_model.h"
 #include "../src/part_tools.h"
 static int failures=0;
+static wchar_t template_csys_ref[PRO_NAME_SIZE+8];
+typedef struct {ProMdl model;ProName name;int count;} TestCsys;
+static ProError test_template_csys_visit(ProCsys csys,ProError status,ProAppData data){
+    TestCsys *found=(TestCsys *)data;ProGeomitem item;ProError error;
+    if(status)return status;
+    if((error=ProCsysToGeomitem((ProSolid)found->model,csys,&item))||(error=ProModelitemNameGet(&item,found->name)))return error;
+    found->count++;return 0;
+}
+static ProError read_test_template_csys(ProMdl model){
+    TestCsys found={0};ProError error;found.model=model;
+    error=ProSolidCsysVisit((ProSolid)model,test_template_csys_visit,NULL,&found);
+    if(error)return error;if(found.count!=1||!found.name[0])return PRO_TK_BAD_CONTEXT;
+    swprintf_s(template_csys_ref,PRO_NAME_SIZE+8,L"CSYS:%ls",found.name);return 0;
+}
 static ProError prepare_weak_radius(ProMdl model,const wchar_t *name,int entity){
     FdSketch s={0};ProError e=fd_sketch_open(model,name,&s,0);int *all=NULL,n=0,i,found=-1;ProErrorlist errors={0};
     if(e)goto done;if((e=ProSecdimIdsGet(s.section,&all,&n)))goto done;
@@ -26,6 +40,8 @@ done:if(all)ProArrayFree((ProArray *)&all);fd_sketch_free(&s);trace("prepare pri
 }
 static ProError run(const wchar_t *protocol,ProMdl model){
     PartCommand cmd={0};wchar_t message[PART_TEXT_MAX]=L"";FILE *f;ProError e;
+    wchar_t resolved[1024];const wchar_t *token=wcsstr(protocol,L"CSYS:PRT_CSYS");
+    if(token){swprintf_s(resolved,1024,L"%.*ls%ls%ls",(int)(token-protocol),protocol,template_csys_ref,token+wcslen(L"CSYS:PRT_CSYS"));protocol=resolved;}
     if(part_command_parse(protocol,&cmd)!=1){e=PRO_TK_BAD_INPUTS;wcscpy_s(message,PART_TEXT_MAX,L"协议校验拒绝，未调用Creo写接口。");}
     else e=foundation_execute(&cmd,model,message,PART_TEXT_MAX);
     f=_wfopen(L"v21-native-cases.log",L"a, ccs=UTF-8");if(f){fwprintf(f,L"%ls\nRESULT=%d\n%ls\n",protocol,e,message);fclose(f);}
@@ -40,7 +56,7 @@ static void reject(const wchar_t *protocol,ProMdl model){
 }
 static void verify_coordinates(ProMdl model){
     FdRef source={0},point={0},csys={0},curve={0};ProCsys frame,created;ProGeomitemdata *a=NULL,*b=NULL;ProVector p,d1,d2;ProPoint pt;ProCurve crv;int i;ProError e=0;
-    if((e=fd_ref_resolve(model,L"CSYS:PRT_CSYS",PRO_CSYS,&source))||(e=fd_ref_resolve(model,L"POINT:TEST_POINT",PRO_POINT,&point))||(e=fd_ref_resolve(model,L"CSYS:TEST_CSYS",PRO_CSYS,&csys))||(e=fd_ref_resolve(model,L"CURVE:TEST_CURVE",PRO_CURVE,&curve)))goto done;
+    if((e=fd_ref_resolve(model,template_csys_ref,PRO_CSYS,&source))||(e=fd_ref_resolve(model,L"POINT:TEST_POINT",PRO_POINT,&point))||(e=fd_ref_resolve(model,L"CSYS:TEST_CSYS",PRO_CSYS,&csys))||(e=fd_ref_resolve(model,L"CURVE:TEST_CURVE",PRO_CURVE,&curve)))goto done;
     if((e=ProGeomitemToCsys(&source.item,&frame))||(e=ProCsysDataGet(frame,&a))||(e=ProGeomitemToPoint(&point.item,&pt))||(e=ProPointCoordGet(pt,p)))goto done;
     for(i=0;i<3;i++){double expected=a->data.p_csys_data->origin[i]+10*a->data.p_csys_data->x_vector[i]+20*a->data.p_csys_data->y_vector[i]+30*a->data.p_csys_data->z_vector[i];if(!part_close(p[i],expected)){e=PRO_TK_GENERAL_ERROR;goto done;}}
     trace("point XYZ matches actual source coordinate system",0);
@@ -93,6 +109,7 @@ __declspec(dllexport) int user_initialize(int argc,char **argv,char *version,cha
     trace("FOUNDATION_SELFTEST_STARTED",0);model_background_mode=1;
     e=model_create_empty(1,name,&stage);trace(stage,e);if(e)goto done;
     e=ProMdlnameInit(name,PRO_MDL_PART,&model);trace("resolve test model",e);if(e)goto done;
+    e=read_test_template_csys(model);trace("read actual template coordinate system",e);if(e)goto done;
 #define CASE(tail) do{swprintf_s(cmd,1024,L"CREO_OP %ls %ls %ls",tail[0],name,tail[1]);run(cmd,model);}while(0)
     {char focus[16];if(GetEnvironmentVariableA("BWTL_SOLID_FOCUS",focus,16)&&!strcmp(focus,"move")){
         {const wchar_t *t[]={L"SKETCH_CREATE",L"MOVE_SK PLANE:TOP PLANE:RIGHT CIRCLE 10 20 2"};CASE(t);}
@@ -209,6 +226,34 @@ __declspec(dllexport) int user_initialize(int argc,char **argv,char *version,cha
     {const wchar_t *t[]={L"SKETCH_CREATE",L"REV_SK PLANE:TOP PLANE:RIGHT RECT 10 0 10 30"};CASE(t);}
     {const wchar_t *t[]={L"SOLID_REVOLVE",L"REV_ADD REV_SK AXIS:REV_AXIS 360 POS"};CASE(t);}
     {ProMassProperty mp;ProError v=ProSolidMassPropertyWithDensityGet((ProSolid)model,NULL,PRO_MP_DENS_USE_ALWAYS,1,&mp);if(v||!part_close(mp.volume,9000*3.141592653589793)){failures++;trace("revolved solid volume expected 9000*pi",-1);}else trace("revolved solid volume expected 9000*pi",0);}
+    {
+        const double pi=3.141592653589793;
+        const double full=9000*pi, groove=555*pi, quarter=groove/4;
+        ProMassProperty mass;
+        {const wchar_t *t[]={L"SKETCH_CREATE",L"GROOVE_SK PLANE:TOP PLANE:RIGHT RECT 17 10 4 5"};CASE(t);}
+        {const wchar_t *t[]={L"SOLID_REVOLVE_CUT",L"FULL_GROOVE GROOVE_SK AXIS:REV_AXIS 360 POS"};CASE(t);}
+        e=ProSolidMassPropertyWithDensityGet((ProSolid)model,NULL,PRO_MP_DENS_USE_ALWAYS,1,&mass);
+        trace("REVOLVE_CUT full groove volume",e||!part_close(mass.volume,full-groove)?-1:0);
+        if(e||!part_close(mass.volume,full-groove))failures++;
+        {const wchar_t *t[]={L"SKETCH_CREATE",L"SECTOR_SK PLANE:TOP PLANE:RIGHT RECT 17 20 4 5"};CASE(t);}
+        {const wchar_t *t[]={L"SOLID_REVOLVE_CUT",L"POS_GROOVE SECTOR_SK AXIS:REV_AXIS 90 POS"};CASE(t);}
+        e=ProSolidMassPropertyWithDensityGet((ProSolid)model,NULL,PRO_MP_DENS_USE_ALWAYS,1,&mass);
+        trace("REVOLVE_CUT positive sector volume",e||!part_close(mass.volume,full-groove-quarter)?-1:0);
+        if(e||!part_close(mass.volume,full-groove-quarter))failures++;
+        {const wchar_t *t[]={L"SOLID_REVOLVE_CUT",L"NEG_GROOVE SECTOR_SK AXIS:REV_AXIS 90 NEG"};CASE(t);}
+        e=ProSolidMassPropertyWithDensityGet((ProSolid)model,NULL,PRO_MP_DENS_USE_ALWAYS,1,&mass);
+        trace("REVOLVE_CUT negative sector volume",e||!part_close(mass.volume,full-groove-2*quarter)?-1:0);
+        if(e||!part_close(mass.volume,full-groove-2*quarter))failures++;
+        {const wchar_t *t[]={L"SKETCH_CREATE",L"FAR_REV_SK PLANE:TOP PLANE:RIGHT RECT 40 10 5 7"};CASE(t);}
+        swprintf_s(cmd,1024,L"CREO_OP SOLID_REVOLVE_CUT %ls NO_REV_HIT FAR_REV_SK AXIS:REV_AXIS 360 POS",name);
+        reject_restored(cmd,model);
+        {const wchar_t *t[]={L"SKETCH_CREATE",L"ALL_REV_SK PLANE:TOP PLANE:RIGHT RECT 5 -5 20 40"};CASE(t);}
+        swprintf_s(cmd,1024,L"CREO_OP SOLID_REVOLVE_CUT %ls CUT_EMPTY ALL_REV_SK AXIS:REV_AXIS 360 POS",name);
+        reject_restored(cmd,model);
+        {const wchar_t *t[]={L"SKETCH_CREATE",L"OPEN_REV_SK PLANE:TOP PLANE:RIGHT LINE 17 10 21 10"};CASE(t);}
+        swprintf_s(cmd,1024,L"CREO_OP SOLID_REVOLVE_CUT %ls OPEN_REV_CUT OPEN_REV_SK AXIS:REV_AXIS 360 POS",name);
+        reject_restored(cmd,model);
+    }
     e=model_create_empty(1,name,&stage);if(e){failures++;goto done;}e=ProMdlnameInit(name,PRO_MDL_PART,&model);if(e){failures++;goto done;}
     {const wchar_t *t[]={L"DATUM_AXIS",L"REV_AXIS PLANES PLANE:TOP PLANE:RIGHT"};CASE(t);}
     {const wchar_t *t[]={L"SKETCH_CREATE",L"REV_SK PLANE:TOP PLANE:RIGHT RECT 10 0 10 30"};CASE(t);}
