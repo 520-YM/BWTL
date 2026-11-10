@@ -12,14 +12,13 @@ static void native_read_action(void);
 static void native_close_action(void);
 static void native_poll_action(void);
 static void native_cancel_action(void);
-static void native_apply_action(void);
 static void native_details_action(void);
 static void native_company_action(void);
 static void native_workdir_action(UINT action);
 static void native_feature_list_action(void);
 static HWND native_window, native_history, native_prompt, native_title;
-static HWND native_mode_control,native_stop_button,native_apply_button,native_preview;
-static volatile LONG native_mode,native_busy;
+static HWND native_stop_button,native_preview;
+static volatile LONG native_busy;
 static HWND native_buttons[3];
 static HWND native_top_buttons[5];
 static HFONT native_font, native_title_font;
@@ -38,9 +37,7 @@ static int native_ui_history(const wchar_t *text);
 #define CHAT_ATTACH 4105
 #define CHAT_CLEAR_IMAGES 4106
 #define CHAT_STOP 4107
-#define CHAT_MODE 4108
 #define CHAT_DETAILS 4109
-#define CHAT_APPLY 4110
 #define CHAT_PREVIEW 4111
 #define CHAT_FEATURES 4112
 #define CHAT_COMPANY 4113

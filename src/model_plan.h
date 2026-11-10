@@ -4,6 +4,7 @@
 #include <wctype.h>
 #include <stdlib.h>
 #include <math.h>
+#include "model_artifact_request.h"
 typedef struct { int cylinder; double a, b, height, hole; int ready; int empty_kind; int centered; } ModelPlan;
 /* Host routing guard: a current-model request must not silently become a
    new file merely because an AI returned the older CREO_PLAN protocol. */

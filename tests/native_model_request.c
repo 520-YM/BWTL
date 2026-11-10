@@ -65,8 +65,7 @@ static int probe_tick(uiCmdCmdId command,uiCmdValue *value,void *data){
         fclose(result);
     }
     if(!probe_write_allowed||!solid_ok||!one_reply||smart_steps<2)return probe_end(0);
-    native_mode=1;
-    smart_begin(probe_request);
+    smart_begin(L"只分析水杯方案，不修改模型");
     pending_plan=(ModelPlan){0};
     pending_plan.ready=1;
     pending_plan.empty_kind=1;
@@ -92,7 +91,6 @@ static int probe_begin(uiCmdCmdId command,uiCmdValue *value,void *data){
     wcscpy_s(conversation,_countof(conversation),
         L"用户：水杯先用无把手直筒方案，外径80mm、总高100mm、壁厚3mm、底厚5mm。\n"
         L"助手：记录方案。当前只分析，尚未新建。\n");
-    native_mode=0;
     probe_started=GetTickCount64();
     if(!SetTimer(native_backend_window,5001,1000,probe_timer))return probe_end(0);
     native_prompt_set(probe_request);

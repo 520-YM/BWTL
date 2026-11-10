@@ -4,10 +4,34 @@
 #include "../src/model_plan.h"
 int main(int argc, char **argv) {
     ModelPlan p = {0};
+    assert(model_artifact_request(L"画个凳子，尺寸自己给，自己想象。"));
+    assert(model_request_new_base(L"做张桌子，尺寸你定。"));
+    assert(model_request_new_base(L"做件小支架，长宽你定。"));
+    assert(model_request_current(L"请在当前零件画个圆，然后切除。"));
+    assert(model_request_current(L"请画当前零件的定位槽，再拉伸。"));
+    assert(!model_artifact_request(L"「例如，画个凳子」是命令示例。"));
     assert(model_request_current(L"拉伸一个正方体"));
+    assert(model_request_current(L"把这个曲面加厚2毫米"));
+    assert(model_request_current(L"当前零件的两个实体做布尔求交"));
+    assert(model_request_current(L"给当前轴开键槽"));
+    assert(model_request_current(L"在内孔里加工卡簧槽"));
     assert(model_request_current(L"不新建，在当前零件拉伸一个20毫米正方体"));
     assert(!model_request_current(L"新建独立零件，拉伸一个20毫米正方体"));
     assert(!model_request_current(L"创建一个空零件"));
+    assert(model_request_current(L"新建中分面，使用 RIGHT 和 END_X"));
+    assert(!model_request_current(L"新建独立零件，然后在里面建立中分面"));
+    assert(!model_request_current(L"画一个圆柱，抽壳。数据自己给。"));
+    assert(!model_request_current(L"创建直径80毫米的圆柱后抽壳"));
+    assert(!model_request_current(L"做一个长方体并拔模"));
+    assert(!model_request_current(L"新建独立零件，再对新零件阵列"));
+    assert(!model_request_current(L"新建一个带中心孔的板"));
+    assert(model_request_current(L"在上表面打一个直径6的盲孔"));
+    assert(model_request_current(L"边倒角1毫米"));
+    assert(model_request_current(L"以当前零件顶面为开口向内抽壳2毫米"));
+    assert(model_request_current(L"不要新建，在当前模型开孔"));
+    assert(model_request_current(L"在当前零件画一个圆柱，再抽壳"));
+    assert(model_request_current(L"创建圆柱孔，再倒角"));
+    assert(model_request_current(L"新建中分面，不另建零件"));
     if (argc == 2) {
         FILE *file = fopen(argv[1], "rt, ccs=UTF-8");
         wchar_t buffer[16000]; size_t count = 0; wint_t ch;
@@ -68,6 +92,15 @@ int main(int argc, char **argv) {
     assert(model_empty_request(L"创建一个装配")==3);
     assert(!model_empty_request(L"不要创建一个钣金零件"));
     assert(!model_empty_request(L"创建一个钣金零件，再开孔"));
+    assert(model_request_current(L"创建板壁，厚2毫米"));
+    assert(model_request_current(L"给当前钣金折边"));
+    assert(model_request_current(L"生成零件族规格"));assert(model_request_current(L"创建模型参数"));assert(model_request_current(L"创建特征组"));
+    assert(model_request_current(L"检查最小壁厚"));
+    assert(model_request_current(L"读取质量属性报告"));
+    assert(model_request_current(L"做两版本几何对比"));
+    assert(model_request_current(L"重定义已有盲拉伸"));
+    assert(model_request_current(L"生成零件加工信息表"));
+    assert(model_request_current(L"打包零件交付文件"));
     puts("MODEL PLAN VALIDATION / VOLUME / INVALID AND MULTIPLE ACTIONS PASS");
     return 0;
 }

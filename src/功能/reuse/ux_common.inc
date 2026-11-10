@@ -1,0 +1,13 @@
+typedef struct {ProDimension dim;const wchar_t *symbol;int found;double value;} UxDimension;
+static ProError ux_dimension_visit(ProDimension *dim,ProError status,ProAppData data){UxDimension *s=data;ProName symbol;if(status)return status;if(!ProDimensionSymbolGet(dim,symbol)&&!_wcsicmp(symbol,s->symbol)){s->dim=*dim;s->found++;return ProDimensionValueGet(dim,&s->value);}return 0;}
+static ProError ux_dimension(ProMdl model,const wchar_t *symbol,UxDimension *s){memset(s,0,sizeof(*s));s->symbol=symbol;ProError e=ProSolidDimensionVisit((ProSolid)model,PRO_B_FALSE,ux_dimension_visit,NULL,s);return e&&e!=PRO_TK_E_NOT_FOUND?e:s->found==1?0:PRO_TK_E_NOT_FOUND;}
+static ProError ux_solid(ProMdl model,double *volume){ProMassProperty mass;int bodies;ProError e;if((e=part_health(model))||(e=sd_body_count(model,&bodies))||(e=ProSolidMassPropertyWithDensityGet((ProSolid)model,NULL,PRO_MP_DENS_USE_ALWAYS,1,&mass)))return e;if(bodies!=1||!isfinite(mass.volume)||mass.volume<=0)return PRO_TK_BAD_CONTEXT;*volume=mass.volume;return 0;}
+static ProError ux_plain_seed(ProMdl model,const wchar_t *name,ProFeature *feature){ProFeattype type;ProPatternStatus pattern;ProGroupStatus group;ProError e;if((e=rf_active_feature(model,name,feature,&type))||(e=ProFeaturePatternStatusGet(feature,&pattern))||(e=ProFeatureGroupStatusGet(feature,&group)))return e;return (type==PRO_FEAT_HOLE||type==PRO_FEAT_CUT||type==PRO_FEAT_PROTRUSION)&&pattern==PRO_PATTERN_NONE&&group==PRO_GROUP_NONE?0:PRO_TK_BAD_CONTEXT;}
+static ProError ux_named_feature(ProMdl model,const wchar_t *name,ProFeature *f){return ProModelitemByNameInit(model,PRO_FEATURE,(wchar_t *)name,(ProModelitem *)f);}
+static ProError ux_new_name(ProMdl model,const wchar_t *name){ProFeature f;return !ux_named_feature(model,name,&f)?PRO_TK_E_FOUND:0;}
+/* Only call for a new copy whose absent disk name was checked before copying. */
+static ProError ux_copy_files_remove(const wchar_t *name){
+ ProPath directory,mask,path;WIN32_FIND_DATAW item;HANDLE search;ProError e=0;if(!fd_name(name)||ProDirectoryCurrentGet(directory))return PRO_TK_BAD_INPUTS;
+ if(swprintf_s(mask,PRO_PATH_SIZE,L"%ls\\%ls.prt.*",directory,name)<0)return PRO_TK_BAD_INPUTS;search=FindFirstFileW(mask,&item);if(search==INVALID_HANDLE_VALUE)return GetLastError()==ERROR_FILE_NOT_FOUND?0:PRO_TK_CANT_OPEN;
+ do{wchar_t *dot=wcsrchr(item.cFileName,L'.');int revision;if(dot&&part_integer(dot+1,&revision)&&revision>0&&!(item.dwFileAttributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT))){if(swprintf_s(path,PRO_PATH_SIZE,L"%ls\\%ls",directory,item.cFileName)<0||!DeleteFileW(path))e=PRO_TK_CANT_WRITE;}}while(FindNextFileW(search,&item));FindClose(search);return e;
+}

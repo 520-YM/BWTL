@@ -1296,5 +1296,1707 @@
     "symbol": "working_directory_command",
     "kind": "function",
     "file": "src/功能/assistant/native_workdir_action.inc"
+  },
+  {
+    "symbol": "sd_sweep",
+    "kind": "function",
+    "file": "src/功能/solid_tools/sd_sweep.inc"
+  },
+  {
+    "symbol": "sd_blend",
+    "kind": "function",
+    "file": "src/功能/solid_tools/sd_blend.inc"
+  },
+  {
+    "symbol": "bwtl_circle_blend",
+    "kind": "native-template",
+    "file": "resources/udf/bwtl_circle_blend.gph.1"
+  },
+  {
+    "symbol": "mc_profiled_hole",
+    "kind": "function",
+    "file": "src/功能/machining_tools/mc_profiled_hole.inc"
+  },
+  {
+    "symbol": "mc_thread_size",
+    "kind": "function",
+    "file": "src/功能/machining_tools/mc_thread_hole.inc"
+  },
+  {
+    "symbol": "mc_shell",
+    "kind": "function",
+    "file": "src/功能/machining_tools/mc_shell.inc"
+  },
+  {
+    "symbol": "rf_draft",
+    "kind": "function",
+    "file": "src/功能/refine_tools/rf_draft.inc"
+  },
+  {
+    "symbol": "rf_rib",
+    "kind": "function",
+    "file": "src/功能/refine_tools/rf_rib.inc"
+  },
+  {
+    "symbol": "rf_mirror",
+    "kind": "function",
+    "file": "src/功能/refine_tools/rf_mirror.inc"
+  },
+  {
+    "symbol": "rf_pattern",
+    "kind": "function",
+    "file": "src/功能/refine_tools/rf_pattern.inc"
+  },
+  {
+    "symbol": "rf_delete",
+    "kind": "function",
+    "file": "src/功能/refine_tools/rf_delete.inc"
+  },
+  {
+    "symbol": "ad_angle",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_angle.inc"
+  },
+  {
+    "symbol": "ad_three",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_three.inc"
+  },
+  {
+    "symbol": "ad_mid",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_mid.inc"
+  },
+  {
+    "symbol": "ad_tangent",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_tangent.inc"
+  },
+  {
+    "symbol": "ad_normal",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_normal.inc"
+  },
+  {
+    "symbol": "ad_axis_points",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_axis_points.inc"
+  },
+  {
+    "symbol": "ad_point_curve",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_point_curve.inc"
+  },
+  {
+    "symbol": "ad_intersection",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_intersection.inc"
+  },
+  {
+    "symbol": "ad_spline",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_spline.inc"
+  },
+  {
+    "symbol": "ad_sym_csys",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_sym_csys.inc"
+  },
+  {
+    "symbol": "ad_execute",
+    "kind": "function",
+    "file": "src/功能/advanced_datum/ad_execute.inc"
+  },
+  {
+    "symbol": "as_ellipse",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_ellipse.inc"
+  },
+  {
+    "symbol": "as_slot",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_slot.inc"
+  },
+  {
+    "symbol": "as_polygon",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_polygon.inc"
+  },
+  {
+    "symbol": "as_spline",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_spline.inc"
+  },
+  {
+    "symbol": "as_offset",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_offset.inc"
+  },
+  {
+    "symbol": "as_mirror",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_mirror.inc"
+  },
+  {
+    "symbol": "as_trim",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_trim.inc"
+  },
+  {
+    "symbol": "as_corner",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_corner.inc"
+  },
+  {
+    "symbol": "as_chain",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_chain.inc"
+  },
+  {
+    "symbol": "as_check",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_check.inc"
+  },
+  {
+    "symbol": "as_repair",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_repair.inc"
+  },
+  {
+    "symbol": "as_execute",
+    "kind": "function",
+    "file": "src/功能/advanced_sketch/as_execute.inc"
+  },
+  {
+    "symbol": "sx_extrude_depth",
+    "kind": "function",
+    "file": "src/功能/advanced_solid/sx_extrude.inc"
+  },
+  {
+    "symbol": "sx_sweep_draw",
+    "kind": "function",
+    "file": "src/功能/advanced_solid/sx_sweep_profile.inc"
+  },
+  {
+    "symbol": "sx_path_resolve",
+    "kind": "function",
+    "file": "src/功能/advanced_solid/sx_sweep_path.inc"
+  },
+  {
+    "symbol": "sx_compound_finish",
+    "kind": "function",
+    "file": "src/功能/advanced_solid/sx_compound.inc"
+  },
+  {
+    "symbol": "sx_variable",
+    "kind": "function",
+    "file": "src/功能/advanced_solid/sx_variable.inc"
+  },
+  {
+    "symbol": "sx_sweep",
+    "kind": "function",
+    "file": "src/功能/advanced_solid/sx_sweep.inc"
+  },
+  {
+    "symbol": "sx_helix",
+    "kind": "function",
+    "file": "src/功能/advanced_solid/sx_helix.inc"
+  },
+  {
+    "symbol": "sx_loft",
+    "kind": "function",
+    "file": "src/功能/advanced_solid/sx_loft.inc"
+  },
+  {
+    "symbol": "sf_ref",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_reference.inc"
+  },
+  {
+    "symbol": "sf_verify",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_verify.inc"
+  },
+  {
+    "symbol": "sf_udf",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_udf.inc"
+  },
+  {
+    "symbol": "sf_extrude",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_extrude.inc"
+  },
+  {
+    "symbol": "sf_boundary",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_boundary.inc"
+  },
+  {
+    "symbol": "sf_offset",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_offset.inc"
+  },
+  {
+    "symbol": "sf_trim",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_trim.inc"
+  },
+  {
+    "symbol": "sf_extend",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_extend.inc"
+  },
+  {
+    "symbol": "sf_merge",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_merge.inc"
+  },
+  {
+    "symbol": "sf_thicken",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_thicken.inc"
+  },
+  {
+    "symbol": "sf_boolean",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_boolean.inc"
+  },
+  {
+    "symbol": "sf_info",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_info.inc"
+  },
+  {
+    "symbol": "sf_execute",
+    "kind": "function",
+    "file": "src/功能/surface_tools/sf_execute.inc"
+  },
+  {
+    "symbol": "am_flat_hole",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_hole_common.inc"
+  },
+  {
+    "symbol": "am_radial",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_radial.inc"
+  },
+  {
+    "symbol": "am_axis",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_axis.inc"
+  },
+  {
+    "symbol": "am_thread",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_thread.inc"
+  },
+  {
+    "symbol": "am_thread_thru",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_thread_thru.inc"
+  },
+  {
+    "symbol": "am_thread_std",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_thread_std.inc"
+  },
+  {
+    "symbol": "am_spotface",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_spotface.inc"
+  },
+  {
+    "symbol": "am_frame",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_frame.inc"
+  },
+  {
+    "symbol": "am_key_floor",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_groove_verify.inc"
+  },
+  {
+    "symbol": "am_keyway",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_keyway.inc"
+  },
+  {
+    "symbol": "am_ring",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_ring.inc"
+  },
+  {
+    "symbol": "am_edge",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_edge.inc"
+  },
+  {
+    "symbol": "am_variable",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_variable.inc"
+  },
+  {
+    "symbol": "am_tangent",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_tangent.inc"
+  },
+  {
+    "symbol": "am_chamfer",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_chamfer.inc"
+  },
+  {
+    "symbol": "am_info",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_info.inc"
+  },
+  {
+    "symbol": "am_verify_edge",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_verify.inc"
+  },
+  {
+    "symbol": "am_execute",
+    "kind": "function",
+    "file": "src/功能/advanced_machining/am_execute.inc"
+  },
+  {
+    "symbol": "md_shell",
+    "kind": "function",
+    "file": "src/功能/structural/md_shell.inc"
+  },
+  {
+    "symbol": "md_shell_multi",
+    "kind": "function",
+    "file": "src/功能/structural/md_shell_multi.inc"
+  },
+  {
+    "symbol": "md_shell_local",
+    "kind": "function",
+    "file": "src/功能/structural/md_shell_local.inc"
+  },
+  {
+    "symbol": "md_draft",
+    "kind": "function",
+    "file": "src/功能/structural/md_draft.inc"
+  },
+  {
+    "symbol": "md_draft_multi",
+    "kind": "function",
+    "file": "src/功能/structural/md_draft_multi.inc"
+  },
+  {
+    "symbol": "md_draft_split",
+    "kind": "function",
+    "file": "src/功能/structural/md_draft_split.inc"
+  },
+  {
+    "symbol": "md_draft_variable",
+    "kind": "function",
+    "file": "src/功能/structural/md_draft_variable.inc"
+  },
+  {
+    "symbol": "md_profile",
+    "kind": "function",
+    "file": "src/功能/structural/md_profiles.inc"
+  },
+  {
+    "symbol": "md_rib",
+    "kind": "function",
+    "file": "src/功能/structural/md_rib.inc"
+  },
+  {
+    "symbol": "md_boss",
+    "kind": "function",
+    "file": "src/功能/structural/md_boss.inc"
+  },
+  {
+    "symbol": "md_snap",
+    "kind": "function",
+    "file": "src/功能/structural/md_snap.inc"
+  },
+  {
+    "symbol": "md_window",
+    "kind": "function",
+    "file": "src/功能/structural/md_window.inc"
+  },
+  {
+    "symbol": "md_seal_face",
+    "kind": "function",
+    "file": "src/功能/structural/md_seal_face.inc"
+  },
+  {
+    "symbol": "md_seal_radial",
+    "kind": "function",
+    "file": "src/功能/structural/md_seal_radial.inc"
+  },
+  {
+    "symbol": "md_stock",
+    "kind": "function",
+    "file": "src/功能/structural/md_stock.inc"
+  },
+  {
+    "symbol": "md_verify_shell",
+    "kind": "function",
+    "file": "src/功能/structural/md_verify.inc"
+  },
+  {
+    "symbol": "md_execute",
+    "kind": "function",
+    "file": "src/功能/structural/md_execute.inc"
+  },
+  {
+    "symbol": "sh_begin",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_begin.inc"
+  },
+  {
+    "symbol": "sh_sketch",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_sketch.inc"
+  },
+  {
+    "symbol": "sh_convert",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_convert.inc"
+  },
+  {
+    "symbol": "sh_first",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_first.inc"
+  },
+  {
+    "symbol": "sh_profile_resize",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_profile_resize.inc"
+  },
+  {
+    "symbol": "sh_stock_section",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_resource.inc"
+  },
+  {
+    "symbol": "sh_flange",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_flange.inc"
+  },
+  {
+    "symbol": "sh_bend_native",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_bend.inc"
+  },
+  {
+    "symbol": "sh_hem",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_hem.inc"
+  },
+  {
+    "symbol": "sh_flatten",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_flatten.inc"
+  },
+  {
+    "symbol": "sh_cut",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_cut.inc"
+  },
+  {
+    "symbol": "sh_form",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_form.inc"
+  },
+  {
+    "symbol": "sh_info",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_info.inc"
+  },
+  {
+    "symbol": "sh_allowance",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_allowance.inc"
+  },
+  {
+    "symbol": "sh_relief_update",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_relief_update.inc"
+  },
+  {
+    "symbol": "sh_dxf_surface",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_dxf_geometry.inc"
+  },
+  {
+    "symbol": "sh_export",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_export.inc"
+  },
+  {
+    "symbol": "sh_verify",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_verify.inc"
+  },
+  {
+    "symbol": "sh_execute",
+    "kind": "function",
+    "file": "src/功能/sheetmetal/sh_execute.inc"
+  },
+  {
+    "symbol": "ux_dimension",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_common.inc"
+  },
+  {
+    "symbol": "ux_mirror",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_mirror.inc"
+  },
+  {
+    "symbol": "ux_pattern",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_pattern.inc"
+  },
+  {
+    "symbol": "ux_point_sketch",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_point_sketch.inc"
+  },
+  {
+    "symbol": "ux_group",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_group.inc"
+  },
+  {
+    "symbol": "ux_skip",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_skip.inc"
+  },
+  {
+    "symbol": "ux_param",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_param.inc"
+  },
+  {
+    "symbol": "ux_relation",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_relation.inc"
+  },
+  {
+    "symbol": "ux_family",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_family.inc"
+  },
+  {
+    "symbol": "ux_udf",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_udf.inc"
+  },
+  {
+    "symbol": "ux_info",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_info.inc"
+  },
+  {
+    "symbol": "ux_execute",
+    "kind": "function",
+    "file": "src/功能/reuse/ux_execute.inc"
+  },
+  {
+    "symbol": "qa_mm_per_unit",
+    "kind": "function",
+    "file": "src/功能/quality/qa_common.inc"
+  },
+  {
+    "symbol": "qa_ray",
+    "kind": "function",
+    "file": "src/功能/quality/qa_rays.inc"
+  },
+  {
+    "symbol": "qa_measure",
+    "kind": "function",
+    "file": "src/功能/quality/qa_measure.inc"
+  },
+  {
+    "symbol": "qa_wall",
+    "kind": "function",
+    "file": "src/功能/quality/qa_wall.inc"
+  },
+  {
+    "symbol": "qa_holes",
+    "kind": "function",
+    "file": "src/功能/quality/qa_holes.inc"
+  },
+  {
+    "symbol": "qa_draft",
+    "kind": "function",
+    "file": "src/功能/quality/qa_draft.inc"
+  },
+  {
+    "symbol": "qa_continuity",
+    "kind": "function",
+    "file": "src/功能/quality/qa_continuity.inc"
+  },
+  {
+    "symbol": "qa_mass",
+    "kind": "function",
+    "file": "src/功能/quality/qa_mass.inc"
+  },
+  {
+    "symbol": "qa_symmetry",
+    "kind": "function",
+    "file": "src/功能/quality/qa_symmetry.inc"
+  },
+  {
+    "symbol": "qa_compare",
+    "kind": "function",
+    "file": "src/功能/quality/qa_compare.inc"
+  },
+  {
+    "symbol": "qa_deps",
+    "kind": "function",
+    "file": "src/功能/quality/qa_deps.inc"
+  },
+  {
+    "symbol": "qa_rules",
+    "kind": "function",
+    "file": "src/功能/quality/qa_rules.inc"
+  },
+  {
+    "symbol": "qa_execute",
+    "kind": "function",
+    "file": "src/功能/quality/qa_execute.inc"
+  },
+  {
+    "symbol": "dv_part",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_common.inc"
+  },
+  {
+    "symbol": "dv_redefine",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_redefine.inc"
+  },
+  {
+    "symbol": "dv_reorder",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_reorder.inc"
+  },
+  {
+    "symbol": "dv_import",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_import.inc"
+  },
+  {
+    "symbol": "dv_heal",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_heal.inc"
+  },
+  {
+    "symbol": "dv_recognize",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_recognize.inc"
+  },
+  {
+    "symbol": "dv_attributes",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_attributes.inc"
+  },
+  {
+    "symbol": "dv_stage_begin",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_output.inc"
+  },
+  {
+    "symbol": "dv_export",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_export.inc"
+  },
+  {
+    "symbol": "dv_report",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_report.inc"
+  },
+  {
+    "symbol": "dv_package",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_package.inc"
+  },
+  {
+    "symbol": "dv_execute",
+    "kind": "function",
+    "file": "src/功能/delivery/dv_execute.inc"
+  },
+  {
+    "symbol": "ax_component_resolve",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_common.inc"
+  },
+  {
+    "symbol": "ax_tree",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_tree.inc"
+  },
+  {
+    "symbol": "ax_insert",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_insert.inc"
+  },
+  {
+    "symbol": "ax_constrain",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_constraint.inc"
+  },
+  {
+    "symbol": "ax_move",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_move.inc"
+  },
+  {
+    "symbol": "ax_state",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_state.inc"
+  },
+  {
+    "symbol": "ax_fit_pair",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_fit.inc"
+  },
+  {
+    "symbol": "ax_mass",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_mass.inc"
+  },
+  {
+    "symbol": "ax_bom",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_bom.inc"
+  },
+  {
+    "symbol": "ax_step",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_step.inc"
+  },
+  {
+    "symbol": "ax_placement_refs",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_placement_refs.inc"
+  },
+  {
+    "symbol": "ax_placement_status",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_placement_status.inc"
+  },
+  {
+    "symbol": "ax_placement_write",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_placement_write.inc"
+  },
+  {
+    "symbol": "ax_subassembly",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_component_manage.inc"
+  },
+  {
+    "symbol": "ax_delete_component",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_component_manage.inc"
+  },
+  {
+    "symbol": "ax_component_pose",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_component_manage.inc"
+  },
+  {
+    "symbol": "ax_copy_occurrence",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_component_references.inc"
+  },
+  {
+    "symbol": "ax_replace_occurrence",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_component_references.inc"
+  },
+  {
+    "symbol": "ax_change_occurrence_ref",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_component_references.inc"
+  },
+  {
+    "symbol": "ax_place_array",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_occurrence_batch.inc"
+  },
+  {
+    "symbol": "ax_hw_site",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_hardware_geometry.inc"
+  },
+  {
+    "symbol": "ax_hardware",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_hardware.inc"
+  },
+  {
+    "symbol": "ax_replace_batch",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_replace_batch.inc"
+  },
+  {
+    "symbol": "ax_device_create",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_device_geometry.inc"
+  },
+  {
+    "symbol": "ax_device_window",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_device_windows.inc"
+  },
+  {
+    "symbol": "ax_device_bolts",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_device_mount.inc"
+  },
+  {
+    "symbol": "ax_device_rail",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_device_service.inc"
+  },
+  {
+    "symbol": "ax_device_hinges",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_device_service.inc"
+  },
+  {
+    "symbol": "ax_device_seal",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_device_service.inc"
+  },
+  {
+    "symbol": "ax_execute",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_execute.inc"
+  },
+  {
+    "symbol": "pn_area",
+    "kind": "function",
+    "file": "src/功能/panel/pn_geometry.inc"
+  },
+  {
+    "symbol": "pn_button",
+    "kind": "function",
+    "file": "src/功能/panel/pn_button.inc"
+  },
+  {
+    "symbol": "pn_estop",
+    "kind": "function",
+    "file": "src/功能/panel/pn_estop.inc"
+  },
+  {
+    "symbol": "pn_power",
+    "kind": "function",
+    "file": "src/功能/panel/pn_power.inc"
+  },
+  {
+    "symbol": "pn_port",
+    "kind": "function",
+    "file": "src/功能/panel/pn_port.inc"
+  },
+  {
+    "symbol": "pn_fan",
+    "kind": "function",
+    "file": "src/功能/panel/pn_fan.inc"
+  },
+  {
+    "symbol": "pn_display",
+    "kind": "function",
+    "file": "src/功能/panel/pn_display.inc"
+  },
+  {
+    "symbol": "pn_seat",
+    "kind": "function",
+    "file": "src/功能/panel/pn_seat.inc"
+  },
+  {
+    "symbol": "pn_handle",
+    "kind": "function",
+    "file": "src/功能/panel/pn_handle.inc"
+  },
+  {
+    "symbol": "pn_lock",
+    "kind": "function",
+    "file": "src/功能/panel/pn_lock.inc"
+  },
+  {
+    "symbol": "pn_comb",
+    "kind": "function",
+    "file": "src/功能/panel/pn_comb.inc"
+  },
+  {
+    "symbol": "pn_sketch",
+    "kind": "function",
+    "file": "src/功能/panel/pn_native.inc"
+  },
+  {
+    "symbol": "pn_probe",
+    "kind": "function",
+    "file": "src/功能/panel/pn_verify.inc"
+  },
+  {
+    "symbol": "pn_execute",
+    "kind": "function",
+    "file": "src/功能/panel/pn_execute.inc"
+  },
+  {
+    "symbol": "cm_edge_get",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_geometry.inc"
+  },
+  {
+    "symbol": "cm_attach",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_wall.inc"
+  },
+  {
+    "symbol": "cm_segments",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_segments.inc"
+  },
+  {
+    "symbol": "cm_blank_make",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_blank.inc"
+  },
+  {
+    "symbol": "cm_tray",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_tray.inc"
+  },
+  {
+    "symbol": "cm_u",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_u.inc"
+  },
+  {
+    "symbol": "cm_z",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_z.inc"
+  },
+  {
+    "symbol": "cm_gap",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_gap.inc"
+  },
+  {
+    "symbol": "cm_end",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_end.inc"
+  },
+  {
+    "symbol": "cm_return",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_return.inc"
+  },
+  {
+    "symbol": "cm_ear",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_ear.inc"
+  },
+  {
+    "symbol": "cm_collar",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_collar.inc"
+  },
+  {
+    "symbol": "cm_bends",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_bends.inc"
+  },
+  {
+    "symbol": "cm_execute",
+    "kind": "function",
+    "file": "src/功能/cabinet/cm_execute.inc"
+  },
+  {
+    "symbol": "fx_profile_draw",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_profile_draw.inc"
+  },
+  {
+    "symbol": "fx_check_boundary",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_boundary.inc"
+  },
+  {
+    "symbol": "fx_key",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_key.inc"
+  },
+  {
+    "symbol": "fx_slot",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_slot.inc"
+  },
+  {
+    "symbol": "fx_corners",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_corners.inc"
+  },
+  {
+    "symbol": "fx_pcd",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_pcd.inc"
+  },
+  {
+    "symbol": "fx_hinge",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_hinge.inc"
+  },
+  {
+    "symbol": "fx_press",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_press.inc"
+  },
+  {
+    "symbol": "fx_rivet",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_rivet.inc"
+  },
+  {
+    "symbol": "fx_ground",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_ground.inc"
+  },
+  {
+    "symbol": "fx_tie",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_tie.inc"
+  },
+  {
+    "symbol": "fx_tab",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_tab.inc"
+  },
+  {
+    "symbol": "fx_execute",
+    "kind": "function",
+    "file": "src/功能/fastener/fx_execute.inc"
+  },
+  {
+    "symbol": "mp_mouth",
+    "kind": "function",
+    "file": "src/功能/shop/mp_common.inc"
+  },
+  {
+    "symbol": "mp_step",
+    "kind": "function",
+    "file": "src/功能/shop/mp_step.inc"
+  },
+  {
+    "symbol": "mp_cross",
+    "kind": "function",
+    "file": "src/功能/shop/mp_cross.inc"
+  },
+  {
+    "symbol": "mp_back",
+    "kind": "function",
+    "file": "src/功能/shop/mp_back.inc"
+  },
+  {
+    "symbol": "mp_deburr",
+    "kind": "function",
+    "file": "src/功能/shop/mp_deburr.inc"
+  },
+  {
+    "symbol": "mp_island",
+    "kind": "function",
+    "file": "src/功能/shop/mp_island.inc"
+  },
+  {
+    "symbol": "mp_level",
+    "kind": "function",
+    "file": "src/功能/shop/mp_level.inc"
+  },
+  {
+    "symbol": "mp_dog",
+    "kind": "function",
+    "file": "src/功能/shop/mp_dog.inc"
+  },
+  {
+    "symbol": "mp_flat",
+    "kind": "function",
+    "file": "src/功能/shop/mp_flat.inc"
+  },
+  {
+    "symbol": "mp_groove",
+    "kind": "function",
+    "file": "src/功能/shop/mp_groove.inc"
+  },
+  {
+    "symbol": "mp_groove_profile",
+    "kind": "function",
+    "file": "src/功能/shop/mp_groove_profile.inc"
+  },
+  {
+    "symbol": "mp_tool",
+    "kind": "function",
+    "file": "src/功能/shop/mp_tool.inc"
+  },
+  {
+    "symbol": "mp_execute",
+    "kind": "function",
+    "file": "src/功能/shop/mp_execute.inc"
+  },
+  {
+    "symbol": "vt_through",
+    "kind": "function",
+    "file": "src/功能/vent/vt_common.inc"
+  },
+  {
+    "symbol": "vt_round",
+    "kind": "function",
+    "file": "src/功能/vent/vt_round.inc"
+  },
+  {
+    "symbol": "vt_slot",
+    "kind": "function",
+    "file": "src/功能/vent/vt_slot.inc"
+  },
+  {
+    "symbol": "vt_louver",
+    "kind": "function",
+    "file": "src/功能/vent/vt_louver.inc"
+  },
+  {
+    "symbol": "vt_grid",
+    "kind": "function",
+    "file": "src/功能/vent/vt_grid.inc"
+  },
+  {
+    "symbol": "vt_drain",
+    "kind": "function",
+    "file": "src/功能/vent/vt_drain.inc"
+  },
+  {
+    "symbol": "vt_gland",
+    "kind": "function",
+    "file": "src/功能/vent/vt_gland.inc"
+  },
+  {
+    "symbol": "vt_grommet",
+    "kind": "function",
+    "file": "src/功能/vent/vt_grommet.inc"
+  },
+  {
+    "symbol": "vt_stop",
+    "kind": "function",
+    "file": "src/功能/vent/vt_stop.inc"
+  },
+  {
+    "symbol": "vt_seal",
+    "kind": "function",
+    "file": "src/功能/vent/vt_seal.inc"
+  },
+  {
+    "symbol": "vt_route",
+    "kind": "function",
+    "file": "src/功能/vent/vt_route.inc"
+  },
+  {
+    "symbol": "vt_execute",
+    "kind": "function",
+    "file": "src/功能/vent/vt_execute.inc"
+  },
+  {
+    "symbol": "rv_begin",
+    "kind": "function",
+    "file": "src/功能/revision/rv_common.inc"
+  },
+  {
+    "symbol": "rv_outline",
+    "kind": "function",
+    "file": "src/功能/revision/rv_size.inc"
+  },
+  {
+    "symbol": "rv_hole_load",
+    "kind": "function",
+    "file": "src/功能/revision/rv_holes.inc"
+  },
+  {
+    "symbol": "rv_shift",
+    "kind": "function",
+    "file": "src/功能/revision/rv_shift.inc"
+  },
+  {
+    "symbol": "rv_pitch",
+    "kind": "function",
+    "file": "src/功能/revision/rv_pitch.inc"
+  },
+  {
+    "symbol": "rv_open",
+    "kind": "function",
+    "file": "src/功能/revision/rv_open.inc"
+  },
+  {
+    "symbol": "rv_diam",
+    "kind": "function",
+    "file": "src/功能/revision/rv_diam.inc"
+  },
+  {
+    "symbol": "rv_depth",
+    "kind": "function",
+    "file": "src/功能/revision/rv_depth.inc"
+  },
+  {
+    "symbol": "rv_recess",
+    "kind": "function",
+    "file": "src/功能/revision/rv_recess.inc"
+  },
+  {
+    "symbol": "rv_round",
+    "kind": "function",
+    "file": "src/功能/revision/rv_round.inc"
+  },
+  {
+    "symbol": "rv_thick",
+    "kind": "function",
+    "file": "src/功能/revision/rv_thick.inc"
+  },
+  {
+    "symbol": "rv_copy",
+    "kind": "function",
+    "file": "src/功能/revision/rv_copy.inc"
+  },
+  {
+    "symbol": "rv_execute",
+    "kind": "function",
+    "file": "src/功能/revision/rv_execute.inc"
+  },
+  {
+    "symbol": "in_plane",
+    "kind": "function",
+    "file": "src/功能/inspection/in_common.inc"
+  },
+  {
+    "symbol": "in_seat",
+    "kind": "function",
+    "file": "src/功能/inspection/in_seat.inc"
+  },
+  {
+    "symbol": "in_hide",
+    "kind": "function",
+    "file": "src/功能/inspection/in_hide.inc"
+  },
+  {
+    "symbol": "in_bottom",
+    "kind": "function",
+    "file": "src/功能/inspection/in_bottom.inc"
+  },
+  {
+    "symbol": "in_bend",
+    "kind": "function",
+    "file": "src/功能/inspection/in_bend.inc"
+  },
+  {
+    "symbol": "in_toolspace",
+    "kind": "function",
+    "file": "src/功能/inspection/in_toolspace.inc"
+  },
+  {
+    "symbol": "in_vent",
+    "kind": "function",
+    "file": "src/功能/inspection/in_vent.inc"
+  },
+  {
+    "symbol": "in_device",
+    "kind": "function",
+    "file": "src/功能/inspection/in_device.inc"
+  },
+  {
+    "symbol": "in_sharp",
+    "kind": "function",
+    "file": "src/功能/inspection/in_sharp.inc"
+  },
+  {
+    "symbol": "in_ratio",
+    "kind": "function",
+    "file": "src/功能/inspection/in_ratio.inc"
+  },
+  {
+    "symbol": "in_cutter",
+    "kind": "function",
+    "file": "src/功能/inspection/in_cutter.inc"
+  },
+  {
+    "symbol": "in_execute",
+    "kind": "function",
+    "file": "src/功能/inspection/in_execute.inc"
+  },
+  {
+    "symbol": "org_feature",
+    "kind": "function",
+    "file": "src/功能/organize/org_common.inc"
+  },
+  {
+    "symbol": "org_holes",
+    "kind": "function",
+    "file": "src/功能/organize/org_holes.inc"
+  },
+  {
+    "symbol": "org_specs",
+    "kind": "function",
+    "file": "src/功能/organize/org_specs.inc"
+  },
+  {
+    "symbol": "org_slots",
+    "kind": "function",
+    "file": "src/功能/organize/org_slots.inc"
+  },
+  {
+    "symbol": "org_planes",
+    "kind": "function",
+    "file": "src/功能/organize/org_planes.inc"
+  },
+  {
+    "symbol": "org_rename",
+    "kind": "function",
+    "file": "src/功能/organize/org_rename.inc"
+  },
+  {
+    "symbol": "org_unused",
+    "kind": "function",
+    "file": "src/功能/organize/org_unused.inc"
+  },
+  {
+    "symbol": "org_status",
+    "kind": "function",
+    "file": "src/功能/organize/org_status.inc"
+  },
+  {
+    "symbol": "org_overlap",
+    "kind": "function",
+    "file": "src/功能/organize/org_overlap.inc"
+  },
+  {
+    "symbol": "org_params",
+    "kind": "function",
+    "file": "src/功能/organize/org_params.inc"
+  },
+  {
+    "symbol": "org_impact",
+    "kind": "function",
+    "file": "src/功能/organize/org_impact.inc"
+  },
+  {
+    "symbol": "org_execute",
+    "kind": "function",
+    "file": "src/功能/organize/org_execute.inc"
+  },
+  {
+    "symbol": "fab_csv_open",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_common.inc"
+  },
+  {
+    "symbol": "fab_dxf_read",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_dxf_parser.inc"
+  },
+  {
+    "symbol": "fab_blank",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_blank.inc"
+  },
+  {
+    "symbol": "fab_bends",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_bends.inc"
+  },
+  {
+    "symbol": "fab_holes",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_holes.inc"
+  },
+  {
+    "symbol": "fab_paint",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_paint.inc"
+  },
+  {
+    "symbol": "fab_batch_dxf",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_batch_dxf.inc"
+  },
+  {
+    "symbol": "fab_preflight",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_preflight.inc"
+  },
+  {
+    "symbol": "fab_template",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_template.inc"
+  },
+  {
+    "symbol": "fab_inspect",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_inspection.inc"
+  },
+  {
+    "symbol": "fab_sort",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_sort.inc"
+  },
+  {
+    "symbol": "fab_readback_step",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_readback.inc"
+  },
+  {
+    "symbol": "fab_execute",
+    "kind": "function",
+    "file": "src/功能/fabrication/fab_execute.inc"
+  },
+  {
+    "symbol": "qp_l",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_l.inc"
+  },
+  {
+    "symbol": "qp_u",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_u.inc"
+  },
+  {
+    "symbol": "qp_power",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_power.inc"
+  },
+  {
+    "symbol": "qp_screen",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_screen.inc"
+  },
+  {
+    "symbol": "qp_hinge",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_hinge.inc"
+  },
+  {
+    "symbol": "qp_lock",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_lock.inc"
+  },
+  {
+    "symbol": "qp_clip",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_clip.inc"
+  },
+  {
+    "symbol": "qp_spacer",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_spacer.inc"
+  },
+  {
+    "symbol": "qp_stop",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_stop.inc"
+  },
+  {
+    "symbol": "qp_cover",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_cover.inc"
+  },
+  {
+    "symbol": "quick_seed",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_seed.inc"
+  },
+  {
+    "symbol": "quick_top",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_stock.inc"
+  },
+  {
+    "symbol": "quick_cuts",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_cuts.inc"
+  },
+  {
+    "symbol": "quick_bends",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_bends.inc"
+  },
+  {
+    "symbol": "quick_step",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_step.inc"
+  },
+  {
+    "symbol": "quick_execute",
+    "kind": "function",
+    "file": "src/功能/quick_parts/qp_execute.inc"
+  },
+  {
+    "symbol": "ax_joint_command",
+    "file": "src/功能/assembly/ax_mechanism_command.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_joint_parameter",
+    "file": "src/功能/assembly/ax_mechanism_joint.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_motion_sweep",
+    "file": "src/功能/assembly/ax_mechanism_scan.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_layout_build",
+    "file": "src/功能/assembly/ax_layout_create.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_layout_link",
+    "file": "src/功能/assembly/ax_layout_link.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_layout_refs",
+    "file": "src/功能/assembly/ax_layout_inspect.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+{
+  "symbol": "ax_layout_copy",
+  "file": "src/功能/assembly/ax_layout_copy.inc",
+  "original": "src/assembly_tools.h",
+  "kind": "function"
+},
+  {
+    "symbol": "ax_field_shim",
+    "file": "src/功能/assembly/ax_field_shim.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_field_mark",
+    "file": "src/功能/assembly/ax_field_mark.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_field_audit",
+    "file": "src/功能/assembly/ax_field_audit.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_field_execute",
+    "file": "src/功能/assembly/ax_field_commands.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_field_quilt",
+    "file": "src/功能/assembly/ax_field_native.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_field_sketch",
+    "file": "src/功能/assembly/ax_field_profiles.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_q_regen",
+    "file": "src/功能/assembly/ax_quality_checks.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_q_holes",
+    "file": "src/功能/assembly/ax_quality_geometry.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_quality_execute",
+    "file": "src/功能/assembly/ax_quality_report.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_view_rep",
+    "file": "src/功能/assembly/ax_views.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_view_named",
+    "file": "src/功能/assembly/ax_views.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_view_section",
+    "file": "src/功能/assembly/ax_views.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_view_explode",
+    "file": "src/功能/assembly/ax_views.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_view_sequence",
+    "file": "src/功能/assembly/ax_sequence.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_config_execute",
+    "file": "src/功能/assembly/ax_configuration.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_config_station_pairs",
+    "file": "src/功能/assembly/ax_layout_inspect.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_bom_csv_output",
+    "file": "src/功能/assembly/ax_bom_delivery.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_bom_check_result",
+    "file": "src/功能/assembly/ax_bom_delivery.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_pack_dependencies",
+    "file": "src/功能/assembly/ax_assembly_package.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_pack_bundle",
+    "file": "src/功能/assembly/ax_assembly_package.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
   }
 ]

@@ -59,6 +59,7 @@ static ProError run(ProMdl model,const wchar_t *protocol,int reject){
     return e;
 }
 static void expect_volume(ProMdl model,double expected){double actual=volume(model);if(fabs(actual-expected)>fmax(1e-5,expected*1e-7))failures++;trace("volume verification",fabs(actual-expected)<=fmax(1e-5,expected*1e-7)?0:-1);}
+#ifndef BWTL_REUSE_MACHINING_FIXTURE
 __declspec(dllexport) int user_initialize(int argc,char **argv,char *version,char *build,wchar_t error_buffer[80]){
     ProMdl model=NULL;ProMdlName name;Fixture f;ProError e=0;wchar_t cmd[1024],refs[28000];int i;char marker[16];
     HMODULE modules[2048];DWORD bytes;
@@ -94,6 +95,30 @@ __declspec(dllexport) int user_initialize(int argc,char **argv,char *version,cha
     NEW();swprintf_s(cmd,1024,L"CREO_OP EDGE_ROUND %ls HUGE 1000 EDGE:%d",name,f.vertical[0]);run(model,cmd,1);
     swprintf_s(cmd,1024,L"CREO_OP EDGE_CHAMFER %ls HUGE 1000 EDGE:%d",name,f.vertical[0]);run(model,cmd,1);
     swprintf_s(cmd,1024,L"CREO_OP EDGE_ROUND %ls STALE 1 EDGE:999999",name);run(model,cmd,1);
+#define PROFILE(verb,label,offset,tail,reject) do{swprintf_s(cmd,1024,L"CREO_OP %ls %ls %ls SURFACE:%d SURFACE:%d %g SURFACE:%d 30 %ls",verb,name,label,f.top,f.x,(double)offset,f.y,tail);run(model,cmd,reject);}while(0)
+    NEW();PROFILE(L"HOLE_COUNTERBORE",L"BORE",40,L"6 12 4 THROUGH 0",0);expect_volume(model,96000-288*3.141592653589793);
+    NEW();PROFILE(L"HOLE_COUNTERSINK",L"SINK",40,L"6 12 90 THROUGH 0",0);expect_volume(model,96000-216*3.141592653589793);
+    NEW();PROFILE(L"HOLE_COUNTERBORE",L"BLIND_BORE",40,L"6 12 4 BLIND 10",0);
+    expect_volume(model,96000-(198+9/tan(118*3.141592653589793/360))*3.141592653589793);
+    NEW();PROFILE(L"HOLE_COUNTERSINK",L"BLIND_SINK",40,L"6 12 90 BLIND 10",0);
+    expect_volume(model,96000-(126+9/tan(118*3.141592653589793/360))*3.141592653589793);
+    NEW();PROFILE(L"HOLE_COUNTERBORE",L"SIDE_BREAK_BORE",4,L"6 12 4 THROUGH 0",1);
+    PROFILE(L"HOLE_COUNTERSINK",L"TIP_BREAK",40,L"6 12 90 BLIND 19.5",1);
+    NEW();PROFILE(L"HOLE_THREAD",L"M6_THREAD",40,L"ISO M6x1 8 12",0);
+    expect_volume(model,96000-(75+pow(2.5,3)/3/tan(118*3.141592653589793/360))*3.141592653589793);
+    PROFILE(L"HOLE_THREAD",L"BAD_SIZE",50,L"ISO M6x9 8 12",1);
+    PROFILE(L"HOLE_THREAD",L"THREAD_TIP_BREAK",50,L"ISO M6x1 8 19.5",1);
+    NEW();f.top=f.bottom;f.x=f.xfar;
+    PROFILE(L"HOLE_COUNTERSINK",L"REVERSED_SINK",-40,L"6 12 90 THROUGH 0",0);
+    expect_volume(model,96000-216*3.141592653589793);
+    NEW();PROFILE(L"HOLE_THREAD",L"FINE_THREAD",40,L"ISO M6x0.75 6 12",0);
+    expect_volume(model,96000-(2.625*2.625*12+pow(2.625,3)/3/tan(118*3.141592653589793/360))*3.141592653589793);
+    NEW();swprintf_s(cmd,1024,L"CREO_OP SOLID_SHELL %ls SHELL_OK SURFACE:%d 2",name,f.top);run(model,cmd,0);
+    expect_volume(model,96000-76*56*18);
+    NEW();swprintf_s(cmd,1024,L"CREO_OP SOLID_SHELL %ls SHELL_THICK SURFACE:%d 30",name,f.top);run(model,cmd,1);
+    swprintf_s(cmd,1024,L"CREO_OP SOLID_SHELL %ls SHELL_STALE SURFACE:999999 2",name);run(model,cmd,1);
+#undef PROFILE
 done:trace("MACHINING_CASES",cases);trace("MACHINING_FAILURES",failures);trace("MACHINING_DONE",1);ProEngineerEnd();return 0;
 }
 __declspec(dllexport) void user_terminate(void){foundation_reset();}
+#endif

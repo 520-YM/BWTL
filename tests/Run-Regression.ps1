@@ -16,13 +16,13 @@ $lines=@('@echo off',('call "'+$vcvars+'" >nul'),'if errorlevel 1 exit /b 1',('c
 foreach($name in $names){
     $lines+=('cl /nologo /MD /W3 /utf-8 "'+(Join-Path $Root ('tests/'+$name+'.c'))+'" /Fo"'+$name+'.obj" /Fe"'+$name+'.exe"')
     if($name -eq 'test_attachments'){$lines[$lines.Count-1]+=' ole32.lib windowscodecs.lib uuid.lib gdi32.lib user32.lib shell32.lib'}
-    $lines+='if errorlevel 1 exit /b 1'
+    $lines+='if not "%ERRORLEVEL%"=="0" exit /b 1'
     if($name -eq 'test_chat_store'){
         $lines+=('"'+$name+'.exe" write "'+(Join-Path $WorkDirectory 'isolated-data')+'"')
-        $lines+='if errorlevel 1 exit /b 1'
+        $lines+='if not "%ERRORLEVEL%"=="0" exit /b 1'
         $lines+=('"'+$name+'.exe" read "'+(Join-Path $WorkDirectory 'isolated-data')+'"')
     }else{$lines+=('"'+$name+'.exe"')}
-    $lines+='if errorlevel 1 exit /b 1'
+    $lines+='if not "%ERRORLEVEL%"=="0" exit /b 1'
 }
 $lines+='exit /b 0'
 $runner=Join-Path $WorkDirectory 'run.cmd'

@@ -6,7 +6,7 @@ static ProError fd_reference_item(ProGeomitem *item,ProError status,ProAppData d
     if(!ProGeomitemFeatureGet(item,&feature))ProModelitemNameGet((ProModelitem *)&feature,name);
     if(item->type==PRO_SURFACE){
         if(ProGeomitemToSurface(item,&surface)||ProSurfaceTypeGet(surface,&surface_type))return 0;
-        part_text_add(list->out,L"SURFACE:%d 名称=%ls，%ls\n",item->id,name,surface_type==PRO_SRF_PLANE?L"平面":surface_type==PRO_SRF_CYL?L"圆柱面":L"其他曲面");
+        part_text_add(list->out,L"SURFACE:%d 名称=%ls，%ls\n",item->id,name,surface_type==PRO_SRF_PLANE?L"平面":surface_type==PRO_SRF_CYL?L"圆柱面":surface_type==PRO_SRF_CONE?L"圆锥面":L"其他曲面");
     }else if(item->type==PRO_EDGE)part_text_add(list->out,L"EDGE:%d 所属特征=%ls\n",item->id,name);
     else part_text_add(list->out,L"%ls%ls（ID=%d）\n",item->type==PRO_AXIS?L"AXIS:":item->type==PRO_POINT?L"POINT:":item->type==PRO_CSYS?L"CSYS:":L"CURVE:",name,item->id);
     list->count++;return 0;

@@ -1,9 +1,12 @@
-static ProError fd_shape_append(ProSection section,const PartCommand *cmd,int start,double scale,int ids[4],int *count){
+#include "../../advanced_sketch_shapes.h"
+static ProError fd_shape_append(ProSection section,const PartCommand *cmd,int start,double scale,int ids[AS_LIMIT],int *count){
     double v[5]={0};int n=cmd->count-start-1,i,dim;ProError e;const wchar_t *shape=cmd->arg[start];
     ProBoolean im=PRO_B_FALSE;ProSectionPointType whole=PRO_ENT_WHOLE;
     *count=0;
     if((e=ProSectionIntentManagerModeGet(section,&im)))return e;
     if(im&&(e=ProSectionIntentManagerModeSet(section,PRO_B_FALSE)))return e;
+    i=as_shape_kind(shape);
+    if(i)return as_shape_append(section,cmd,start+1,i,scale,ids,count);
     /* A feature-owned 3D section already carries its sketch frame. A
        standalone 2D coordinate entity must not be inserted into that frame. */
     for(i=0;i<n;i++){part_number(cmd->arg[start+1+i],&v[i]);if(i<3||!wcscmp(shape,L"LINE")||!wcscmp(shape,L"CENTERLINE")||!wcscmp(shape,L"RECT"))v[i]*=scale;}

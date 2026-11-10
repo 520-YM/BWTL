@@ -16,7 +16,7 @@ static void trace(const char *label,int value){FILE *f=fopen("development-result
 #define PART_TEXT_MAX 28000
 #define NATIVE_IMAGE_MAX 4
 typedef struct {wchar_t path[MAX_PATH],name[100];HBITMAP thumbnail;} NativeImage;
-static int native_mode,store_ready,queued,busy,replies;
+static int store_ready,queued,busy,replies;
 static HANDLE ai_process;
 static PartCommand pending_part;
 static ModelPlan pending_plan;
@@ -42,7 +42,7 @@ static int development_run(uiCmdCmdId id,uiCmdValue *value,void *data){
     error=model_create_empty(1,name,&stage);
     trace(stage,error);check("independent ordinary test model created",error==PRO_TK_NO_ERROR);
     check("configured step limit is 100",SMART_MAX_STEPS==100);
-    native_mode=0;smart_begin(L"新建独立测试零件，不保存");queued=replies=0;
+    smart_begin(L"新建独立测试零件，不保存");queued=replies=0;
     for(i=0;i<99&&smart_active;i++)smart_after_tool(PRO_TK_NO_ERROR,L"测试回执：检查通过",0);
     check("step 99 still active",smart_active&&busy&&smart_steps==99&&queued==99&&replies==0);
     if(smart_active)smart_after_tool(PRO_TK_NO_ERROR,L"测试回执：检查通过",0);

@@ -4,10 +4,9 @@ static LRESULT CALLBACK native_window_proc(HWND window,UINT message,WPARAM w,LPA
     case CHAT_BUSY:
         InterlockedExchange(&native_busy,(LONG)w);
         SetWindowTextW(native_buttons[1],w?L"处理中…":L"发送给 AI");
-        EnableWindow(native_buttons[1],!w);EnableWindow(native_mode_control,!w);
-        EnableWindow(native_apply_button,!w);
+        EnableWindow(native_buttons[1],!w);
         EnableWindow(native_top_buttons[2],!w);
-        EnableWindow(native_stop_button,w==1);return 0;
+        EnableWindow(native_stop_button,w!=0);return 0;
     case CHAT_DESTROY:DestroyWindow(window);PostQuitMessage(0);return 0;
     case WM_CTLCOLORSTATIC:
         SetBkMode((HDC)w,TRANSPARENT);SetTextColor((HDC)w,RGB(43,64,76));return (LRESULT)native_background;
@@ -26,7 +25,7 @@ static LRESULT CALLBACK native_window_proc(HWND window,UINT message,WPARAM w,LPA
         }
         COLORREF color=d->CtlID==CHAT_SEND?RGB(18,120,104):RGB(225,234,239);
         int muted=(d->CtlID>=CHAT_RESERVED_2&&d->CtlID<=CHAT_RESERVED_3)||
-            ((d->CtlID==CHAT_APPLY||d->CtlID==CHAT_WORKDIR)&&(d->itemState&ODS_DISABLED));
+            (d->CtlID==CHAT_WORKDIR&&(d->itemState&ODS_DISABLED));
         HBRUSH brush;HPEN pen;HGDIOBJ oldbrush,oldpen,oldfont;
         if(d->itemState&ODS_SELECTED)color=d->CtlID==CHAT_SEND?RGB(13,96,83):RGB(208,221,229);
         if(muted)color=RGB(237,241,244);
@@ -55,12 +54,10 @@ static LRESULT CALLBACK native_window_proc(HWND window,UINT message,WPARAM w,LPA
         if(LOWORD(w)==CHAT_FEATURES){native_feature_menu(native_top_buttons[0]);return 0;}
         if(LOWORD(w)==CHAT_COMPANY){native_company_action();return 0;}
         if(LOWORD(w)==CHAT_WORKDIR){if(!native_busy)native_workdir_menu(native_top_buttons[2]);return 0;}
-        if(LOWORD(w)==CHAT_MODE&&HIWORD(w)==CBN_SELCHANGE){InterlockedExchange(&native_mode,(LONG)SendMessageW(native_mode_control,CB_GETCURSEL,0,0));return 0;}
         if(LOWORD(w)==CHAT_ATTACH){if(!native_busy)native_choose_images();return 0;}
         if(LOWORD(w)==CHAT_CLEAR_IMAGES){if(!native_busy){native_images_clear();native_attachment_changed();}return 0;}
-        if(LOWORD(w)==CHAT_STOP){if(native_busy!=2)native_cancel_action();return 0;}
+        if(LOWORD(w)==CHAT_STOP){if(native_busy)native_cancel_action();return 0;}
         if(LOWORD(w)==CHAT_DETAILS){native_details_action();return 0;}
-        if(LOWORD(w)==CHAT_APPLY){if(!native_busy)native_apply_action();return 0;}
         if(LOWORD(w)==CHAT_SEND){if(native_busy)return 0;native_force_follow=1;native_send_action();return 0;}
         if(LOWORD(w)==CHAT_READ){native_force_follow=1;native_read_action();return 0;}
         if(LOWORD(w)==CHAT_CLOSE){native_close_action();return 0;}

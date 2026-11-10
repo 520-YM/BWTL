@@ -1,12 +1,12 @@
 {
-  "Version": "v23-reviewed-multiinstance-20261106",
-  "RuntimeRelease": "0.23.0-local.multiinstance.1",
+  "Version": "v23-reviewed-assembly-quality-20261110",
+  "RuntimeRelease": "0.23.0-local.asmquality.1",
   "Created": "2026-11-04",
   "Policy": "No automatic baseline refresh. Legacy modifications require explicit review and applicable regression, including Creo native tests for behavioral changes.",
   "Files": [
     {
       "Path": "src/assistant.c",
-      "SHA256": "7a4a5aa50433aaf74b6b15823eb778eb982e85fba4e6520c25dacdf14ca6428d"
+      "SHA256": "99ce0eda87983aeb7c20083a2fc8242726c781b5b26f3c03f028dc61fc37411b"
     },
     {
       "Path": "src/chat_store.h",
@@ -18,15 +18,15 @@
     },
     {
       "Path": "src/foundation_plan.h",
-      "SHA256": "c35359592ce5af1af7bf9115272e6e5d18cb13bd404d58695703247a038226dd"
+      "SHA256": "4ab5e4c20f69715ad5eb4e0a5a8bd389c67055a21cfb5b0d17f75bdbbeca05b2"
     },
     {
       "Path": "src/foundation_prompt.h",
-      "SHA256": "ab29a349bfe462f9456c6a62348dda63cc7f535b1e0412144974e27c114c9237"
+      "SHA256": "6164a3bce9f361e41135f31346b44fc9f86914084cbe12164cd69e619b894042"
     },
     {
       "Path": "src/foundation_tools.h",
-      "SHA256": "fc5e1124b631d1fd73ee670c903305b1c33ed449403dcc33cdcc2d42f93857aa"
+      "SHA256": "6bac44d05b1fef80d09511bae2362e7d1d528c591a0709396131a95fb6afb407"
     },
     {
       "Path": "src/history_context.h",
@@ -34,11 +34,11 @@
     },
     {
       "Path": "src/model_plan.h",
-      "SHA256": "bc635272dcc43c2652d5518ac6d42feb3feddaf2a796aec0e19e4ccb0f9b3888"
+      "SHA256": "3d6ac5e46c42d9fe607c5a8072ae3795cd73762a3fc0b77d0b48e35be98127cf"
     },
     {
       "Path": "src/native_chat_ui.h",
-      "SHA256": "e5fa6b816068ccd870e2c2436e58e9af7164270f826b27809ac3be9783b0110d"
+      "SHA256": "50a36e0209e9b48b4b9b4bf1f1fbccdc2a89e7e8d379b5b12b751a71f1ee19d6"
     },
     {
       "Path": "src/native_model.h",
@@ -50,7 +50,7 @@
     },
     {
       "Path": "src/part_prompt.h",
-      "SHA256": "d4475f9ee075a334abf20686c0169f6d842b74fe19c322b6a24063cdf6fa75ab"
+      "SHA256": "3b62c21098cef661afb5701f0361dfaf771fbb78b6c8ee05d1d4c87542d02966"
     },
     {
       "Path": "src/part_selfcheck.h",
@@ -74,11 +74,11 @@
     },
     {
       "Path": "src/solid_prompt.h",
-      "SHA256": "6b7ec486343c5fb1092610847531633058de8d625d21e9b4dd416824e4967e1c"
+      "SHA256": "bd10bcc3daf62c15ec25d531f402686623dac5d87b5459f02e5aa9a048f77e62"
     },
     {
       "Path": "src/solid_tools.h",
-      "SHA256": "d4cc72e73e1fce7fd67945828280e2d03060cc1d69c59ce1afcf9db1b75ee31b"
+      "SHA256": "3c7c8f15d39a029fae0aa856500b1c57e7f2e45d5a955e79e36c76956057f243"
     },
     {
       "Path": "src/功能/assistant/access_command.inc",
@@ -90,11 +90,11 @@
     },
     {
       "Path": "src/功能/assistant/ai_poll.inc",
-      "SHA256": "38a97af831b9cb5817a2c89a708d742a6c1e5e27df56d9fc22bd88255748066f"
+      "SHA256": "dfc557a1a6974119ee5f029838fc7c327ef10e77b09062b2d32b414bf051fed9"
     },
     {
       "Path": "src/功能/assistant/ai_send.inc",
-      "SHA256": "0323cd3e65bb97628bb6058062e6654cee6f0a7a6695a8789195dea321059a42"
+      "SHA256": "bdcfe6969861ab02852951d540af6a2d29d6d2927c6bd2d6cd44cc126b9c8d72"
     },
     {
       "Path": "src/功能/assistant/append_card.inc",
@@ -114,11 +114,11 @@
     },
     {
       "Path": "src/功能/assistant/execute_model_plan.inc",
-      "SHA256": "1cf4e74b771922a36b382d2b8fa4934aed8475ad94769ef77f10ff3309c16f0d"
+      "SHA256": "afc4a317de5f22b09c1b6e7cea24ae754bd1a047187c21ba9cb39aa79ac01514"
     },
     {
       "Path": "src/功能/assistant/execute_part_command.inc",
-      "SHA256": "ac412fd7c0c8a967ff8da2ee4562e3ae61b7a68c95725e81bd41877d5fbf8e5f"
+      "SHA256": "aa290f520f21f8b0c96fbea5177d19d437f6462ad03cbc9c07920d72ef538a52"
     },
     {
       "Path": "src/功能/assistant/inspect_native_command.inc",
@@ -130,7 +130,7 @@
     },
     {
       "Path": "src/功能/assistant/native_backend_proc.inc",
-      "SHA256": "56da78054c1e952b8cce232b0218ad26c96b820b9e3ec15017aeef12e0b60001"
+      "SHA256": "37ef81fd679ca393d3da8f2da297d6d25c587cbcf5cc96dac4d6491b5c0b7f85"
     },
     {
       "Path": "src/功能/assistant/native_close_action.inc",
@@ -138,7 +138,7 @@
     },
     {
       "Path": "src/功能/assistant/native_poll_action.inc",
-      "SHA256": "498d6a4134e618043dc36f951763a7c3f5d453eebb0346be50b7ce568215409f"
+      "SHA256": "6a0cd4bdcad0d8d5b96631ec1dd2d5ad120ef2dbda2e419329361ac43d3a18b2"
     },
     {
       "Path": "src/功能/assistant/native_read_action.inc",
@@ -154,7 +154,7 @@
     },
     {
       "Path": "src/功能/assistant/open_window.inc",
-      "SHA256": "7d0d838d20f3e336d495cdc54f40ba3f4eb260cb9c9e37bae2585718b12d3f81"
+      "SHA256": "a144540127bfd96bd92d94d846b2519bef218f502e0f0ba17d10e60d0e950090"
     },
     {
       "Path": "src/功能/assistant/read_model.inc",
@@ -162,7 +162,7 @@
     },
     {
       "Path": "src/功能/assistant/run_local.inc",
-      "SHA256": "97619344798c45da4fbeed94c6735ea00e97b096faf455fd1fa8ea8d4882c239"
+      "SHA256": "1671b9ee29d5e02834bc14dfde2a4b86aa67c09d9febdee75b035cc6d8262b83"
     },
     {
       "Path": "src/功能/assistant/save_pending_plan.inc",
@@ -186,15 +186,15 @@
     },
     {
       "Path": "src/功能/assistant/user_initialize.inc",
-      "SHA256": "e97659ec517916c0459900c4d0d7c3113e27b7558a2709a5e0f24234078f1d6d"
+      "SHA256": "f19020cfca68b9707288a0771d4bb8ba8f91f4c67010766468a23455ab20084e"
     },
     {
       "Path": "src/功能/assistant/user_terminate.inc",
-      "SHA256": "89700160aa20ee945b0a530f292e3f3c76f00bc8e172880a26fdf7e1b4dacb3c"
+      "SHA256": "a21920c1e79265898afe197c0fe66e80f1cb7e3d5294abe453979b210a6ea610"
     },
     {
       "Path": "src/功能/assistant/verify_active_command.inc",
-      "SHA256": "66a44eb520b6b7f82769c5ff1220e3690134d6f96e3f490169c76841bd5f980a"
+      "SHA256": "0df57a9f4dddfdae280b4397ccd3f042d1698cc9df64fafc5bee3cf105d9b2f5"
     },
     {
       "Path": "src/功能/chat_store/store_forget.inc",
@@ -262,15 +262,15 @@
     },
     {
       "Path": "src/功能/foundation_plan/fd_shape_valid.inc",
-      "SHA256": "82ab5143f135cbbc67452352cdeb79bdea8685dc53d41a6f4a40ebc941c0d0d3"
+      "SHA256": "6e41f653cec62fdab4ed775da10a1c82c0492d62d2fce007520079d1b5a79bd6"
     },
     {
       "Path": "src/功能/foundation_plan/foundation_plan_valid.inc",
-      "SHA256": "52d5b312ad146f5210532ff7133d01d27cb22c173b3ab47af067a35c2b9a15a4"
+      "SHA256": "689f8a92c5a47c9d0a192720079e234717fee2f5799307b102922738eed7e913"
     },
     {
       "Path": "src/功能/foundation_prompt/foundation_request.inc",
-      "SHA256": "f08489a32411951da2a7ccb2fe09d23307ae27f44eaf912f4fdbe9840a1dfbb4"
+      "SHA256": "5db695bb8856a8a09325a56aad538955afa71dd34b3d52c5718d14e600c5edb4"
     },
     {
       "Path": "src/功能/foundation_tools/datum_axis.inc",
@@ -294,7 +294,7 @@
     },
     {
       "Path": "src/功能/foundation_tools/fd_begin.inc",
-      "SHA256": "a858472c25866fe2231d50356285f849e9fed29434fc7c308c4b3b19e0f68d6a"
+      "SHA256": "f473bd0ac62845ae96f7409c26665ab1b2a80fa3704784a9112b3f2800751a30"
     },
     {
       "Path": "src/功能/foundation_tools/fd_cleanup.inc",
@@ -362,7 +362,7 @@
     },
     {
       "Path": "src/功能/foundation_tools/fd_reference_item.inc",
-      "SHA256": "0c5ae72f3c98eee4937946e57ed94bfedbc2a0f6cba950e26b0da236c32e57e4"
+      "SHA256": "c926420124a26017d07fea4621236a8d7d1403fae594776f94b4080ca69729b6"
     },
     {
       "Path": "src/功能/foundation_tools/fd_same_refs.inc",
@@ -378,15 +378,15 @@
     },
     {
       "Path": "src/功能/foundation_tools/fd_shape_append.inc",
-      "SHA256": "a737475a8a2c9a977ff7a54e3a38211a8f9ed5c9254fd0cd0e074400dcf78d7a"
+      "SHA256": "008648460967f64b1809644a31432f09d746e8e6a45fe67d6d4082affd6b4e42"
     },
     {
       "Path": "src/功能/foundation_tools/fd_sketch_create.inc",
-      "SHA256": "47bef365049af0499557e72e4eb1c9a10efd5453fa67a3df9619211a56524fcc"
+      "SHA256": "bd3435a5f7695e794ce46c10d57db7a05a04dd1c70b36f08dbcd7524a43cef87"
     },
     {
       "Path": "src/功能/foundation_tools/fd_sketch_edit.inc",
-      "SHA256": "d9ff29f8915f66e85c85aa2a24ac98ede2feeb051533e1f22eecb460e55bd4ff"
+      "SHA256": "4de22021b44169dcacef6116cbbae731e645bb4062008f245c8e207feaf1230a"
     },
     {
       "Path": "src/功能/foundation_tools/fd_sketch_free.inc",
@@ -414,7 +414,7 @@
     },
     {
       "Path": "src/功能/foundation_tools/foundation_execute.inc",
-      "SHA256": "76253d316c4f69f0abd930a702c8e34ce767de474ddd34f1362a42bce1d59950"
+      "SHA256": "7624d8647f82ec76e558eb72eeef12e9ce67d73bf234ffa30db3f6091d39eef9"
     },
     {
       "Path": "src/功能/foundation_tools/foundation_references.inc",
@@ -502,11 +502,11 @@
     },
     {
       "Path": "src/功能/model_plan/model_request_current.inc",
-      "SHA256": "795afa059774dad7de96d80dedcd5cca31548c28a8f0e38b26fa29e32cbc4178"
+      "SHA256": "5118dbcb17330f7073979173654f67ac71719d633c125dce61e10c1fde89b6c9"
     },
     {
       "Path": "src/功能/native_chat_ui/native_layout.inc",
-      "SHA256": "0a8bc40b4277ca10fba1ac2f92b7bc6b4320217731550a85e06bf854c8a9020e"
+      "SHA256": "d09fd02acf22ab439e641a140f28f026e9149aef474af14bf2eab542c2d60287"
     },
     {
       "Path": "src/功能/native_chat_ui/native_prompt_get.inc",
@@ -530,7 +530,7 @@
     },
     {
       "Path": "src/功能/native_chat_ui/native_ui_create.inc",
-      "SHA256": "cc4eac7ba4363c81153c8927329b04cad2aa436d82549fdb6728fc108bb3da25"
+      "SHA256": "2bcc897b89e1690ce6fa646cbd6853eb63a2ae6f5572bfa31002840b0b15efa4"
     },
     {
       "Path": "src/功能/native_chat_ui/native_ui_history.inc",
@@ -550,7 +550,7 @@
     },
     {
       "Path": "src/功能/native_chat_ui/native_window_proc.inc",
-      "SHA256": "9bf93a962a67c4e2703cfc0670ddff0ec1abe779acdf518864de619c1c33eeb4"
+      "SHA256": "1571bfc70634f6c33ae3a9f77cee1d4335446a5d217004892da5575e0f08d5ea"
     },
     {
       "Path": "src/功能/native_model/model_build_internal.inc",
@@ -650,7 +650,7 @@
     },
     {
       "Path": "src/功能/part_tools/part_context_sections.inc",
-      "SHA256": "5b18d1be96a03f4b8c966a7a5065f56149936b28e0d5dd952e945d65ae03f1ac"
+      "SHA256": "cc22305d5ad9979c8ae759d76ce412fbf65c3c79606d7516e38ffd077b38de61"
     },
     {
       "Path": "src/功能/part_tools/part_copy.inc",
@@ -666,7 +666,7 @@
     },
     {
       "Path": "src/功能/part_tools/part_execute.inc",
-      "SHA256": "472b0d92ffd2d20091dd0a002b4a0013c6a7ba596706152886c5f5bfa386fc8f"
+      "SHA256": "a996704d7b4b515f567475de252c6d98787fc3d2c14e894870ea044217302dbd"
     },
     {
       "Path": "src/功能/part_tools/part_extrude_current.inc",
@@ -722,7 +722,7 @@
     },
     {
       "Path": "src/功能/part_tools/part_request_target_get.inc",
-      "SHA256": "3aa96a7ea2d20bc9ea8636739e883916cc108d7db9527c55e6e204c3e870a23d"
+      "SHA256": "8aae354234f31c996eecb013fe92f8ae2cb736ba1e58d6b950c934b48cd43908"
     },
     {
       "Path": "src/功能/part_tools/part_save.inc",
@@ -802,7 +802,7 @@
     },
     {
       "Path": "src/功能/solid_plan/solid_plan_valid.inc",
-      "SHA256": "022cadb56db33490851e7960f71908dc1e4f4eade443095f3a8996064c54547b"
+      "SHA256": "955b9ab0e41f49eb623fe5f3d4dd2cd9c4f0296e79f87aac583405e647a43f1c"
     },
     {
       "Path": "src/功能/solid_tools/sd_body_count.inc",
@@ -810,7 +810,7 @@
     },
     {
       "Path": "src/功能/solid_tools/sd_create.inc",
-      "SHA256": "48472177611744acfffd5703441ff1a92258cf96fd4d419a8df3bacbaecaa033"
+      "SHA256": "1a31bb2cbf358b11dba34ed553c33d36e40db9cfd34d7a84b48857a4c96763b7"
     },
     {
       "Path": "src/功能/solid_tools/sd_edit.inc",
@@ -822,7 +822,7 @@
     },
     {
       "Path": "src/功能/solid_tools/sd_is_command.inc",
-      "SHA256": "0210a836abcd2b9f904f2e8833bb3b2e8f43447ec2a571d37fd942204514a709"
+      "SHA256": "eb264971f5529f705bdba79bf7cac79b63683dfb6112555bf8bb00b78da04ef1"
     },
     {
       "Path": "src/功能/solid_tools/sd_mark_section.inc",
@@ -834,7 +834,7 @@
     },
     {
       "Path": "src/功能/solid_tools/sd_sketch_ref.inc",
-      "SHA256": "f29e6689ada944298edf492b431b0270609ca1ab78e5ff4a63a5e7e5daba573c"
+      "SHA256": "8929412c6050aa45fba42e2f68de49f448eaca4a3a09ef9c5e41b97502818de4"
     },
     {
       "Path": "src/功能/solid_tools/sketch_move.inc",
@@ -870,7 +870,7 @@
     },
     {
       "Path": "tests/test_foundation_protocol.c",
-      "SHA256": "0e35cd6f2c649aba53f440b913f74e3671272baebcc0d69dc30380eb97b472c8"
+      "SHA256": "83a3ef01cc34b98f4896c7a514cdf2aeab4df1e758db266a6d4d9ab037e043a1"
     },
     {
       "Path": "tests/test_history_context.c",
@@ -878,11 +878,11 @@
     },
     {
       "Path": "tests/test_model_plan.c",
-      "SHA256": "b2b6aa0430583c8e86c3a48528d6a3b72228eb4ffe955f738f0f71adfc6eadbf"
+      "SHA256": "2af9ae195ea9435f12ae2d8e3e5e8b96c04232eb102d9741df8a93cd29e38d0c"
     },
     {
       "Path": "tests/test_native_chat.c",
-      "SHA256": "24a2285efba7d817de0c3d94b8a42cf4a2d230aa51320194ac9b577c1db42e12"
+      "SHA256": "9ac0ce6e1dd6fa9391710f972cb433098561c27415222006b384556687d9da0c"
     },
     {
       "Path": "tests/test_part_command.c",
@@ -898,7 +898,7 @@
     },
     {
       "Path": "tests/test_solid_protocol.c",
-      "SHA256": "6d456d8a61b5d3bd9d0eeefdfe19d317d92c83337ab06db63b26ecf9f808cbef"
+      "SHA256": "f170f00638656b8d4126ae6a8b3f2559d236bc0a0084ef618e5af45f9beb261f"
     },
     {
       "Path": "build.cmd",
@@ -910,7 +910,7 @@
     },
     {
       "Path": "tests/Run-Regression.ps1",
-      "SHA256": "71f31bacf950a19621fcbaab06d87d089feb20bd74ca9bc0e11d33428c327a87"
+      "SHA256": "f93e1094302e34cd3d5c47400106147ae1cd2a165fe76c1778d3580f0bcddae6"
     }
   ]
 }

@@ -39,7 +39,7 @@ static int working_directory_command(uiCmdCmdId command,uiCmdValue *value,void *
     UINT action=pending_workdir_action;
     ProError error;
     pending_workdir_action=0;
-    if(!action||native_busy||smart_active||ai_process||development_process)return 0;
+    if(!action||native_busy||smart_active||ai_process)return 0;
     error=ProDirectoryCurrentGet(current);
     if(error){append(L"无法读取当前 Creo 工作目录。");return 0;}
     if(action==WORKDIR_OPEN){

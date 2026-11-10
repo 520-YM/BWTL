@@ -18,7 +18,7 @@
 
 使用本机完整安装包的 `setup/Install-BWTL.ps1 -Silent`，选择原安装根目录及原 `config.pro`。新版本与旧版并存，仍使用原 `data`，安装器备份配置和数据。保存工作并正常重启Creo后生效。入口为顶部 `BWTL`，备用快捷键仍为 `c`、`d`、`x`。
 
-本机安装根目录：`%LOCALAPPDATA%\BWTL`。
+本机安装根目录：`C:\Users\Administrator\AppData\Local\BWTL`。
 
 ## 回退
 

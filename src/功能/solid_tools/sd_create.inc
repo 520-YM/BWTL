@@ -1,21 +1,25 @@
 static ProError sd_create(const PartCommand *cmd,ProMdl model,wchar_t *report,size_t capacity){
-    FdTxn tx={0};FdRef sketch={0},axis={0};ProElement section=NULL,body=NULL,depth=NULL,from=NULL,to=NULL;
+    FdTxn tx={0};FdRef sketch={0},axis={0},target={0};ProElement section=NULL,body=NULL,depth=NULL,from=NULL,to=NULL;
     ProSectionShape shape;ProMassProperty after;ProError e;ProFeatStatus status;
     int revolve_cut=!wcscmp(cmd->arg[0],L"SOLID_REVOLVE_CUT");
     int revolve=revolve_cut||!wcscmp(cmd->arg[0],L"SOLID_REVOLVE");
-    int cut=revolve_cut||(!revolve&&!wcscmp(cmd->arg[4],L"CUT"));
-    const wchar_t *operation=revolve?(cut?L"旋转切除":L"旋转加料"):(cut?L"拉伸切除":L"标准拉伸加料");
+    int advanced=sx_kind(cmd->arg[0]),thin=advanced==SX_THIN;
+    int direction=revolve||advanced==SX_REFERENCE?6:7;
+    int cut=revolve_cut||(!revolve&&!thin&&!wcscmp(cmd->arg[4],L"CUT"));
+    const wchar_t *advanced_names[]={L"",L"对称拉伸",L"到参照拉伸",L"双侧不等深拉伸",L"薄壁拉伸"};
+    const wchar_t *operation=advanced?advanced_names[advanced]:revolve?(cut?L"旋转切除":L"旋转加料"):(cut?L"拉伸切除":L"标准拉伸加料");
     int *parents=NULL,np=0,i,j,body_before=0,body_after=0;double amount=0,old_volume=0;
 #define SD_TRY(label,call) do{tx.stage=label;e=(call);trace(label,e);if(e)goto done;}while(0)
     SD_TRY("validate standard solid feature",fd_begin(&tx,model,cmd->arg[2],cut?PRO_FEAT_CUT:PRO_FEAT_PROTRUSION));
     SD_TRY("read active body count",sd_body_count(model,&body_before));if(body_before>1||(cut&&body_before!=1)){e=PRO_TK_BAD_CONTEXT;goto done;}
     if(!tx.was_empty){if(!tx.has_volume){e=PRO_TK_BAD_CONTEXT;goto done;}old_volume=tx.volume;}
-    SD_TRY("resolve closed associative sketch",sd_sketch_ref(model,cmd->arg[3],&sketch,&shape));
+    SD_TRY("resolve associative extrusion sketch",sd_sketch_ref_shape(model,cmd->arg[3],&sketch,&shape,thin));
     SD_TRY("solid feature form",model_element(tx.root,PRO_E_FEATURE_FORM,1,revolve?PRO_REVOLVE:PRO_EXTRUDE,NULL));
     SD_TRY("solid type",model_element(tx.root,PRO_E_EXT_SURF_CUT_SOLID_TYPE,1,PRO_EXT_FEAT_TYPE_SOLID,NULL));
     SD_TRY("material operation",model_element(tx.root,PRO_E_REMOVE_MATERIAL,1,cut?PRO_EXT_MATERIAL_REMOVE:PRO_EXT_MATERIAL_ADD,NULL));
-    SD_TRY("solid not thin",model_element(tx.root,PRO_E_FEAT_FORM_IS_THIN,1,PRO_EXT_FEAT_FORM_NO_THIN,NULL));
-    SD_TRY("extrusion direction",model_element(tx.root,PRO_E_STD_DIRECTION,1,!wcscmp(cmd->arg[revolve?6:7],L"POS")?PRO_EXT_CR_IN_SIDE_ONE:PRO_EXT_CR_IN_SIDE_TWO,NULL));
+    SD_TRY("solid thickness mode",model_element(tx.root,PRO_E_FEAT_FORM_IS_THIN,1,thin?PRO_EXT_FEAT_FORM_THIN:PRO_EXT_FEAT_FORM_NO_THIN,NULL));
+    if(advanced&&cut)SD_TRY("remove material inside extrusion section",model_element(tx.root,PRO_E_STD_MATRLSIDE,1,PRO_EXT_MATERIAL_SIDE_TWO,NULL));
+    SD_TRY("extrusion direction",model_element(tx.root,PRO_E_STD_DIRECTION,1,(advanced==SX_SYMMETRIC||!wcscmp(cmd->arg[direction],L"POS"))?PRO_EXT_CR_IN_SIDE_ONE:PRO_EXT_CR_IN_SIDE_TWO,NULL));
     SD_TRY("body options",model_element(tx.root,PRO_E_BODY,0,0,&body));
     SD_TRY("use solid body",model_element(body,PRO_E_BODY_USE,1,cut?PRO_BODY_USE_ALL:body_before?PRO_BODY_USE_SELECTED:PRO_BODY_USE_NEW,NULL));
     if(!cut&&body_before)SD_TRY("reference existing active body",sd_existing_body(&tx,body));
@@ -23,6 +27,9 @@ static ProError sd_create(const PartCommand *cmd,ProMdl model,wchar_t *report,si
     SD_TRY("link external sketch",fd_ref_element(&tx,section,PRO_E_SEC_USE_SKETCH,&sketch));
     if(revolve){
 #include "solid_revolve.inc"
+}else if(advanced){
+        if(thin)SD_TRY("set thin-wall thickness and ends",sx_thin_parameters(&tx,cmd));
+        SD_TRY("set advanced extrusion limits",sx_extrude_depth(&tx,cmd,advanced,&target));
 }else{
 #include "solid_extrude.inc"
 }
@@ -43,11 +50,11 @@ static ProError sd_create(const PartCommand *cmd,ProMdl model,wchar_t *report,si
     swprintf_s(report,capacity,L"已在当前零件创建%ls %ls，引用草绘%ls。特征ID%d，体积 %.9g → %.9g mm³；单实体、父参照及重生成核对通过。未另建零件，未保存。",operation,cmd->arg[2],cmd->arg[3],tx.feature.id,old_volume/(tx.scale*tx.scale*tx.scale),after.volume/(tx.scale*tx.scale*tx.scale));
 done:
     if(e&&tx.errors.error_list){for(i=0;i<tx.errors.error_number&&i<32;i++){trace("solid element error id",tx.errors.error_list[i].err_item_id);trace("solid element error code",tx.errors.error_list[i].error);}}
-    if(parents)ProArrayFree((ProArray *)&parents);fd_ref_free(&sketch);fd_ref_free(&axis);fd_cleanup(&tx,e);
-    if(e&&revolve_cut&&tx.created&&
+    if(parents)ProArrayFree((ProArray *)&parents);fd_ref_free(&sketch);fd_ref_free(&axis);fd_ref_free(&target);fd_cleanup(&tx,e);
+    if(e&&(revolve_cut||advanced)&&tx.created&&
        (part_health(model)||sd_body_count(model,&body_after)||body_after!=body_before||
-        ProSolidMassPropertyWithDensityGet((ProSolid)model,NULL,PRO_MP_DENS_USE_ALWAYS,1,&after)||
-        !part_close(after.volume,old_volume)))tx.rollback_ok=0;
+        (body_before&&(ProSolidMassPropertyWithDensityGet((ProSolid)model,NULL,PRO_MP_DENS_USE_ALWAYS,1,&after)||
+        !part_close(after.volume,old_volume)))))tx.rollback_ok=0;
     if(e)swprintf_s(report,capacity,L"实体操作未完成：%hs，错误码%d。%ls，未保存。",tx.stage,e,tx.rollback_ok?L"未新增或已核对移除本次特征":L"恢复状态未能核实，请检查模型");return e;
 #undef SD_TRY
 }

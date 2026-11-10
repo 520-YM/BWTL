@@ -1,7 +1,32 @@
 static int foundation_plan_valid(int n,wchar_t args[][PART_TOKEN_MAX]){
+    {int organize=organize_plan_valid(n,args);if(organize)return organize;}
+    {int fabrication=fabrication_plan_valid(n,args);if(fabrication)return fabrication;}
+    {int quick=quick_plan(n,args,NULL);if(quick)return quick;}
+    if(!wcscmp(args[0],L"STOOL_BACK"))
+        return n==5&&fd_name(args[1])&&qa_number(args[2],0.1,2000)&&
+            qa_number(args[3],0.1,2000)&&qa_number(args[4],0.1,2000)?1:-1;
+    {int inspection=inspection_plan_valid(n,args);if(inspection)return inspection;}
+    {int revision=revision_plan_valid(n,args);if(revision)return revision;}
+    {int vent=vent_plan_valid(n,args);if(vent)return vent;}
+    {int shop=shop_plan_valid(n,args);if(shop)return shop;}
+    {int fastener=fastener_plan_valid(n,args);if(fastener)return fastener;}
+    {int cabinet=cabinet_plan_valid(n,args);if(cabinet)return cabinet;}
+    {int panel=panel_plan_valid(n,args);if(panel)return panel;}
+    {int assembly=assembly_plan_valid(n,args);if(assembly)return assembly;}
+    {int delivery=delivery_plan_valid(n,args);if(delivery)return delivery;}
+    {int quality=quality_plan_valid(n,args);if(quality)return quality;}
+    {int reuse=reuse_plan_valid(n,args);if(reuse)return reuse;}
+    {int result=sheetmetal_plan_valid(n,args);if(result)return result;}
+    {int result=structural_plan_valid(n,args);if(result)return result;}
+    {int result=advanced_machining_plan_valid(n,args);if(result)return result;}
     const wchar_t *verb=args[0];double a[6];int i;
     {int result=machining_plan_valid(n,args);if(result)return result;}
+    {int result=refinement_plan_valid(n,args);if(result)return result;}
+    {int result=advanced_datum_plan_valid(n,args);if(result)return result;}
+    {int result=as_edit_valid(n,args);if(result)return result;}
     {int result=solid_plan_valid(n,args);if(result)return result;}
+    {int result=advanced_solid_valid(n,args);if(result)return result;}
+    {int result=surface_plan_valid(n,args);if(result)return result;}
     if(!wcscmp(verb,L"REFERENCES"))return n==2||(n==3&&fd_reference_token(args[2]))?1:-1;
     if(wcscmp(verb,L"DATUM_PLANE")&&wcscmp(verb,L"DATUM_AXIS")&&wcscmp(verb,L"DATUM_POINT")&&wcscmp(verb,L"DATUM_CSYS")&&wcscmp(verb,L"DATUM_CURVE")&&wcscmp(verb,L"SKETCH_BEGIN")&&wcscmp(verb,L"SKETCH_CREATE")&&wcscmp(verb,L"SKETCH_ADD")&&wcscmp(verb,L"SKETCH_DIM")&&wcscmp(verb,L"SKETCH_CONSTRAINT")&&wcscmp(verb,L"SKETCH_INFO"))return 0;
     if(n<3||!fd_name(args[2]))return -1;

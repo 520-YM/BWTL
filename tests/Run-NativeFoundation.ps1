@@ -21,7 +21,7 @@ if($LASTEXITCODE){throw 'Official Toolkit unlock failed.'}
 $utf8=[Text.UTF8Encoding]::new($false)
 $registration="NAME BWTLNative$Suite`r`nSTARTUP dll`r`nEXEC_FILE $(Join-Path $WorkDirectory 'native-test.dll')`r`nTEXT_DIR $(Join-Path $repo 'resources')`r`nALLOW_STOP TRUE`r`nDELAY_START FALSE`r`nEND`r`n"
 [IO.File]::WriteAllText((Join-Path $WorkDirectory 'native-test.dat'),$registration,$utf8)
-$config=if($StandardsConfig -and (Test-Path -LiteralPath $StandardsConfig -PathType Leaf)){[IO.File]::ReadAllText($StandardsConfig)}else{''}
+$config=[IO.File]::ReadAllText($StandardsConfig)
 $config=[regex]::Replace($config,'(?ms)^! BWTL BEGIN\r?\n.*?^! BWTL END(?:\r?\n)?','')
 $config=[regex]::Replace($config,'(?im)^\s*(?:protkdat|toolkit_registry_file|prodevdat|creotkdat)\s+[^\r\n]*','')
 $config+="`r`nprotkdat $(Join-Path $WorkDirectory 'native-test.dat')`r`ntrail_dir $(Join-Path $WorkDirectory 'workspace')`r`n"

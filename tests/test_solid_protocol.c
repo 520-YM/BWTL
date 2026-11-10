@@ -9,5 +9,63 @@ int main(void){
     for(i=0;i<sizeof(valid)/sizeof(valid[0]);i++){swprintf_s(p,1024,L"CREO_OP %ls",valid[i]);assert(part_command_parse(p,&cmd)==1&&cmd.verb==PART_FOUNDATION);}
     for(i=0;i<sizeof(invalid)/sizeof(invalid[0]);i++){swprintf_s(p,1024,L"CREO_OP %ls",invalid[i]);assert(part_command_parse(p,&cmd)==-1&&cmd.verb==PART_NONE);}
     assert(part_command_parse(L"CREO_OP SOLID_EXTRUDE PRT1 E1 SK1 ADD BLIND 10 POS\nCREO_OP SAVE PRT1",&cmd)==-1);
-    puts("SOLID PROTOCOL: 14 valid, 18 invalid and mixed-command rejection PASS");return 0;
+    assert(part_command_parse(L"CREO_OP SOLID_SWEEP PRT1 SW1 CURVE:ARC_PATH 4",&cmd)==1&&cmd.verb==PART_FOUNDATION);
+    assert(part_command_parse(L"CREO_OP SOLID_SWEEP PRT1 SW1 CURVE:ARC_PATH nan",&cmd)==-1);
+    assert(part_command_parse(L"CREO_OP SOLID_SWEEP PRT1 SW1 EDGE:50 4",&cmd)==-1);
+    assert(part_command_parse(L"CREO_OP SOLID_SWEEP PRT1 SW1 CURVE:../OTHER 4",&cmd)==-1);
+    assert(part_command_parse(L"CREO_OP SOLID_BLEND PRT1 LOFT1 START_CIRCLE END_CIRCLE",&cmd)==1&&cmd.verb==PART_FOUNDATION);
+    assert(part_command_parse(L"CREO_OP SOLID_BLEND PRT1 LOFT1 START_CIRCLE start_circle",&cmd)==-1);
+    assert(part_command_parse(L"CREO_OP SOLID_BLEND PRT1 LOFT1 START_CIRCLE END_CIRCLE EXTRA",&cmd)==-1);
+    const wchar_t *advanced[]={
+        L"SOLID_EXTRUDE_SYM PRT1 E1 SK1 CUT 10",
+        L"SOLID_EXTRUDE_TO PRT1 E1 SK1 ADD PLANE:TOP NEG",
+        L"SOLID_EXTRUDE_TO PRT1 E1 SK1 CUT NEXT POS",
+        L"SOLID_EXTRUDE_TWO PRT1 E1 SK1 CUT 10 20 POS",
+        L"SOLID_EXTRUDE_THIN PRT1 E1 SK1 10 2 SYM NEG",
+        L"SOLID_SWEEP_CHAIN PRT1 SW1 CURVE:ARC_PATH 4",
+        L"SOLID_SWEEP_PROFILE PRT1 SW1 CURVE:PATH ELLIPSE 6 3",
+        L"SOLID_SWEEP_PROFILE PRT1 SW1 CURVE:PATH SKETCH PROFILE",
+        L"SOLID_SWEEP_VARIABLE PRT1 SW1 CURVE:PATH 10 6",
+        L"SOLID_SWEEP_CUT PRT1 SW1 CURVE:PATH RECT 6 4",
+        L"SOLID_LOFT PRT1 LOFT1 SK1 SK2 SK3 SK4 SK5 SK6 SK7",
+        L"SOLID_HELIX PRT1 SW1 CUT CSYS:REF 30 10 2.25 LH CIRCLE 2"
+    };
+    const wchar_t *unsafe[]={
+        L"SOLID_EXTRUDE_SYM PRT1 E1 SK1 CUT 0",
+        L"SOLID_EXTRUDE_TO PRT1 E1 SK1 ADD EDGE:5 POS",
+        L"SOLID_EXTRUDE_TWO PRT1 E1 SK1 CUT 10 -20 POS",
+        L"SOLID_EXTRUDE_THIN PRT1 E1 SK1 10 2 THROUGH NEG",
+        L"SOLID_SWEEP_CHAIN PRT1 SW1 EDGE:5 4",
+        L"SOLID_SWEEP_PROFILE PRT1 SW1 CURVE:PATH RECT 6",
+        L"SOLID_SWEEP_VARIABLE PRT1 SW1 CURVE:PATH 10 10.0",
+        L"SOLID_SWEEP_CUT PRT1 SW1 CURVE:PATH CIRCLE nan",
+        L"SOLID_LOFT PRT1 LOFT1 SK1 SK2 sk1",
+        L"SOLID_HELIX PRT1 SW1 ADD CSYS:REF 30 10 21 RH CIRCLE 2",
+        L"SOLID_HELIX PRT1 SW1 ADD CSYS:REF 30 10 2 RH SKETCH SK1"
+    };
+    for(i=0;i<_countof(advanced);i++){swprintf_s(p,_countof(p),L"CREO_OP %ls",advanced[i]);assert(part_command_parse(p,&cmd)==1&&cmd.verb==PART_FOUNDATION);}
+    for(i=0;i<_countof(unsafe);i++){swprintf_s(p,_countof(p),L"CREO_OP %ls",unsafe[i]);assert(part_command_parse(p,&cmd)==-1&&cmd.verb==PART_NONE);}
+    const wchar_t *surfaces[]={
+        L"SURFACE_INFO PRT1",L"SURFACE_EXTRUDE PRT1 WALL SK1 10 POS",
+        L"SURFACE_REVOLVE PRT1 TURN SK1 AXIS:A1 360 NEG",
+        L"SURFACE_BOUNDARY PRT1 BOUND CURVE:A CURVE:B",L"SURFACE_FILL PRT1 CAP SK1",
+        L"SURFACE_OFFSET PRT1 OFF QUILT:WALL -2",L"SURFACE_TRIM PRT1 TRIM QUILT:12 PLANE:TOP POS",
+        L"SURFACE_TRIM PRT1 TRIM QUILT:12 CURVE:C1 NEG",L"SURFACE_EXTEND PRT1 EXT QUILT:12 EDGE:13 5",
+        L"SURFACE_MERGE PRT1 JOIN QUILT:A QUILT:B QUILT:C",L"SURFACE_SOLIDIFY PRT1 FILL QUILT:12",
+        L"SURFACE_THICKEN PRT1 THICK QUILT:A 2 SYM",L"BODY_EXTRUDE PRT1 B1 SK1 10 NEG",
+        L"BODY_BOOLEAN PRT1 BOOL MERGE BODY:12 BODY:13",L"BODY_BOOLEAN PRT1 BOOL SUBTRACT BODY:12 BODY:13",
+        L"BODY_BOOLEAN PRT1 BOOL INTERSECT BODY:12 BODY:13"
+    };
+    const wchar_t *bad_surfaces[]={
+        L"SURFACE_INFO PRT1 EXTRA",L"SURFACE_EXTRUDE PRT1 WALL SK1 0 POS",
+        L"SURFACE_REVOLVE PRT1 TURN SK1 AXIS:A1 361 NEG",L"SURFACE_FILL PRT1 CAP ../SK1",
+        L"SURFACE_BOUNDARY PRT1 BOUND CURVE:A CURVE:a",L"SURFACE_BOUNDARY PRT1 BOUND CURVE:A CURVE:B CURVE:C",
+        L"SURFACE_OFFSET PRT1 OFF QUILT:A 0",L"SURFACE_OFFSET PRT1 OFF QUILT:A nan",
+        L"SURFACE_TRIM PRT1 TRIM QUILT:12 EDGE:13 POS",L"SURFACE_EXTEND PRT1 EXT QUILT:A EDGE:-1 5",
+        L"SURFACE_MERGE PRT1 JOIN QUILT:A QUILT:a",L"SURFACE_THICKEN PRT1 THICK QUILT:A 2 BOTH",
+        L"BODY_BOOLEAN PRT1 BOOL MERGE BODY:12 BODY:12",L"BODY_BOOLEAN PRT1 BOOL UNION BODY:12 BODY:13"
+    };
+    for(i=0;i<_countof(surfaces);i++){swprintf_s(p,_countof(p),L"CREO_OP %ls",surfaces[i]);assert(part_command_parse(p,&cmd)==1&&cmd.verb==PART_FOUNDATION);}
+    for(i=0;i<_countof(bad_surfaces);i++){swprintf_s(p,_countof(p),L"CREO_OP %ls",bad_surfaces[i]);assert(part_command_parse(p,&cmd)==-1&&cmd.verb==PART_NONE);}
+    puts("SOLID PROTOCOL: sketch, extrude, revolve, sweep, blend and mixed-command rejection PASS");return 0;
 }

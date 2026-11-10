@@ -8,7 +8,15 @@ static void execute_model_plan(void) {
     if (ai_process) { append(L"请等待 AI 给出完整方案。"); return; }
     if (!pending_plan.ready) { append(L"当前没有待执行的建模方案。请先说明零件形状与完整尺寸，等待 AI 给出方案。"); return; }
     if(!smart_active){smart_begin(L"执行建模");smart_local_plan=1;}
-    if(smart_readonly){pending_plan.ready=0;smart_reply(L"本轮只分析，未新建或修改模型。");return;}
+    if(smart_readonly){pending_plan.ready=0;smart_reply(smart_write_block_message);return;}
+    if(smart_progress){pending_plan.ready=0;smart_pause(L"已有已核对的模型改动，已拦截重复新建",1);return;}
+    if(smart_local_plan)ProDirectoryCurrentGet(request_snapshot.directory);
+    ProPath directory;
+    if(request_snapshot.directory[0]&&(ProDirectoryCurrentGet(directory)||_wcsicmp(directory,request_snapshot.directory))){
+        pending_plan.ready=0;
+        smart_pause(L"工作目录在建模前发生变化",0);
+        return;
+    }
     plan = pending_plan; pending_plan.ready = 0;
     if (!save_pending_plan()) { pending_plan = plan; smart_finish(); return; }
     if(plan.centered)error=model_create_centered_cylinder(&plan,name,&stage);
@@ -27,8 +35,8 @@ static void execute_model_plan(void) {
         error=ProMacroLoad(L"~ Command `CodexNativeVerifyActive`;");
         trace("Queue active model verification",error);
         if(error){
-            smart_record_tool(message);
-            smart_reply(L"模型已创建，但无法调度活动窗口核对。请查看执行明细。");
+            smart_step(NULL,L"新建模型",0,message,1,1,1);
+
         }
-    }else smart_after_tool(error,message,0);
+    }else smart_step(NULL,L"新建模型",error,message,0,1,1);
 }

@@ -13,7 +13,6 @@ if(Test-Path -LiteralPath (Join-Path $InstallRoot 'instance.json')){
     if(-not $PSBoundParameters.ContainsKey('SourceRoot')){$SourceRoot=Join-Path $InstallRoot 'source'}
     $NoShortcuts=$true
 }
-if(-not $PSBoundParameters.ContainsKey('SourceRoot') -and -not(Test-Path -LiteralPath (Join-Path $SourceRoot 'AGENTS.md'))){$SourceRoot=Join-Path $InstallRoot 'source'}
 $SourceRoot=[IO.Path]::GetFullPath($SourceRoot)
 $devRoot=Join-Path $InstallRoot 'development'
 $active=Get-Content -LiteralPath (Join-Path $InstallRoot 'active.json') -Raw -Encoding UTF8|ConvertFrom-Json
@@ -232,14 +231,6 @@ if(-not $mutex.WaitOne(0)){throw '另一个BWTL开发/升级任务仍在运行�
 try{
     if($Action -eq 'Start'){
         if(-not $RequestFile -or -not(Test-Path $RequestFile)){throw 'Missing development request.'}
-        if($SourceRoot -ieq (Join-Path $InstallRoot 'source') -and -not(Test-Path -LiteralPath (Join-Path $SourceRoot 'AGENTS.md'))){
-            New-Item -ItemType Directory -Path $SourceRoot -Force|Out-Null
-            foreach($file in Source-Manifest $baselineRoot){
-                $to=Get-OwnedPath $SourceRoot $file.Path
-                New-Item -ItemType Directory -Path (Split-Path $to) -Force|Out-Null
-                if(-not(Test-Path -LiteralPath $to)){Copy-Item -LiteralPath (Get-OwnedPath $baselineRoot $file.Path) -Destination $to}
-            }
-        }
         if(-not(Test-Path (Join-Path $SourceRoot 'AGENTS.md'))){throw 'BWTL source checkout is unavailable.'}
         $id=(Get-Date -Format 'yyyyMMdd-HHmmss')+'-'+[guid]::NewGuid().ToString('N').Substring(0,8);$job=Join-Path $devRoot $id;$candidate=Join-Path $job 'source'
         New-Item -ItemType Directory -Path $candidate -Force|Out-Null

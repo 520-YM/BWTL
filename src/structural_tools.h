@@ -1,0 +1,21 @@
+#ifndef BWTL_STRUCTURAL_TOOLS_H
+#define BWTL_STRUCTURAL_TOOLS_H
+#include <ProFlexOffset.h>
+#include "功能/structural/md_shell.inc"
+#include "功能/structural/md_shell_multi.inc"
+#include "功能/structural/md_shell_local.inc"
+#include "功能/structural/md_draft.inc"
+#include "功能/structural/md_draft_multi.inc"
+#include "功能/structural/md_draft_split.inc"
+#include "功能/structural/md_draft_variable.inc"
+#include "功能/structural/md_profiles.inc"
+#include "功能/structural/md_rib.inc"
+#include "功能/structural/md_boss.inc"
+#include "功能/structural/md_snap.inc"
+#include "功能/structural/md_window.inc"
+#include "功能/structural/md_seal_face.inc"
+#include "功能/structural/md_seal_radial.inc"
+#include "功能/structural/md_stock.inc"
+#include "功能/structural/md_verify.inc"
+#include "功能/structural/md_execute.inc"
+#endif

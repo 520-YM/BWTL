@@ -1,1 +1,1 @@
-static int sd_is_command(const wchar_t *verb){return !wcscmp(verb,L"SKETCH_MOVE")||!wcscmp(verb,L"SKETCH_REMOVE")||!wcscmp(verb,L"SKETCH_PROJECT")||!wcscmp(verb,L"SOLID_EXTRUDE")||!wcscmp(verb,L"SOLID_REVOLVE")||!wcscmp(verb,L"SOLID_REVOLVE_CUT");}
+static int sd_is_command(const wchar_t *verb){return !wcscmp(verb,L"SKETCH_MOVE")||!wcscmp(verb,L"SKETCH_REMOVE")||!wcscmp(verb,L"SKETCH_PROJECT")||!wcscmp(verb,L"SOLID_EXTRUDE")||!wcscmp(verb,L"SOLID_REVOLVE")||!wcscmp(verb,L"SOLID_REVOLVE_CUT")||!wcscmp(verb,L"SOLID_SWEEP")||!wcscmp(verb,L"SOLID_BLEND");}

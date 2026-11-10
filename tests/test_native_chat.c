@@ -6,13 +6,12 @@ static BOOL WINAPI test_track_popup(HMENU menu,UINT flags,int x,int y,HWND owner
 #define TrackPopupMenuEx test_track_popup
 #include "../src/native_chat_ui.h"
 #undef TrackPopupMenuEx
-static int ticks,sends,applies;static UINT workdir_action;
+static int ticks,sends;static UINT workdir_action;
 static void native_send_action(void){sends++;}
 static void native_read_action(void){}
 static void native_close_action(void){}
 static void native_poll_action(void){ticks++;}
 static void native_cancel_action(void){}
-static void native_apply_action(void){applies++;}
 static void native_details_action(void){}
 static void native_company_action(void){}
 static void native_workdir_action(UINT action){workdir_action=action;}
@@ -81,7 +80,7 @@ int main(void){
  }
  assert(native_schedule_poll());start=GetTickCount();while(GetTickCount()-start<1500 && !ticks){while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}Sleep(5);}assert(ticks==1);
  puts("Background AI polling timer dispatch: PASS");
- assert(SendMessageW(native_mode_control,CB_GETCOUNT,0,0)==3);
+ assert(!FindWindowExW(native_window,NULL,L"ComboBox",NULL));
  assert(!GetDlgItem(native_window,CHAT_ATTACH)&&!GetDlgItem(native_window,CHAT_CLEAR_IMAGES));
  assert(!GetDlgItem(native_window,CHAT_DETAILS));
  assert(GetDlgItem(native_window,CHAT_WORKDIR)==native_top_buttons[2]);
@@ -90,35 +89,30 @@ int main(void){
  SendMessageW(native_top_buttons[2],BM_CLICK,0,0);assert(workdir_action==WORKDIR_PICK);
  workdir_action=0;native_set_busy(1);SendMessageW(native_window,WM_COMMAND,CHAT_WORKDIR,0);assert(!workdir_action);native_set_busy(0);
  puts("Working directory: visible active button, four actions and busy protection PASS");
- assert(GetDlgItem(native_window,CHAT_APPLY)==native_apply_button);
- assert(GetWindowLongPtrW(native_apply_button,GWL_STYLE)&WS_VISIBLE);
- GetWindowTextW(native_apply_button,input,64);assert(!wcscmp(input,L"应用已验升级"));
+ assert(!GetDlgItem(native_window,4110)); /* former upgrade button */
+ for(i=0;i<_countof(native_features);i++){
+  assert(wcscmp(native_features[i].label,L"应用已验升级"));
+  assert(wcscmp(native_features[i].label,L"开发或调整插件"));
+ }
  for(i=640;i<=980;i+=340){
-  RECT read,apply,send;
+  RECT features,company,read,send;
   SetWindowPos(native_window,NULL,0,0,i,650,SWP_NOMOVE|SWP_NOACTIVATE|SWP_NOZORDER);
-  GetWindowRect(native_buttons[0],&read);GetWindowRect(native_apply_button,&apply);GetWindowRect(native_buttons[1],&send);
-  assert(read.top==apply.top&&apply.top==send.top&&apply.bottom==read.bottom);
-  assert(read.right<apply.left&&apply.right<send.left);
+  GetWindowRect(native_top_buttons[0],&features);GetWindowRect(native_top_buttons[1],&company);
+  GetWindowRect(native_buttons[0],&read);GetWindowRect(native_buttons[1],&send);
+  assert(features.left==read.left&&features.right<company.left);
+  assert(read.top==send.top&&read.right<send.left);
  }
- SendMessageW(native_apply_button,BM_CLICK,0,0);assert(applies==1);
- for(i=1;i<=2;i++){
-  native_set_busy(i);
-  assert(!IsWindowEnabled(native_apply_button)&&!IsWindowEnabled(native_top_buttons[2]));
-  SendMessageW(native_window,WM_COMMAND,CHAT_APPLY,0);assert(applies==1);
- }
- native_set_busy(0);assert(IsWindowEnabled(native_apply_button)&&IsWindowEnabled(native_top_buttons[2]));
- SendMessageW(native_apply_button,BM_CLICK,0,0);assert(applies==2);
- puts("Apply upgrade: visible beside Read Model at minimum and default widths; callback and busy guards PASS");
+ puts("Unified chat: no mode selector, development entry or upgrade button; layout PASS at minimum and default widths");
  assert(!(GetWindowLongPtrW(native_preview,GWL_STYLE)&WS_VISIBLE));
  {RECT pane,edit;GetWindowRect(native_history,&pane);GetWindowRect(native_prompt,&edit);assert(edit.top-pane.bottom==10);}
  native_set_busy(1);SendMessageW(native_window,WM_COMMAND,CHAT_SEND,0);assert(sends==0&&!IsWindowEnabled(native_buttons[1]));
  GetWindowTextW(native_buttons[1],input,64);assert(!wcscmp(input,L"处理中…"));
  native_set_busy(0);SendMessageW(native_window,WM_COMMAND,CHAT_SEND,0);assert(sends==1&&IsWindowEnabled(native_buttons[1]));
  GetWindowTextW(native_buttons[1],input,64);assert(!wcscmp(input,L"发送给 AI"));
- native_set_busy(2);assert(!IsWindowEnabled(native_stop_button));native_set_busy(0);
+ native_set_busy(1);assert(IsWindowEnabled(native_stop_button));native_set_busy(0);assert(!IsWindowEnabled(native_stop_button));
  assert(native_ui_history(L"【AI】\n**已经完成**，参照 `EDGE:12`。\n- 第一项\n"));
  {wchar_t shown[512];FINDTEXTEXW find={{0,-1},L"已经完成",{0,0}};CHARFORMAT2W format={0};GetWindowTextW(native_history,shown,512);assert(wcsstr(shown,L"已经完成")&&!wcsstr(shown,L"**")&&!wcsstr(shown,L"`"));assert(SendMessageW(native_history,EM_FINDTEXTEXW,FR_DOWN,(LPARAM)&find)>=0);SendMessageW(native_history,EM_EXSETSEL,0,(LPARAM)&find.chrgText);format.cbSize=sizeof(format);SendMessageW(native_history,EM_GETCHARFORMAT,SCF_SELECTION,(LPARAM)&format);assert(format.dwEffects&CFE_BOLD);}
- puts("Smart UI: three modes, busy/double-send guard, atomic-install stop guard, literal-safe bold/code/list rendering PASS");
+ puts("Smart UI: busy/double-send guard, stop, and literal-safe bold/code/list rendering PASS");
  native_ui_stop_thread();
  puts("HIDDEN NATIVE CONTROL TESTS PASSED; no screenshots or desktop input");return 0;
 }

@@ -1,4 +1,4 @@
 static int foundation_request(const wchar_t *text){
-    const wchar_t *words[]={L"基准",L"平面",L"草绘",L"参照",L"坐标",L"曲线",L"直线",L"矩形",L"圆",L"点",L"轴",L"偏移",L"约束",L"对称",L"尺寸",L"SKETCH",L"DATUM",L"参看"};
-    int i;const wchar_t *more[]={L"拉伸",L"旋转",L"切除",L"投影",L"编辑",L"移动",L"删除",L"引用",L"轮廓"};for(i=0;i<sizeof(more)/sizeof(more[0]);i++)if(wcsstr(text,more[i]))return 1;for(i=0;i<sizeof(words)/sizeof(words[0]);i++)if(wcsstr(text,words[i]))return 1;return 0;
+    const wchar_t *words[]={L"基准",L"平面",L"草绘",L"参照",L"坐标",L"曲线",L"直线",L"矩形",L"圆",L"点",L"轴",L"偏移",L"约束",L"对称",L"尺寸",L"SKETCH",L"DATUM",L"参看",L"中分面",L"相切",L"交线",L"样条",L"法向"};
+    int i;const wchar_t *more[]={L"拉伸",L"旋转",L"切除",L"投影",L"编辑",L"移动",L"删除",L"引用",L"轮廓",L"曲面",L"补面",L"缝合",L"加厚",L"实体化",L"多实体",L"布尔",L"孔",L"键槽",L"卡簧槽",L"点平",L"抽壳",L"拔模",L"筋",L"螺钉柱",L"卡扣",L"密封",L"毛坯",L"钣金",L"板壁",L"法兰",L"折弯",L"折边",L"卷边",L"避让",L"展开",L"折回",L"压筋",L"下料",L"SMT_",L"特征组",L"编组",L"参数",L"关系式",L"零件族",L"UDF",L"REUSE_",L"QA_",L"测量",L"壁厚",L"间距",L"边距",L"连续性",L"质量属性",L"几何对比",L"特征依赖",L"设计规则",L"DV_",L"导入",L"重定义",L"特征顺序",L"加工信息表",L"打包",L"零件属性"};for(i=0;i<sizeof(more)/sizeof(more[0]);i++)if(wcsstr(text,more[i]))return 1;for(i=0;i<sizeof(words)/sizeof(words[0]);i++)if(wcsstr(text,words[i]))return 1;return 0;
 }

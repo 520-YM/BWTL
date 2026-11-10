@@ -16,7 +16,7 @@ $blocks=[regex]::Matches($original,$pattern)
 if($blocks.Count -ne 1 -or $blocks[0].Value.IndexOf((Join-Path $InstallRoot 'protk.dat'),[StringComparison]::OrdinalIgnoreCase) -lt 0){throw '原配置未找到唯一的本安装BWTL注册块，未执行迁移。'}
 $without=[regex]::Replace($original,$pattern,'')
 if($without -cne $original.Remove($blocks[0].Index,$blocks[0].Length)){throw '配置差异超出BWTL注册块。'}
-$settings=if($StandardsConfig -and (Test-Path -LiteralPath $StandardsConfig -PathType Leaf)){[IO.File]::ReadAllText($StandardsConfig)}else{''}
+$settings=[IO.File]::ReadAllText($StandardsConfig)
 $settings=[regex]::Replace($settings,'(?ms)^! BWTL BEGIN\r?\n.*?^! BWTL END(?:\r?\n)?','')
 $settings=[regex]::Replace($settings,'(?im)^\s*(?:protkdat|toolkit_registry_file|prodevdat|creotkdat)\s+[^\r\n]*','')
 $backup=Join-Path $InstallRoot ('backups\isolation-'+(Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))

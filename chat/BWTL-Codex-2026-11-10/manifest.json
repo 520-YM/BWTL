@@ -1,0 +1,9 @@
+{
+  "user_messages": 126,
+  "assistant_answers": 113,
+  "progress_messages": 378,
+  "attachment_references": 28,
+  "non_chat_context_excluded": 10,
+  "credential_redactions": 0,
+  "cutoff": "2026-11-10T21:38:10.7941858+08:00"
+}

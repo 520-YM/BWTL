@@ -11,7 +11,7 @@ __declspec(dllexport) int user_initialize(int argc, char **argv, char *version, 
         native_backend_window=CreateWindowExW(0,cls.lpszClassName,L"",0,0,0,0,0,HWND_MESSAGE,NULL,cls.hInstance,NULL);
         if(!native_backend_window)return PRO_TK_GENERAL_ERROR;
     }
-    trace("BWTL v23 smart collaboration, vision and staged development", 0);
+    trace("BWTL v23 direct collaboration and vision", 0);
     store_ready = store_init(runtime_data);
     if (store_ready) {
         if (!store_read(L"recent-context.txt", conversation, 24000) || !store_read(L"memory.txt", memory, 12000)) store_ready = 0;
@@ -23,6 +23,7 @@ __declspec(dllexport) int user_initialize(int argc, char **argv, char *version, 
         }
     }
     trace("Persistent store ready", store_ready);
+    if(store_ready)store_read(L"last-native-details.txt",smart_details,SMART_DETAILS_CAP);
     swprintf_s(native_attachment_root,MAX_PATH,L"%ls\\attachments",runtime_data);
     CreateDirectoryW(native_attachment_root,NULL);
     {

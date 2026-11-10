@@ -1,0 +1,19 @@
+#ifndef BWTL_DELIVERY_TOOLS_H
+#define BWTL_DELIVERY_TOOLS_H
+#include <ProImportfeat.h>
+#include <ProIntfimport.h>
+#include <ProIntf3Dexport.h>
+#include <wincrypt.h>
+#include "功能/delivery/dv_common.inc"
+#include "功能/delivery/dv_redefine.inc"
+#include "功能/delivery/dv_reorder.inc"
+#include "功能/delivery/dv_import.inc"
+#include "功能/delivery/dv_heal.inc"
+#include "功能/delivery/dv_recognize.inc"
+#include "功能/delivery/dv_attributes.inc"
+#include "功能/delivery/dv_output.inc"
+#include "功能/delivery/dv_export.inc"
+#include "功能/delivery/dv_report.inc"
+#include "功能/delivery/dv_package.inc"
+#include "功能/delivery/dv_execute.inc"
+#endif

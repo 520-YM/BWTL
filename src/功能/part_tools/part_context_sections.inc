@@ -1,6 +1,10 @@
 static unsigned part_context_sections(const PartSnapshot *s,const wchar_t *request){
     unsigned sections=0;int i;
-    if(wcsstr(request,L"拉伸")||wcsstr(request,L"旋转")||wcsstr(request,L"切除")||wcsstr(request,L"投影")||wcsstr(request,L"编辑")||wcsstr(request,L"删除"))sections|=9;
+    if(org_request(request)||fab_request(request))sections|=15;
+    if(in_request(request))sections|=11;
+    if(rv_request(request))sections|=11;
+    if(wcsstr(request,L"拉伸")||wcsstr(request,L"旋转")||wcsstr(request,L"切除")||wcsstr(request,L"投影")||wcsstr(request,L"编辑")||wcsstr(request,L"删除")||
+       wcsstr(request,L"拔模")||wcsstr(request,L"轮廓筋")||wcsstr(request,L"加强筋")||wcsstr(request,L"镜像")||wcsstr(request,L"阵列"))sections|=9;
     if(wcsstr(request,L"详细")||wcsstr(request,L"全部")||wcsstr(request,L"分析"))return 15;
     if(wcsstr(request,L"尺寸")||wcsstr(request,L"毫米")||wcsstr(request,L"mm")||wcsstr(request,L"改")||wcsstr(request,L"调整")||wcsstr(request,L"长")||wcsstr(request,L"宽")||wcsstr(request,L"厚")||wcsstr(request,L"高"))sections|=3;
     if(wcsstr(request,L"特征")||wcsstr(request,L"抑制")||wcsstr(request,L"恢复")||wcsstr(request,L"圆角")||wcsstr(request,L"倒角")||wcsstr(request,L"孔"))sections|=1;

@@ -1,0 +1,2 @@
+ac54265d9930e7f01cbe3ea876df50716cf4e92520f7346595d9a25d0c1c231e  BWTL-Setup-0.23.0-preview.2.exe
+08984ebde457fd4a91294df464531ce7288afbb06dcc871f9ec13312e5fd9c7c  BWTL-0.23.0-preview.2-windows-x64.zip

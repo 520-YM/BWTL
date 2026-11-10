@@ -1,6 +1,6 @@
 static ProError fd_sketch_edit(const PartCommand *cmd,ProMdl model,wchar_t *report,size_t capacity){
     FdSketch s={0},check={0};FdDimValue before[256];FdTxn state={0};
-    int before_count=0,before_entities=0,*entities=NULL,entity_count=0,ids[4]={0},count=0,result_id=-1,i,dirty=0,restored=1;
+    int before_count=0,before_entities=0,*entities=NULL,entity_count=0,ids[AS_LIMIT]={0},count=0,result_id=-1,i,dirty=0,restored=1;
     ProSectionPointType senses[3]={0};ProError e=0;const char *stage="open editable associated sketch";double value=0;ProSecdimType dimension=PRO_TK_DIM_NONE;
     ProConstraintType constraint=PRO_CONSTRAINT_SAME_POINT;
     if((e=fd_sketch_open(model,cmd->arg[2],&s,1)))goto done;

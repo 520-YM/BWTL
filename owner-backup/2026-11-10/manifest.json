@@ -1,0 +1,70 @@
+{
+  "version": "0.23.0-local.asmdelivery.1",
+  "sessions": [
+    {
+      "session": 1,
+      "files": [
+        {
+          "redacted": false,
+          "sha256": "d9171f2d8fe4271c4a113dfc41ad01b8c29ae3eb3a5ed1a67930f1a4083590f8",
+          "file": "chat-history.md",
+          "bytes": 64291
+        },
+        {
+          "redacted": false,
+          "sha256": "a55b38eb8811301e974118efec131fb4978e2edba0a394df1703d18d021d7527",
+          "file": "imported-owner-history.md",
+          "bytes": 29882
+        },
+        {
+          "redacted": false,
+          "sha256": "85a4176138f6e9b783ce5e7d7ac0bcc156d6a399f3fb831fee92124993e7ed3a",
+          "file": "memory.txt",
+          "bytes": 366
+        }
+      ]
+    },
+    {
+      "session": 2,
+      "files": [
+        {
+          "redacted": false,
+          "sha256": "b95515baa92fc1b68af97b09d53461ec7a2676493718fec570ab4ea04e0d358b",
+          "file": "chat-history.md",
+          "bytes": 526
+        }
+      ]
+    },
+    {
+      "session": 3,
+      "files": []
+    },
+    {
+      "session": 4,
+      "files": [
+        {
+          "redacted": false,
+          "sha256": "90eaf04e907715fcc4d1640a24db8c187b840978aada977f20fe9f2136ecc96b",
+          "file": "chat-history.md",
+          "bytes": 428
+        }
+      ]
+    },
+    {
+      "session": 5,
+      "files": []
+    },
+    {
+      "session": 6,
+      "files": []
+    },
+    {
+      "session": 7,
+      "files": []
+    },
+    {
+      "session": 8,
+      "files": []
+    }
+  ]
+}

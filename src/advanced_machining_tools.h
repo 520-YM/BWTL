@@ -1,0 +1,21 @@
+#ifndef BWTL_ADVANCED_MACHINING_TOOLS_H
+#define BWTL_ADVANCED_MACHINING_TOOLS_H
+#include "功能/advanced_machining/am_hole_common.inc"
+#include "功能/advanced_machining/am_radial.inc"
+#include "功能/advanced_machining/am_axis.inc"
+#include "功能/advanced_machining/am_thread.inc"
+#include "功能/advanced_machining/am_thread_thru.inc"
+#include "功能/advanced_machining/am_thread_std.inc"
+#include "功能/advanced_machining/am_spotface.inc"
+#include "功能/advanced_machining/am_frame.inc"
+#include "功能/advanced_machining/am_groove_verify.inc"
+#include "功能/advanced_machining/am_keyway.inc"
+#include "功能/advanced_machining/am_ring.inc"
+#include "功能/advanced_machining/am_edge.inc"
+#include "功能/advanced_machining/am_variable.inc"
+#include "功能/advanced_machining/am_tangent.inc"
+#include "功能/advanced_machining/am_chamfer.inc"
+#include "功能/advanced_machining/am_info.inc"
+#include "功能/advanced_machining/am_verify.inc"
+#include "功能/advanced_machining/am_execute.inc"
+#endif

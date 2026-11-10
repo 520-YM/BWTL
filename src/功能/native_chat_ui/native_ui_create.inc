@@ -17,8 +17,6 @@ static int native_ui_create(HWND owner,int show){
         CW_USEDEFAULT,CW_USEDEFAULT,980,820,owner,NULL,module,NULL);
     if(!native_window)return 0;
     native_title=CreateWindowW(L"STATIC",title,WS_CHILD|WS_VISIBLE,0,0,0,0,native_window,NULL,module,NULL);
-    native_mode_control=CreateWindowW(L"COMBOBOX",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP|CBS_DROPDOWNLIST,0,0,0,0,native_window,(HMENU)CHAT_MODE,module,NULL);
-    SendMessageW(native_mode_control,CB_ADDSTRING,0,(LPARAM)L"智能协作（按需建模）");SendMessageW(native_mode_control,CB_ADDSTRING,0,(LPARAM)L"只分析（不修改模型）");SendMessageW(native_mode_control,CB_ADDSTRING,0,(LPARAM)L"功能开发（升级插件）");SendMessageW(native_mode_control,CB_SETCURSEL,0,0);
     for(i=0;i<5;i++){
         DWORD style=WS_CHILD|WS_VISIBLE|BS_OWNERDRAW|(i<3?WS_TABSTOP:WS_DISABLED);
         native_top_buttons[i]=CreateWindowW(L"BUTTON",top_labels[i],style,
@@ -37,9 +35,7 @@ static int native_ui_create(HWND owner,int show){
     DragAcceptFiles(native_prompt,TRUE);
     for(i=0;i<3;i++)native_buttons[i]=CreateWindowW(L"BUTTON",labels[i],WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_OWNERDRAW,
         0,0,0,0,native_window,(HMENU)(INT_PTR)ids[i],module,NULL);
-    native_apply_button=CreateWindowW(L"BUTTON",L"应用已验升级",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_OWNERDRAW,
-        0,0,0,0,native_window,(HMENU)CHAT_APPLY,module,NULL);
-    if(!native_history||!native_prompt||!native_title||!native_mode_control||!native_preview||!native_stop_button||!native_apply_button||
+    if(!native_history||!native_prompt||!native_title||!native_preview||!native_stop_button||
         !native_buttons[0]||!native_buttons[1]||!native_buttons[2]){DestroyWindow(native_window);return 0;}
     SendMessageW(native_history,EM_EXLIMITTEXT,0,150000);
     dc=GetDC(native_window);dpi=GetDeviceCaps(dc,LOGPIXELSY);ReleaseDC(native_window,dc);
@@ -51,10 +47,7 @@ static int native_ui_create(HWND owner,int show){
     SendMessageW(native_history,WM_SETFONT,(WPARAM)native_font,TRUE);
     SendMessageW(native_prompt,WM_SETFONT,(WPARAM)native_font,TRUE);
     for(i=0;i<3;i++)SendMessageW(native_buttons[i],WM_SETFONT,(WPARAM)native_font,TRUE);
-    SetWindowPos(native_apply_button,native_buttons[0],0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
-    SendMessageW(native_apply_button,WM_SETFONT,(WPARAM)native_font,TRUE);
     for(i=0;i<5;i++)SendMessageW(native_top_buttons[i],WM_SETFONT,(WPARAM)native_font,TRUE);
-    SendMessageW(native_mode_control,WM_SETFONT,(WPARAM)native_font,TRUE);
     SendMessageW(native_stop_button,WM_SETFONT,(WPARAM)native_font,TRUE);
     EnableWindow(native_stop_button,FALSE);
     SendMessageW(native_history,EM_SETLIMITTEXT,12000,0);SendMessageW(native_prompt,EM_SETLIMITTEXT,6000,0);

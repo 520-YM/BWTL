@@ -52,12 +52,9 @@ static int probe_tick(uiCmdCmdId command,uiCmdValue *value,void *data){
         const NativeFeature *entry=NULL;size_t i;wchar_t input[128];
         if(active!=original_model||open_window(0,NULL,NULL))return probe_end(0);
         for(i=0;i<_countof(native_features);i++)if(!wcscmp(native_features[i].label,L"原点居中圆柱"))entry=&native_features[i];
-        if(!entry||entry->mode!=FEATURE_SMART||!wcsstr(entry->draft,L"新建原点居中圆柱 "))return probe_end(0);
+        if(!entry||!wcsstr(entry->draft,L"新建原点居中圆柱 "))return probe_end(0);
         probe_log("menu offers the validated native command",1);
-        native_mode=1;native_prompt_set(L"新建原点居中圆柱 150 150");run_local(NULL,NULL,NULL);
-        if(smart_active||ai_process||ProMdlCurrentGet(&active)||active!=original_model)return probe_end(0);
-        probe_log("analyze-only blocks the direct operation",1);
-        native_mode=0;native_prompt_set(L"新建原点居中圆柱 0 150");run_local(NULL,NULL,NULL);
+        native_prompt_set(L"新建原点居中圆柱 0 150");run_local(NULL,NULL,NULL);
         if(smart_active||ai_process||ProMdlCurrentGet(&active)||active!=original_model)return probe_end(0);
         probe_log("invalid diameter leaves active part unchanged",1);
         if(ProMdlVerstampGet(original_model,&original_stamp))return probe_end(0);

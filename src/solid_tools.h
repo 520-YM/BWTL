@@ -1,6 +1,11 @@
 #ifndef BWTL_SOLID_TOOLS_H
 #define BWTL_SOLID_TOOLS_H
 #include <ProRevolve.h>
+#include <ProSweep.h>
+#include <ProStdSection.h>
+#include <ProCrvcollection.h>
+#include <ProGroup.h>
+#include <ProUdf.h>
 
 #include "功能/solid_tools/sd_body_count.inc"
 
@@ -10,12 +15,17 @@
 
 #include "功能/solid_tools/sd_existing_body.inc"
 
+#include "功能/solid_tools/sd_profile_feature.inc"
+
+#include "功能/solid_tools/sd_blend.inc"
+
 
 #include "功能/solid_tools/sd_projection_reference.inc"
 
 
 #include "功能/solid_tools/sd_mark_section.inc"
 
+#include "功能/advanced_solid/sx_extrude.inc"
 
 #include "功能/solid_tools/sd_create.inc"
 

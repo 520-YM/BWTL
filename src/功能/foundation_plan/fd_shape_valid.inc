@@ -1,6 +1,8 @@
 static int fd_shape_valid(int n,wchar_t args[][PART_TOKEN_MAX],int start){
-    double v[5]={0};int count,i;
+    double v[5]={0};int count,i,advanced;
     if(start>=n)return 0;
+    advanced=as_shape_kind(args[start]);
+    if(advanced)return as_shape_valid(n,args,start,advanced);
     if(!wcscmp(args[start],L"LINE")||!wcscmp(args[start],L"CENTERLINE")||!wcscmp(args[start],L"RECT"))count=4;
     else if(!wcscmp(args[start],L"CIRCLE"))count=3;
     else if(!wcscmp(args[start],L"ARC"))count=5;

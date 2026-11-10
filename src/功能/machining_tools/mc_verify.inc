@@ -1,12 +1,18 @@
-static ProError mc_tree_value(ProFeature *f,ProElemId *ids,int n,double expected,int integer){
-    ProElement tree=NULL,el=NULL;ProElempath path=NULL;ProElempathItem parts[8];ProError e;int i,v;double d;
+static ProError mc_tree_element(ProElement tree,const ProElemId *ids,int n,ProElement *el){
+    ProElempath path=NULL;ProElempathItem parts[8];ProError e;int i;
     if(n>8)return PRO_TK_BAD_INPUTS;
-    if((e=ProFeatureElemtreeExtract(f,NULL,PRO_FEAT_EXTRACT_NO_OPTS,&tree))||(e=ProElempathAlloc(&path)))goto done;
+    if((e=ProElempathAlloc(&path)))return e;
     for(i=0;i<n;i++){parts[i].type=PRO_ELEM_PATH_ITEM_TYPE_ID;parts[i].path_item.elem_id=ids[i];}
-    if((e=ProElempathDataSet(path,parts,n))||(e=ProElemtreeElementGet(tree,path,&el)))goto done;
+    if(!(e=ProElempathDataSet(path,parts,n)))e=ProElemtreeElementGet(tree,path,el);
+    ProElempathFree(&path);
+    return e;
+}
+static ProError mc_tree_value(ProFeature *f,const ProElemId *ids,int n,double expected,int integer){
+    ProElement tree=NULL,el=NULL;ProError e;int v;double d;
+    if((e=ProFeatureElemtreeExtract(f,NULL,PRO_FEAT_EXTRACT_NO_OPTS,&tree))||(e=mc_tree_element(tree,ids,n,&el)))goto done;
     if(integer){e=ProElementIntegerGet(el,NULL,&v);if(!e&&v!=(int)expected)e=PRO_TK_GENERAL_ERROR;}
     else {e=ProElementDoubleGet(el,NULL,&d);if(!e&&!part_close(d,expected))e=PRO_TK_GENERAL_ERROR;}
-done:if(path)ProElempathFree(&path);if(tree)ProFeatureElemtreeFree(f,tree);return e;
+done:if(tree)ProFeatureElemtreeFree(f,tree);return e;
 }
 static ProError mc_edge_size(ProFeature *feature,double expected){
     ProElement tree=NULL,el=NULL;ProElempath path=NULL;ProElempathItem p[6];ProError e;double value;
@@ -24,6 +30,7 @@ static ProError mc_hole_wall(ProGeomitem *item,ProError status,ProAppData data){
     if((e=ProGeomitemToSurface(item,&surface))||(e=ProSurfaceTypeGet(surface,&type)))return e;
     if(type!=PRO_SRF_CYL)return 0;
     if((e=ProSurfaceDataGet(surface,&raw)))return e;s=raw->data.p_surface_data;c=&s->srf_shape.cylinder;
+    if(g->profiled&&!part_close(c->radius,g->radius)){e=PRO_TK_NO_ERROR;goto done;}
     for(i=0;i<3;i++){dot+=c->e3[i]*g->normal[i];offset+=(c->origin[i]-g->center[i])*g->normal[i];}
     if(fabs(fabs(dot)-1)>1e-6||!part_close(c->radius,g->radius)){e=PRO_TK_GENERAL_ERROR;goto done;}
     for(i=0;i<3;i++){delta=c->origin[i]-g->center[i]-offset*g->normal[i];if(fabs(delta)>1e-5){e=PRO_TK_GENERAL_ERROR;goto done;}}
@@ -56,11 +63,11 @@ static ProError mc_verify(FdTxn *tx,ProFeattype type,double *volume){
        fabs(mass.volume-tx->volume)<=fmax(1e-9,tx->volume*1e-10))return PRO_TK_GENERAL_ERROR;
     *volume=mass.volume;return 0;
 }
-static void mc_cleanup(FdTxn *tx,ProError e){
+static void mc_cleanup(FdTxn *tx,ProError e,int initial_bodies){
     ProMassProperty mass;int bodies;
     fd_cleanup(tx,e);
-    if(e&&tx->before_count&&tx->has_volume){
-        if(part_health(tx->model)||sd_body_count(tx->model,&bodies)||bodies!=1||
+    if(e&&initial_bodies>0&&tx->before_count&&tx->has_volume){
+        if(part_health(tx->model)||sd_body_count(tx->model,&bodies)||bodies!=initial_bodies||
            ProSolidMassPropertyWithDensityGet((ProSolid)tx->model,NULL,PRO_MP_DENS_USE_ALWAYS,1,&mass)||!part_close(mass.volume,tx->volume))tx->rollback_ok=0;
     }
 }
