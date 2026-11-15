@@ -9,3 +9,18 @@ static ProError sd_existing_body(FdTxn *tx,ProElement body){
     if((e=model_element(body,PRO_E_BODY_SELECT,0,0,&el)))goto done;e=ProElementReferenceSet(el,reference);
 done:if(bodies)ProArrayFree((ProArray *)&bodies);if(sel)ProSelectionFree(&sel);return e;
 }
+
+static ProError sd_default_body(FdTxn *tx,ProElement body){
+    ProSolidBody selected;
+    ProSelection selection=NULL;
+    ProReference reference=NULL;
+    ProElement element=NULL;
+    ProError error=ProSolidDefaultBodyGet((ProSolid)tx->model,&selected);
+    if(!error)error=ProSelectionAlloc(NULL,(ProModelitem *)&selected,&selection);
+    if(!error)error=ProSelectionToReference(selection,&reference);
+    if(selection)ProSelectionFree(&selection);
+    if(error)return error;
+    tx->refs[tx->ref_count++]=reference;
+    error=model_element(body,PRO_E_BODY_SELECT,0,0,&element);
+    return error?error:ProElementReferenceSet(element,reference);
+}

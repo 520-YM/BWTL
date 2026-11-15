@@ -1,5 +1,9 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
+if not exist "%~dp0build\tmp" mkdir "%~dp0build\tmp"
+if not exist "%~dp0build\tmp" exit /b 1
+set "TEMP=%~dp0build\tmp"
+set "TMP=%TEMP%"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tests\Test-LegacyCompatibility.ps1"
 if errorlevel 1 exit /b 1
 if not defined PTK (

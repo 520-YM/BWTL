@@ -6,6 +6,7 @@ static DWORD WINAPI native_ui_thread_main(void *unused){
     UnregisterClassW(L"CreoCodexNativeChatV14",GetModuleHandleW(NULL));
     if(native_title_font){DeleteObject(native_title_font);native_title_font=NULL;}
     if(native_background){DeleteObject(native_background);native_background=NULL;}
+    if(native_header_brush){DeleteObject(native_header_brush);native_header_brush=NULL;}
     if(native_rich_module){FreeLibrary(native_rich_module);native_rich_module=NULL;}
     return 0;
 }

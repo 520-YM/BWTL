@@ -1,5 +1,167 @@
 [
   {
+    "symbol": "replay_blend_missing_tree",
+    "file": "src/功能/model_imitation/imitation_replay_blend.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_blend_face_area",
+    "file": "src/功能/model_imitation/imitation_blend_quilt.inc",
+    "kind": "function"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/model_imitation/imitation_replay_flat_wall.inc",
+    "symbol": "replay_stock_wall"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/model_imitation/imitation_replay_flat_wall.inc",
+    "symbol": "replay_ring_wall"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/model_imitation/imitation_replay_exclusion.inc",
+    "symbol": "replay_exclusion"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/model_imitation/imitation_replay_reference_retry.inc",
+    "symbol": "replay_reference_before_feature"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/model_imitation/imitation_replay_manual.inc",
+    "symbol": "replay_manual_reference"
+  }
+,
+{
+    "symbol": "imitation_neutral_load",
+    "file": "src/功能/model_imitation/imitation_infer_flat.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_family_read",
+    "file": "src/功能/model_imitation/imitation_replay_family.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_dependency_trace",
+    "file": "src/功能/model_imitation/imitation_external_context.inc",
+    "original": "src/功能/model_imitation/imitation_acceptance.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_relations",
+    "file": "src/功能/model_imitation/imitation_replay_relations.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_dimension_report",
+    "file": "src/功能/model_imitation/imitation_dimension_report.inc",
+    "original": "src/功能/model_imitation/imitation_ui.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_flat_compare",
+    "file": "src/功能/model_imitation/imitation_flat_check.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_variable_round_tree",
+    "file": "src/功能/model_imitation/imitation_replay_round.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_cut_tree",
+    "file": "src/功能/model_imitation/imitation_replay_sheet_cut.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_quilt_compare",
+    "file": "src/功能/model_imitation/imitation_quilt_check.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_quilt_solid_definition",
+    "file": "src/功能/model_imitation/imitation_replay_quilt_solid.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_boolean",
+    "file": "src/功能/model_imitation/imitation_replay_boolean.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_split",
+    "file": "src/功能/model_imitation/imitation_replay_split.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "markup_take",
+    "file": "src/功能/screenshot_markup/markup_capture.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "markup_opening_feature",
+    "file": "src/功能/screenshot_markup/markup_opening.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "markup_intent_prompt",
+    "file": "src/功能/screenshot_markup/markup_intent.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "markup_parse_diameter",
+    "file": "src/功能/screenshot_markup/markup_diameter.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "markup_apply",
+    "file": "src/功能/screenshot_markup/markup_apply.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "markup_ui_open",
+    "file": "src/功能/screenshot_markup/markup_editor.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_write_progress",
+    "file": "src/功能/model_imitation/imitation_run.inc",
+    "original": "src/功能/assistant/ai_send.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "method_capture",
+    "file": "src/功能/model_imitation/imitation_learning_capture.inc",
+    "original": "src/功能/model_imitation/imitation_run.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "method_prompt_write",
+    "file": "src/功能/model_imitation/imitation_learning_store.inc",
+    "original": "src/功能/assistant/ai_send.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_section_constraints",
+    "file": "src/功能/model_imitation/imitation_replay_constraints.inc",
+    "original": "src/功能/model_imitation/imitation_replay_sketch.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_diagnostic_begin",
+    "file": "src/功能/model_imitation/imitation_replay_diagnostics.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
     "symbol": "ai_cleanup",
     "file": "src/功能/assistant/ai_cleanup.inc",
     "original": "src/assistant.c",
@@ -2997,6 +3159,559 @@
     "symbol": "ax_pack_bundle",
     "file": "src/功能/assembly/ax_assembly_package.inc",
     "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_execute",
+    "file": "src/sheetmetal_production_tools.h",
+    "original": "src/foundation_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_template_create",
+    "file": "src/功能/sheetmetal/smx_standards.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_thickness",
+    "file": "src/功能/sheetmetal/smx_thickness.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_geo_report",
+    "file": "src/功能/sheetmetal/smx_geometry.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_rip_candidates",
+    "file": "src/功能/sheetmetal/smx_rip.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_split_body",
+    "file": "src/功能/sheetmetal/smx_body_recovery.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_dxf_rebuild",
+    "file": "src/功能/sheetmetal/smx_rebuild.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_sized_flange",
+    "file": "src/功能/sheetmetal/smx_bend_control.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_miter_pair",
+    "file": "src/功能/sheetmetal/smx_miter.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_relief_apply",
+    "file": "src/功能/sheetmetal/smx_corner_join.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_tabs_pair",
+    "file": "src/功能/sheetmetal/smx_join_fit.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_opening_patterns",
+    "file": "src/功能/sheetmetal/smx_openings.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_flat_openings",
+    "file": "src/功能/sheetmetal/smx_opening_inspection.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_form_execute",
+    "file": "src/功能/sheetmetal/workshop_form.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_fastener_check",
+    "file": "src/功能/sheetmetal/workshop_fastening.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_case_space",
+    "file": "src/功能/sheetmetal/workshop_enclosure.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_dfm_run",
+    "file": "src/功能/sheetmetal/workshop_dfm.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_flat_issues",
+    "file": "src/功能/sheetmetal/workshop_flat_geometry.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_flat_execute",
+    "file": "src/功能/sheetmetal/workshop_flat_execute.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_bend_execute",
+    "file": "src/功能/sheetmetal/workshop_bend_schedule.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_bend_process",
+    "file": "src/功能/sheetmetal/workshop_bend_process.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_stock_list",
+    "file": "src/功能/sheetmetal/workshop_stock_input.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_nest",
+    "file": "src/功能/sheetmetal/workshop_stock_nesting.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_stock_execute",
+    "file": "src/功能/sheetmetal/workshop_stock_execute.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_draw_template",
+    "file": "src/功能/sheetmetal/workshop_drawing.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_package_bundle",
+    "file": "src/功能/sheetmetal/workshop_delivery.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_version_compare",
+    "file": "src/功能/sheetmetal/workshop_versions.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_form_flat",
+    "file": "src/功能/sheetmetal/workshop_form_flat.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_press_stud",
+    "file": "src/功能/sheetmetal/workshop_fastener_access.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_tool_access",
+    "file": "src/功能/sheetmetal/workshop_fastener_access.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_rivet_align",
+    "file": "src/功能/sheetmetal/workshop_fastener_access.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_gauge_access",
+    "file": "src/功能/sheetmetal/workshop_fastener_access.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_spot_welds",
+    "file": "src/功能/sheetmetal/workshop_weld_layout.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_plug_slot",
+    "file": "src/功能/sheetmetal/workshop_weld_layout.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_flat_hole_map",
+    "file": "src/功能/sheetmetal/workshop_flat_mapping.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_flat_bend_layers",
+    "file": "src/功能/sheetmetal/workshop_flat_mapping.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_cable_entry",
+    "file": "src/功能/sheetmetal/workshop_cable_entry.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_bend_tool",
+    "file": "src/功能/sheetmetal/workshop_bend_tool_library.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_gauge_face",
+    "file": "src/功能/sheetmetal/workshop_gauge_face.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_join_card",
+    "file": "src/功能/sheetmetal/workshop_join_card.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_mirror_pair",
+    "file": "src/功能/sheetmetal/workshop_mirror_pair.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+{
+  "symbol": "smy_prompt_write",
+  "file": "src/sheetmetal_prompt.h",
+  "original": "src/sheetmetal_prompt.h",
+  "kind": "function"
+},
+  {
+    "symbol": "bwtl_warn_traceback",
+    "file": "src/功能/assistant/traceback_risk.inc",
+    "original": "src/功能/assistant/execute_part_command.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_door_fit",
+    "file": "src/功能/sheetmetal/workshop_door_fit.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_vent_interface",
+    "file": "src/功能/sheetmetal/workshop_vent_interface.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_form_interaction",
+    "file": "src/功能/sheetmetal/workshop_form_interaction.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_tool_withdrawal",
+    "file": "src/功能/sheetmetal/workshop_tool_withdrawal.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_finish_protection",
+    "file": "src/功能/sheetmetal/workshop_finish_checks.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_coating_point",
+    "file": "src/功能/sheetmetal/workshop_finish_checks.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smx_rebuild_body",
+    "file": "src/功能/sheetmetal/smx_body_recovery.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "smy_mount_inspection",
+    "file": "src/功能/sheetmetal/workshop_mount_inspection.inc",
+    "original": "src/sheetmetal_production_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_run",
+    "file": "src/功能/model_imitation/imitation_run.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_measure",
+    "file": "src/功能/model_imitation/imitation_geometry.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_geometry_build",
+    "file": "src/功能/model_imitation/imitation_build.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_ui_command",
+    "file": "src/功能/model_imitation/imitation_ui.inc",
+    "original": "src/assistant.c",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_shape_verify",
+    "file": "src/功能/model_imitation/imitation_general.inc",
+    "original": "src/功能/model_imitation/imitation_run.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_flat_new",
+    "file": "src/功能/model_imitation/imitation_sheet_rebuild.inc",
+    "original": "src/功能/model_imitation/imitation_run.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_check_body_faces",
+    "file": "src/功能/model_imitation/imitation_surface_check.inc",
+    "original": "src/功能/model_imitation/imitation_general.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_ordered_sheet",
+    "file": "src/功能/model_imitation/imitation_sheet_order.inc",
+    "original": "src/功能/model_imitation/imitation_sheet_rebuild.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_resize_command",
+    "file": "src/功能/model_imitation/imitation_resize.inc",
+    "original": "src/功能/model_imitation/imitation_run.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_reference_report, imitation_reopen_candidate, imitation_edit_trial",
+    "file": "src/功能/model_imitation/imitation_acceptance.inc",
+    "original": "src/功能/model_imitation/imitation_run.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_replay_new",
+    "file": "src/功能/model_imitation/imitation_replay.inc",
+    "original": "src/功能/model_imitation/imitation_run.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_reference_item",
+    "file": "src/功能/model_imitation/imitation_replay_refs.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_draw_section",
+    "file": "src/功能/model_imitation/imitation_replay_sketch.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_local_command",
+    "file": "src/功能/model_imitation/imitation_local.inc",
+    "original": "src/功能/model_imitation/imitation_run.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_theme_paint",
+    "file": "src/功能/native_chat_ui/native_industrial_theme.inc",
+    "original": "src/功能/native_chat_ui/native_window_proc.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_pattern",
+    "file": "src/功能/model_imitation/imitation_replay_pattern.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_preview",
+    "file": "src/功能/model_imitation/imitation_replay_preview.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_convert_empty",
+    "file": "src/功能/model_imitation/imitation_replay_conversion.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_external_reference",
+    "file": "src/功能/model_imitation/imitation_replay_external.inc",
+    "original": "src/功能/model_imitation/imitation_replay_refs.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_history_chain",
+    "file": "src/功能/model_imitation/imitation_replay_history.inc",
+    "original": "src/功能/model_imitation/imitation_replay_refs.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_pattern_build_guide",
+    "file": "src/功能/model_imitation/imitation_replay_ref_pattern.inc",
+    "original": "src/功能/model_imitation/imitation_replay_pattern.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_batch_preview_files",
+    "file": "src/功能/model_imitation/imitation_batch_preview.inc",
+    "original": "src/功能/model_imitation/imitation_ui.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_trimmed_face_read",
+    "file": "src/功能/model_imitation/imitation_replay_curved_refs.inc",
+    "original": "src/功能/model_imitation/imitation_replay_refs.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_feature_state",
+    "file": "src/功能/model_imitation/imitation_replay_state.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_dimension_item",
+    "file": "src/功能/model_imitation/imitation_replay_dimensions.inc",
+    "original": "src/功能/model_imitation/imitation_replay_refs.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_definition_reference_report",
+    "file": "src/功能/model_imitation/imitation_definition_report.inc",
+    "original": "src/功能/model_imitation/imitation_ui.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_surface_collection",
+    "file": "src/功能/model_imitation/imitation_replay_surface_collection.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_local_group_finish",
+    "file": "src/功能/model_imitation/imitation_replay_local_group.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_bspline_same",
+    "file": "src/功能/model_imitation/imitation_replay_sketch_curves.inc",
+    "original": "src/功能/model_imitation/imitation_replay_sketch.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_material_replay",
+    "file": "src/功能/model_imitation/imitation_replay_material.inc",
+    "original": "src/功能/model_imitation/imitation_run.inc",
+    "kind": "function"
+  }
+,
+  {
+    "symbol": "imitation_library_write_receipt",
+    "file": "src/功能/model_imitation/imitation_library_receipt.inc",
+    "original": "src/功能/model_imitation/imitation_ui.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_coverage_report",
+    "file": "src/功能/model_imitation/imitation_coverage.inc",
+    "original": "src/功能/model_imitation/imitation_ui.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_preview_structure",
+    "file": "src/功能/model_imitation/imitation_tree_structure.inc",
+    "original": "src/功能/model_imitation/imitation_replay_preview.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "imitation_open_standard",
+    "file": "src/功能/model_imitation/imitation_standard_size.inc",
+    "original": "src/功能/model_imitation/imitation_ui.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_corner_reference",
+    "file": "src/功能/model_imitation/imitation_replay_chamfer.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_hole_profile_tree",
+    "file": "src/功能/model_imitation/imitation_replay_hole_profile.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_geometry_mirror_tree",
+    "file": "src/功能/model_imitation/imitation_replay_geometry_mirror.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_sweep",
+    "file": "src/功能/model_imitation/imitation_replay_sweep.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_extrusion_new_body",
+    "file": "src/功能/model_imitation/imitation_replay_extrusion_body.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_order_section_link",
+    "file": "src/功能/model_imitation/imitation_replay_order_links.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "replay_quilt_trim",
+    "file": "src/功能/model_imitation/imitation_replay_quilt_edit.inc",
+    "original": "src/功能/model_imitation/imitation_replay.inc",
     "kind": "function"
   }
 ]

@@ -1,4 +1,4 @@
-static ProError sd_create(const PartCommand *cmd,ProMdl model,wchar_t *report,size_t capacity){
+static ProError sd_create_on_body(const PartCommand *cmd,ProMdl model,wchar_t *report,size_t capacity,int default_body){
     FdTxn tx={0};FdRef sketch={0},axis={0},target={0};ProElement section=NULL,body=NULL,depth=NULL,from=NULL,to=NULL;
     ProSectionShape shape;ProMassProperty after;ProError e;ProFeatStatus status;
     int revolve_cut=!wcscmp(cmd->arg[0],L"SOLID_REVOLVE_CUT");
@@ -21,8 +21,9 @@ static ProError sd_create(const PartCommand *cmd,ProMdl model,wchar_t *report,si
     if(advanced&&cut)SD_TRY("remove material inside extrusion section",model_element(tx.root,PRO_E_STD_MATRLSIDE,1,PRO_EXT_MATERIAL_SIDE_TWO,NULL));
     SD_TRY("extrusion direction",model_element(tx.root,PRO_E_STD_DIRECTION,1,(advanced==SX_SYMMETRIC||!wcscmp(cmd->arg[direction],L"POS"))?PRO_EXT_CR_IN_SIDE_ONE:PRO_EXT_CR_IN_SIDE_TWO,NULL));
     SD_TRY("body options",model_element(tx.root,PRO_E_BODY,0,0,&body));
-    SD_TRY("use solid body",model_element(body,PRO_E_BODY_USE,1,cut?PRO_BODY_USE_ALL:body_before?PRO_BODY_USE_SELECTED:PRO_BODY_USE_NEW,NULL));
-    if(!cut&&body_before)SD_TRY("reference existing active body",sd_existing_body(&tx,body));
+    SD_TRY("use solid body",model_element(body,PRO_E_BODY_USE,1,cut?PRO_BODY_USE_ALL:body_before||default_body?PRO_BODY_USE_SELECTED:PRO_BODY_USE_NEW,NULL));
+    if(!cut&&(body_before||default_body))
+        SD_TRY("reference extrusion body",body_before?sd_existing_body(&tx,body):sd_default_body(&tx,body));
     SD_TRY("section reference",model_element(tx.root,PRO_E_STD_SECTION,0,0,&section));
     SD_TRY("link external sketch",fd_ref_element(&tx,section,PRO_E_SEC_USE_SKETCH,&sketch));
     if(revolve){
@@ -33,6 +34,7 @@ static ProError sd_create(const PartCommand *cmd,ProMdl model,wchar_t *report,si
 }else{
 #include "solid_extrude.inc"
 }
+
     SD_TRY("create standard solid",fd_create(&tx,0));
     SD_TRY("regenerate standard solid",part_regenerate(model));
     SD_TRY("read feature state",ProFeatureStatusGet(&tx.feature,&status));if(status!=PRO_FEAT_ACTIVE){e=PRO_TK_GENERAL_ERROR;goto done;}
@@ -57,4 +59,8 @@ done:
         !part_close(after.volume,old_volume)))))tx.rollback_ok=0;
     if(e)swprintf_s(report,capacity,L"实体操作未完成：%hs，错误码%d。%ls，未保存。",tx.stage,e,tx.rollback_ok?L"未新增或已核对移除本次特征":L"恢复状态未能核实，请检查模型");return e;
 #undef SD_TRY
+}
+
+static ProError sd_create(const PartCommand *cmd,ProMdl model,wchar_t *report,size_t capacity){
+    return sd_create_on_body(cmd,model,report,capacity,0);
 }

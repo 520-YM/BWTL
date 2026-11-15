@@ -9,6 +9,7 @@ typedef struct {
 static SmartCheckpoint smart_checkpoint;
 
 static void smart_binding_clear(void){
+    smart_committed_part=(SmartPartSignature){0};
     if(smart_checkpoint.stamp)ProVerstampFree(&smart_checkpoint.stamp);
     if(smart_checkpoint.parent)ProVerstampFree(&smart_checkpoint.parent);
     memset(&smart_checkpoint,0,sizeof(smart_checkpoint));
@@ -57,5 +58,26 @@ static int smart_binding_set(ProMdl model,ProMdl window,const wchar_t *directory
         return 0;
     }
     return 1;
+}
+static const wchar_t *smart_continue_binding(void){
+    SmartPartSignature committed=smart_committed_part;
+    smart_committed_part=(SmartPartSignature){0};
+    const wchar_t *problem=smart_binding_problem();
+    SmartCheckpoint *checkpoint=&smart_checkpoint;
+    if(!problem||!committed.hash||committed.error||checkpoint->model!=checkpoint->window||checkpoint->parent)
+        return problem;
+    ProMdl active=NULL;
+    ProMdlName name;
+    ProPath directory;
+    if(ProMdlCurrentGet(&active)||active!=checkpoint->model||ProMdlMdlnameGet(active,name)||
+       _wcsicmp(name,checkpoint->name)||ProDirectoryCurrentGet(directory)||_wcsicmp(directory,checkpoint->directory))
+        return problem;
+    SmartPartSignature current=smart_part_signature(active);
+    if(current.error||current.hash!=committed.hash)return problem;
+    /* Creo can publish the new version stamp when its native command returns.
+       Accept that stamp only if the just-verified part still matches. */
+    if(!smart_binding_set(active,active,directory))return problem;
+    trace("Verified committed part at continuation",0);
+    return NULL;
 }
 #endif

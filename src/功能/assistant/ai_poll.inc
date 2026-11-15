@@ -51,7 +51,12 @@ static void ai_poll(char *dialog,ProUITimerID timer,ProAppData data){
     if(f){while(count<15990&&(ch=fgetwc(f))!=WEOF)answer[count++]=(wchar_t)ch;answer[count]=0;if(count==15990&&fgetwc(f)!=WEOF)truncated=1;fclose(f);}
     if(code||!f||!count||truncated){smart_pause(L"AI 回复失败或超出接收上限，任务暂停",1);return;}
     smart_answer_text(answer,visible,16000);
+    int routing=smart_intent==SMART_INTENT_PENDING;
     if(!smart_resolve_intent(answer))return;
+    if(smart_intent==SMART_INTENT_CHAT){
+        smart_reply(visible[0]?visible:L"这条消息没有收到完整答复，请再发一次。");
+        return;
+    }
     if(smart_intent==SMART_INTENT_CLARIFY){
         smart_waiting_for_user=1;
         smart_reply(visible[0]?visible:L"请说明要处理的模型和具体改动。");
@@ -59,10 +64,19 @@ static void ai_poll(char *dialog,ProUITimerID timer,ProAppData data){
     }
     {
         PartCommand action={0};int parsed=part_command_parse(answer,&action);
+        if(routing&&!(parsed==1&&(action.verb==PART_IMITATE||action.verb==PART_IMITATE_SIZE||action.verb==PART_IMITATE_LOCAL)&&smart_intent==SMART_INTENT_NEW)){
+            smart_queue_next();
+            return;
+        }
         if(parsed<0){pending_plan.ready=0;memset(&pending_part,0,sizeof(pending_part));save_pending_plan();if(!smart_replan_output(L"上一条协议格式有误或含多条命令。重新根据最新结果给出一条合法的下一步。"))smart_pause(L"AI 返回无效或多条操作，本步未执行",1);return;}
         if(parsed==1){
             ProError queued;
-            if(!smart_protocol_allowed(&action)){smart_reply(!smart_readonly&&!wcscmp(action.arg[0],L"FEATURE_DELETE")?smart_delete_block_message:smart_write_block_message);return;}
+            if(!smart_protocol_allowed(&action)){
+                const int delete_block=!smart_readonly&&!wcscmp(action.arg[0],L"FEATURE_DELETE");
+                const wchar_t *reason=delete_block?smart_delete_block_message:smart_operation_block();
+                if(!delete_block&&smart_replan_output(reason))return;
+                smart_reply(reason);return;
+            }
             pending_plan.ready=0;save_pending_plan();pending_part=action;
             queued=ProMacroLoad(L"~ Command `CodexNativeBuildPending`;");
             if(queued){memset(&pending_part,0,sizeof(pending_part));smart_pause(L"原生操作调度失败，本步未执行",1);}return;

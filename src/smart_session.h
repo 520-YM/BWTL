@@ -18,7 +18,7 @@ static void ai_send(const wchar_t *value);
 static void smart_queue_next(void);
 
 static int smart_sequence_request(const wchar_t *text){
-    static const wchar_t *const words[]={L"然后",L"接着",L"随后",L"之后",L"再开",L"再加",L"再做",L"再建",L"再倒",L"再切",L"分步完成",L"连续执行"};
+    static const wchar_t *const words[]={L"然后",L"接着",L"随后",L"之后",L"再开",L"再加",L"再做",L"再建",L"再倒",L"再切",L"分步完成",L"连续执行",L"做到哪步算哪步",L"能做多少做多少"};
     return smart_has_text(text,words,_countof(words));
 }
 
@@ -164,11 +164,13 @@ static int smart_protocol_allowed(const PartCommand *command){
     if(!smart_active)return 0;
     if(smart_readonly&&!smart_read_command(command))return 0;
     int quick=command->verb==PART_FOUNDATION?quick_kind(command->arg[0]):Q_NONE;
-    int independent=command->verb==PART_FOUNDATION&&(quick||dv_kind(command->arg[0])==DV_IMPORT);
-    if(smart_intent==SMART_INTENT_PENDING||smart_intent==SMART_INTENT_CLARIFY)return 0;
+    int independent=command->verb==PART_COPY||command->verb==PART_IMITATE||command->verb==PART_IMITATE_SIZE||command->verb==PART_IMITATE_LOCAL||
+        (command->verb==PART_FOUNDATION&&(quick||dv_kind(command->arg[0])==DV_IMPORT||smx_independent(smx_kind(command->arg[0]))));
+    if(smart_intent==SMART_INTENT_PENDING||smart_intent==SMART_INTENT_CLARIFY||smart_intent==SMART_INTENT_CHAT)return 0;
     if(smart_intent==SMART_INTENT_CURRENT&&independent)return 0;
+    if(command->verb==PART_COPY&&(wcsstr(smart_goal,L"仿照")||wcsstr(smart_goal,L"重新画")))return 0;
     if(smart_intent==SMART_INTENT_NEW){
-        if(!smart_progress&&!independent)return 0;
+        if(!smart_progress&&!independent&&!smart_read_command(command))return 0;
         if(smart_progress&&independent)return 0;
     }
     if(command->verb==PART_SAVE&&smart_intent!=SMART_INTENT_LOCAL&&
@@ -184,7 +186,13 @@ static int smart_protocol_allowed(const PartCommand *command){
     return 1;
 }
 static const wchar_t *smart_delete_block_message=L"删除特征需要在本轮明确写出“删除”和精确特征名称。当前零件未提交删除。";
-static const wchar_t *smart_write_block_message=L"本轮按你的分析或查看要求处理，模型保持原样。";
+static const wchar_t *smart_write_block_message=L"本轮仅执行你要求的查看或分析。";
+static const wchar_t *smart_operation_block(void){
+    return smart_readonly?(smart_explicit_readonly(smart_goal)?smart_write_block_message:
+        L"AI 返回的操作与本轮目标判定冲突，Creo 未执行写入。"):
+        smart_intent==SMART_INTENT_NEW?L"另建任务需要先创建独立结果。当前指令会写入源件或重复另建，已拦截。":
+        L"这条操作与当前模型任务的目标不一致，尚未执行。";
+}
 static int smart_handle_stale_permission(const wchar_t *reply){
     const wchar_t *stale[]={L"宿主标记为只读",L"宿主仍标记",L"宿主仍将本轮标记为只读",L"本轮写入权限为只读",L"本轮仍被宿主标记为只读"};
     if(!smart_has_text(reply,stale,_countof(stale)))return 0;

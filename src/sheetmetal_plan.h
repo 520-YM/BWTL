@@ -7,8 +7,9 @@ static int sh_kind(const wchar_t *v){
 }
 static int sh_angle(const wchar_t *v){double x;return part_number(v,&x)&&x>=1&&x<=175;}
 static int sh_sketch_token(const wchar_t *v){return !wcsncmp(v,L"SKETCH:",7)&&fd_name(v+7);}
+#include "sheetmetal_production_plan.h"
 static int sheetmetal_plan_valid(int n,wchar_t a[][PART_TOKEN_MAX]){
-    int k=sh_kind(a[0]);double x;if(!k)return 0;if(k==SH_INFO)return n==2?1:-1;
+    int k=sh_kind(a[0]);double x;if(!k){int next=smx_kind(a[0]);return next?smx_plan_valid(n,a,next):0;}if(k==SH_INFO)return n==2?1:-1;
     if(n<3||!fd_name(a[2]))return -1;
     switch(k){
     case SH_SKETCH:return n>=9&&ad_plane(a[3])&&ad_plane(a[4])&&fd_shape_valid(n,a,5)?1:-1;

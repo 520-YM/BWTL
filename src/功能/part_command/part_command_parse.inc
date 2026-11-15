@@ -41,6 +41,35 @@ static int part_command_parse(const wchar_t *answer,PartCommand *out) {
             candidate.verb=PART_PARAM;
         }
         else if(!wcscmp(verb,L"COPY")&&n==3&&part_name(candidate.arg[2]))candidate.verb=PART_COPY;
+        else if(!wcscmp(verb,L"IMITATE")&&n==2)candidate.verb=PART_IMITATE;
+        else if(!wcscmp(verb,L"IMITATE_SIZE")&&n>=5&&n<=10){
+            int change=0,thickness=0,hole=0;
+            for(i=2;i<5;i++){
+                if(!part_number(candidate.arg[i],&newv)||newv<0||(newv>0&&newv<0.1)||newv>10000)return -1;
+                change|=newv>0;
+            }
+            for(i=5;i<n;){
+                if(!wcscmp(candidate.arg[i],L"THICK")&&!thickness&&i+1<n){
+                    if(!part_number(candidate.arg[i+1],&newv)||newv<0.1||newv>100)return -1;
+                    thickness=1;i+=2;
+                }else if(!wcscmp(candidate.arg[i],L"HOLE")&&!hole&&i+2<n){
+                    if(!part_number(candidate.arg[i+1],&oldv)||!part_number(candidate.arg[i+2],&newv)||
+                       oldv<0.1||newv<0.1||oldv>10000||newv>10000||fabs(oldv-newv)<0.002)return -1;
+                    hole=1;i+=3;
+                }else return -1;
+            }
+            if(!change&&!thickness&&!hole)return -1;
+            candidate.verb=PART_IMITATE_SIZE;
+        }
+        else if(!wcscmp(verb,L"IMITATE_LOCAL")&&n==9){
+            if(!part_name(candidate.arg[2])||!part_integer(candidate.arg[3],&id)||id<=0||
+               wcsncmp(candidate.arg[4],L"SURFACE:",8)||!part_integer(candidate.arg[4]+8,&id)||id<=0||
+               wcsncmp(candidate.arg[5],L"PLANE:",6)||!part_name(candidate.arg[5]+6)||
+               !part_number(candidate.arg[6],&oldv)||!part_number(candidate.arg[7],&newv)||
+               fabs(oldv)>10000||fabs(newv)>10000||
+               (wcscmp(candidate.arg[8],L"POS")&&wcscmp(candidate.arg[8],L"NEG")))return -1;
+            candidate.verb=PART_IMITATE_LOCAL;
+        }
         else if(!wcscmp(verb,L"RENAME")&&n==3&&part_name(candidate.arg[2]))candidate.verb=PART_RENAME;
         else if(!wcscmp(verb,L"DISPLAY")&&n==3&&part_name(candidate.arg[2]))candidate.verb=PART_DISPLAY;
         else if(!wcscmp(verb,L"REGEN")&&n==2)candidate.verb=PART_REGEN;

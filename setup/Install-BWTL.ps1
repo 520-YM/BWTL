@@ -3,7 +3,8 @@ param([string]$PackageRoot,[string]$InstallRoot,[string]$ConfigPath,[string]$Cod
 $ErrorActionPreference='Stop'
 if(-not $PackageRoot){$PackageRoot=Split-Path -Parent $MyInvocation.MyCommand.Path}
 $script:utf8=[Text.UTF8Encoding]::new($false)
-if(-not $InstallRoot){$InstallRoot=Join-Path $env:LOCALAPPDATA 'BWTL'}
+$managedRoot=[Environment]::GetEnvironmentVariable('BWTL_INSTALL_ROOT','User')
+if(-not $InstallRoot){$InstallRoot=if($managedRoot){$managedRoot}else{'E:\BWTL'}}
 $InstallRoot=[IO.Path]::GetFullPath($InstallRoot)
 $PackageRoot=[IO.Path]::GetFullPath($PackageRoot)
 if(-not(Test-Path -LiteralPath (Join-Path $PackageRoot 'VERSION')) -and (Test-Path -LiteralPath (Join-Path (Split-Path -Parent $PSScriptRoot) 'VERSION'))){$PackageRoot=Split-Path -Parent $PSScriptRoot}
@@ -88,11 +89,26 @@ function Get-Isolation($Root){
         Config=(Join-Path $profile 'home\config.pro');CreoExecutable=[IO.Path]::GetFullPath($CreoExecutable)
     }
 }
+function Assert-ReleaseDataPath([string]$Path) {
+    if(!$Path -or [IO.Path]::GetPathRoot($Path) -ine 'E:\'){throw 'BWTL 安装及专用配置必须位于 E 盘。'}
+    for($parent=[IO.Path]::GetFullPath($Path);$parent;$parent=Split-Path -Parent $parent){
+        if((Test-Path -LiteralPath $parent) -and ((Get-Item -LiteralPath $parent -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){
+            throw 'BWTL 数据路径不能经过链接或目录联接。'
+        }
+    }
+}
 function Invoke-Install {
     $InstallRoot=[IO.Path]::GetFullPath($InstallRoot).TrimEnd('\')
+    if([IO.Path]::GetPathRoot($InstallRoot) -ine 'E:\' -or -not [IO.Directory]::Exists('E:\')){
+        throw 'BWTL 需要可用的 E 盘。请选择 E 盘上的 BWTL 安装目录。'
+    }
     $isolationPath=Join-Path $InstallRoot 'isolation.json'
     $newProfile=-not(Test-Path -LiteralPath $isolationPath)
     $isolation=Get-Isolation $InstallRoot
+    foreach($path in @($isolation.ProfileRoot,$isolation.Config,$isolation.Home,$isolation.Alternate,
+                        $isolation.Workspace,$isolation.Cache,$isolation.Temp,$isolation.Logs)){
+        Assert-ReleaseDataPath $path
+    }
     $ConfigPath=if($ConfigPath){[IO.Path]::GetFullPath($ConfigPath)}else{$isolation.Config}
     if($ConfigPath -ine $isolation.Config){throw '本版本只允许更新BWTL专用配置，不修改旧Codex–Creo注册。'}
     [void](Assert-ManagedTree $InstallRoot)
@@ -102,6 +118,9 @@ function Invoke-Install {
     if([IO.Path]::GetFileName($ConfigPath) -ine 'config.pro' -or (-not $newProfile -and -not(Test-Path -LiteralPath (Split-Path -Parent $ConfigPath)))){throw 'BWTL 专用 config.pro 路径无效。'}
     if($newProfile -and (Test-Path -LiteralPath $isolation.ProfileRoot)){throw 'BWTL 专用配置目录已存在。请选择另一安装目录或恢复原 isolation.json。'}
     if(-not(Test-Path -LiteralPath $isolation.CreoExecutable -PathType Leaf)){throw '未找到 Creo Parametric，请填写 parametric.exe 的完整路径。'}
+    if((Test-Path -LiteralPath $ConfigPath) -and ((Read-Config $ConfigPath).Text -match '(?i)creo_safe_resident|CreoSafeResident')){
+        throw 'BWTL 专用配置含旧桥接注册。请恢复隔离配置后再安装。'
+    }
     if(-not [Environment]::Is64BitOperatingSystem){throw '本安装包需要64位Windows。'}
     Verify-Payload
     foreach($required in @('resources/ribbon/toolkitribbonui.rbn','resources/text/ribbon/toolkitribbonui.rbn','bin/BWTL.dll')){if(-not(Test-Path -LiteralPath (Join-Path $PackageRoot $required))){throw ('安装包缺少必要组件：'+$required)}}
@@ -111,7 +130,9 @@ function Invoke-Install {
     if($newProfile){
         New-Item -ItemType Directory -Force -Path $InstallRoot,$isolation.Home,$isolation.Alternate,$isolation.Workspace,$isolation.Cache,$isolation.Temp,$isolation.Logs|Out-Null
         $logs=Native-Path $isolation.Logs
-        [IO.File]::WriteAllText($ConfigPath,"trail_dir $logs`r`n",$script:utf8)
+        $temp=Native-Path $isolation.Temp
+        $cache=Native-Path $isolation.Cache
+        [IO.File]::WriteAllText($ConfigPath,"trail_dir $logs`r`npro_spool_dir $temp`r`nlast_session_directory_path $cache`r`n",$script:utf8)
         Write-Json $isolationPath $isolation
     }
     $stamp=Get-Date -Format 'yyyyMMdd-HHmmss-ffff';$backup=Join-Path $InstallRoot ('backups\'+$stamp)

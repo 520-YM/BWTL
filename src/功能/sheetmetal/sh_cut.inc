@@ -1,4 +1,4 @@
-static ProError sh_cut(FdTxn *tx,const PartCommand *cmd){
+static ProError sh_cut_depth(FdTxn *tx,const PartCommand *cmd,double limit){
     FdRef sketch={0};ProSectionShape shape;ProElement section,body,depth,side;ProError e;
 #define CT(call) do{if((e=(call)))goto done;}while(0)
     CT(sd_sketch_ref(tx->model,cmd->arg[3]+7,&sketch,&shape));
@@ -13,7 +13,11 @@ static ProError sh_cut(FdTxn *tx,const PartCommand *cmd){
     CT(model_element(tx->root,PRO_E_STD_SECTION,0,0,&section));CT(fd_ref_element(tx,section,PRO_E_SEC_USE_SKETCH,&sketch));
     CT(model_element(tx->root,PRO_E_STD_EXT_DEPTH,0,0,&depth));CT(model_element(depth,PRO_E_EXT_DEPTH_FROM,0,0,&side));
     CT(model_element(side,PRO_E_EXT_DEPTH_FROM_TYPE,1,PRO_EXT_DEPTH_FROM_NONE,NULL));CT(model_element(depth,PRO_E_EXT_DEPTH_TO,0,0,&side));
-    CT(model_element(side,PRO_E_EXT_DEPTH_TO_TYPE,1,PRO_EXT_DEPTH_TO_ALL,NULL));CT(fd_create(tx,0));
+    CT(model_element(side,PRO_E_EXT_DEPTH_TO_TYPE,1,limit>0?PRO_EXT_DEPTH_TO_BLIND:PRO_EXT_DEPTH_TO_ALL,NULL));
+    if(limit>0)CT(model_element(side,PRO_E_EXT_DEPTH_TO_VALUE,2,limit*tx->scale,NULL));
+    CT(fd_create(tx,0));
 done:fd_ref_free(&sketch);return e;
 #undef CT
 }
+
+static ProError sh_cut(FdTxn *tx,const PartCommand *cmd){return sh_cut_depth(tx,cmd,0);}

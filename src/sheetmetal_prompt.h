@@ -15,4 +15,18 @@ L"98：CREO_OP SMT_FORM 模型 新成形名 SKETCH:成形闭合草绘 深度 内
 L"99：CREO_OP SMT_ALLOWANCE 模型 已有单一折弯或板壁特征名 K 因子值；或 BD 扣除毫米值；或 TABLE 本机已配置折弯表名(无.bnd后缀)。作用于这个已有特征，不自动改变整个零件或未来特征的公司默认值。K在0和1之间；BD仅用于单个小于179度的折弯，由外侧切线退距推导展开弧长。折弯表必须是用户确认的本机文件，以原生读回为准；不猜公司K值。\n"
 L"100：CREO_OP SMT_DXF 模型 输出文件基名 SURFACE:固定驱动平面。在独立副本生成原生展开，导出当前工作目录的DXF，毫米单位；OUTLINE外轮廓、HOLES孔、BEND真实折弯中线分层。不会覆盖已有文件，原模型不变。当前只导出可完全展开到同一平面的直线／圆弧轮廓，折弯区须为矩形；成形、切穿折弯区等复杂轮廓可能拒绝，不能把失败的输出当下料文件。\n"
 L"保持当前目标绑定和用户明确的只分析要求。缺少定位、板厚、半径、方向或工艺尺寸时只询问必要数据。失败由BWTL清理本次新增特征并核对恢复；恢复不确定则停止该独立会话后续写入。\n";
+static void smy_prompt_write(FILE *file){
+    fputws(L"\n<钣金车间已发布功能>\n"
+        L"按以下编号和协议操作当前模型 M。除明确要求普通实体的命令外，本表用于钣金零件。每条格式是 CREO_OP 命令 M 后接所列参数。方括号表示可选参数，不能出现在协议里。"
+        L"面、边、坐标系和基准面分别写 SURFACE:编号、EDGE:编号、CSYS:名称、PLANE:名称。以当前原生参照为准。"
+        L"几何尺寸为毫米，角度为度，文件只传不带扩展名的工作目录内基名。输出目录使用新名称。已有模型修改默认不保存。"
+        L"需要公司规则或工序文件时使用已提供的数据，缺失时请用户补齐。编号以此表为准，不猜测未发布的操作。"
+        L"菜单里的待填占位表示还缺参数，须读取当前模型或询问必要数据后才能执行。\n",file);
+#define SMY_GROUP(title) fputws(title L"\n",file);
+#define SMY_FEATURE(kind,title,parameters,note) fputws(title L"  " L"" #kind L" M " parameters L"。 " note L"\n",file);
+#include "sheetmetal_workshop_catalog.inc"
+#undef SMY_FEATURE
+#undef SMY_GROUP
+    fputws(L"</钣金车间已发布功能>\n",file);
+}
 #endif

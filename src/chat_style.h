@@ -2,6 +2,7 @@
 #define CREO_CHAT_STYLE_H
 #include <stdio.h>
 #include <string.h>
+#include "chat_industrial_palette.h"
 /* Native RichEdit RTF: shaded table cells fill the message width. Nothing
    is rendered in a browser; message text is escaped, never treated as RTF. */
 typedef struct { char *text;size_t capacity,length;int failed; } ChatRtf;

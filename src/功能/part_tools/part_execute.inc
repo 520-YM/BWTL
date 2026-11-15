@@ -1,6 +1,7 @@
 static ProError part_execute(const PartCommand *cmd,const PartSnapshot *snapshot,wchar_t *text,size_t capacity){
     ProError e;ProMdl model=NULL;ProMdlName name;text[0]=0;
     if(cmd->verb==PART_FOUNDATION&&quick_kind(cmd->arg[0]))return quick_execute(cmd,snapshot,text,capacity);
+    if(cmd->verb==PART_FOUNDATION&&smx_independent(smx_kind(cmd->arg[0])))return smx_new(cmd,snapshot,text,capacity);
     int delivery=cmd->verb==PART_FOUNDATION?dv_kind(cmd->arg[0]):DV_NONE;
     if(delivery==DV_IMPORT){
         ProPath directory;

@@ -6,13 +6,19 @@ $Root=[IO.Path]::GetFullPath($Root)
 & (Join-Path $PSScriptRoot 'Test-LegacyCompatibility.ps1') -Root $Root
 if(-not $WorkDirectory){$WorkDirectory=Join-Path $Root ('build/regression-'+[Guid]::NewGuid().ToString('N'))}
 $WorkDirectory=[IO.Path]::GetFullPath($WorkDirectory)
+$managedRoot=[Environment]::GetEnvironmentVariable('BWTL_INSTALL_ROOT','User')
+if($managedRoot -and [IO.Path]::GetPathRoot($WorkDirectory) -ine [IO.Path]::GetPathRoot($managedRoot)){
+    throw 'BWTL regression output must be on the configured data drive.'
+}
 New-Item -ItemType Directory -Path $WorkDirectory -Force|Out-Null
+$tempDirectory=Join-Path $WorkDirectory 'temp'
+New-Item -ItemType Directory -Path $tempDirectory -Force|Out-Null
 $vswhere=Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $vs=(& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath | Select-Object -First 1)
 if(-not $vs){throw 'Visual Studio C++ Build Tools required.'}
 $vcvars=Join-Path $vs 'VC/Auxiliary/Build/vcvars64.bat'
 $names=@('test_model_plan','test_part_command','test_foundation_protocol','test_solid_protocol','test_machining_protocol','test_smart_policy','test_smart_session','test_attachments','test_prompt_encoding','test_history_context','test_chat_store')
-$lines=@('@echo off',('call "'+$vcvars+'" >nul'),'if errorlevel 1 exit /b 1',('cd /d "'+$WorkDirectory+'"'))
+$lines=@('@echo off',('set "TEMP='+$tempDirectory+'"'),'set "TMP=%TEMP%"',('call "'+$vcvars+'" >nul'),'if errorlevel 1 exit /b 1',('cd /d "'+$WorkDirectory+'"'))
 foreach($name in $names){
     $lines+=('cl /nologo /MD /W3 /utf-8 "'+(Join-Path $Root ('tests/'+$name+'.c'))+'" /Fo"'+$name+'.obj" /Fe"'+$name+'.exe"')
     if($name -eq 'test_attachments'){$lines[$lines.Count-1]+=' ole32.lib windowscodecs.lib uuid.lib gdi32.lib user32.lib shell32.lib'}

@@ -1,8 +1,8 @@
 static int native_ui_create(HWND owner,int show){
-    WNDCLASSW cls={0};HINSTANCE module=GetModuleHandleW(NULL);int i;HDC dc;int dpi;
+    WNDCLASSW cls={0};HINSTANCE module=GetModuleHandleW(NULL);int i;HDC dc;
     const wchar_t *labels[3]={L"读取当前模型",L"发送给 AI",L"关闭"};
     int ids[3]={CHAT_READ,CHAT_SEND,CHAT_CLOSE};
-    const wchar_t *top_labels[5]={L"插件功能",L"公司标准",L"工作目录",L"预留 2",L"预留 3"};
+    const wchar_t *top_labels[5]={L"插件功能",L"公司标准",L"工作目录",L"仿照模型",L"截图改图"};
     wchar_t slot[12], title[32]=L"BWTL";
     DWORD slot_length=GetEnvironmentVariableW(L"BWTL_INSTANCE_NUMBER",slot,_countof(slot));
     if(slot_length && slot_length<_countof(slot) && wcsspn(slot,L"0123456789")==slot_length)
@@ -11,14 +11,16 @@ static int native_ui_create(HWND owner,int show){
     cls.lpfnWndProc=native_window_proc;cls.hInstance=module;cls.lpszClassName=L"CreoCodexNativeChatV11";
     cls.hCursor=LoadCursor(NULL,IDC_ARROW);cls.hbrBackground=(HBRUSH)(COLOR_BTNFACE+1);
     cls.lpszClassName=L"CreoCodexNativeChatV14";
-    native_background=CreateSolidBrush(RGB(248,250,252));cls.hbrBackground=native_background;
+    native_background=CreateSolidBrush(CHAT_CANVAS_COLOR);cls.hbrBackground=native_background;
+    native_header_brush=CreateSolidBrush(CHAT_HEADER_COLOR);
     if(!RegisterClassW(&cls)&&GetLastError()!=ERROR_CLASS_ALREADY_EXISTS)return 0;
-    native_window=CreateWindowExW(WS_EX_TOOLWINDOW,cls.lpszClassName,title,WS_OVERLAPPEDWINDOW,
+    native_window=CreateWindowExW(WS_EX_TOOLWINDOW,cls.lpszClassName,title,WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,
         CW_USEDEFAULT,CW_USEDEFAULT,980,820,owner,NULL,module,NULL);
     if(!native_window)return 0;
+    native_theme_caption(native_window);
     native_title=CreateWindowW(L"STATIC",title,WS_CHILD|WS_VISIBLE,0,0,0,0,native_window,NULL,module,NULL);
     for(i=0;i<5;i++){
-        DWORD style=WS_CHILD|WS_VISIBLE|BS_OWNERDRAW|(i<3?WS_TABSTOP:WS_DISABLED);
+        DWORD style=WS_CHILD|WS_VISIBLE|BS_OWNERDRAW|WS_TABSTOP;
         native_top_buttons[i]=CreateWindowW(L"BUTTON",top_labels[i],style,
             0,0,0,0,native_window,(HMENU)(INT_PTR)(CHAT_FEATURES+i),module,NULL);
         if(!native_top_buttons[i]){DestroyWindow(native_window);return 0;}
@@ -28,9 +30,9 @@ static int native_ui_create(HWND owner,int show){
     DragAcceptFiles(native_window,TRUE);
     native_rich_module=LoadLibraryW(L"Msftedit.dll");
     if(!native_rich_module){DestroyWindow(native_window);return 0;}
-    native_history=CreateWindowExW(WS_EX_CLIENTEDGE,L"RICHEDIT50W",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL|ES_MULTILINE|ES_READONLY|ES_AUTOVSCROLL,
+    native_history=CreateWindowExW(0,L"RICHEDIT50W",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL|ES_MULTILINE|ES_READONLY|ES_AUTOVSCROLL,
         0,0,0,0,native_window,NULL,module,NULL);
-    native_prompt=CreateWindowExW(WS_EX_CLIENTEDGE,L"RICHEDIT50W",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP|WS_VSCROLL|ES_MULTILINE|ES_WANTRETURN|ES_AUTOVSCROLL,
+    native_prompt=CreateWindowExW(0,L"RICHEDIT50W",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP|WS_VSCROLL|ES_MULTILINE|ES_WANTRETURN|ES_AUTOVSCROLL,
         0,0,0,0,native_window,NULL,module,NULL);
     DragAcceptFiles(native_prompt,TRUE);
     for(i=0;i<3;i++)native_buttons[i]=CreateWindowW(L"BUTTON",labels[i],WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_OWNERDRAW,
@@ -38,12 +40,13 @@ static int native_ui_create(HWND owner,int show){
     if(!native_history||!native_prompt||!native_title||!native_preview||!native_stop_button||
         !native_buttons[0]||!native_buttons[1]||!native_buttons[2]){DestroyWindow(native_window);return 0;}
     SendMessageW(native_history,EM_EXLIMITTEXT,0,150000);
-    dc=GetDC(native_window);dpi=GetDeviceCaps(dc,LOGPIXELSY);ReleaseDC(native_window,dc);
-    native_font=CreateFontW(-MulDiv(10,dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,0,0,CLEARTYPE_QUALITY,0,L"Microsoft YaHei UI");
-    native_title_font=CreateFontW(-MulDiv(17,dpi,72),0,0,0,FW_SEMIBOLD,FALSE,FALSE,FALSE,DEFAULT_CHARSET,0,0,CLEARTYPE_QUALITY,0,L"Segoe UI");
+    dc=GetDC(native_window);
+    if(dc){native_dpi=GetDeviceCaps(dc,LOGPIXELSY);ReleaseDC(native_window,dc);}
+    native_font=CreateFontW(-MulDiv(10,native_dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,0,0,CLEARTYPE_QUALITY,0,L"Microsoft YaHei UI");
+    native_title_font=CreateFontW(-MulDiv(17,native_dpi,72),0,0,0,FW_SEMIBOLD,FALSE,FALSE,FALSE,DEFAULT_CHARSET,0,0,CLEARTYPE_QUALITY,0,L"Microsoft YaHei UI");
     SendMessageW(native_title,WM_SETFONT,(WPARAM)native_title_font,TRUE);
-    SendMessageW(native_history,EM_SETBKGNDCOLOR,0,RGB(232,232,232));
-    SendMessageW(native_prompt,EM_SETBKGNDCOLOR,0,RGB(245,245,245));
+    SendMessageW(native_history,EM_SETBKGNDCOLOR,0,CHAT_CANVAS_COLOR);
+    SendMessageW(native_prompt,EM_SETBKGNDCOLOR,0,CHAT_INPUT_COLOR);
     SendMessageW(native_history,WM_SETFONT,(WPARAM)native_font,TRUE);
     SendMessageW(native_prompt,WM_SETFONT,(WPARAM)native_font,TRUE);
     for(i=0;i<3;i++)SendMessageW(native_buttons[i],WM_SETFONT,(WPARAM)native_font,TRUE);

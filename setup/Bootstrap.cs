@@ -5,9 +5,16 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 class Setup {
+ static string PayloadParent() {
+  string managed=Environment.GetEnvironmentVariable("BWTL_INSTALL_ROOT",EnvironmentVariableTarget.User);
+  string root=String.IsNullOrEmpty(managed)?@"E:\":Path.GetFullPath(managed);
+  if(!String.Equals(Path.GetPathRoot(root),@"E:\",StringComparison.OrdinalIgnoreCase)||!Directory.Exists(@"E:\"))
+   throw new IOException("BWTL 安装需要可用的 E 盘。");
+  return Path.Combine(root,"BWTL-Setup");
+ }
  static void CleanTemporaryPayload(string root) {
   if(String.IsNullOrEmpty(root)||!Directory.Exists(root))return;
-  string parent=Path.Combine(Path.GetTempPath(),"BWTL-Setup")+Path.DirectorySeparatorChar;
+  string parent=PayloadParent()+Path.DirectorySeparatorChar;
   if(!Path.GetFullPath(root).StartsWith(parent,StringComparison.OrdinalIgnoreCase))return;
   var pending=new System.Collections.Generic.Stack<string>();pending.Push(root);
   while(pending.Count>0){string dir=pending.Pop();if((File.GetAttributes(dir)&FileAttributes.ReparsePoint)!=0)return;
@@ -19,7 +26,7 @@ class Setup {
   string temporary=null;
   try {
    bool extractOnly=args.Length==2 && args[0]=="--extract-only";
-   string root=extractOnly?Path.GetFullPath(args[1]):Path.Combine(Path.GetTempPath(),"BWTL-Setup",Guid.NewGuid().ToString("N"));
+   string root=extractOnly?Path.GetFullPath(args[1]):Path.Combine(PayloadParent(),Guid.NewGuid().ToString("N"));
    if(!extractOnly)temporary=root;
    if(extractOnly && Directory.Exists(root))throw new Exception("测试提取目录已存在");Directory.CreateDirectory(root);
    using(Stream payload=Assembly.GetExecutingAssembly().GetManifestResourceStream("BWTLPayload"))

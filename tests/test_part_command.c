@@ -10,6 +10,16 @@ int main(void){
     assert(part_command_parse(L"CREO_OP PARAM board_1 DESCRIPTION STRING \"旧 名称\" \"新\\\"名称\"",&p)==1&&!wcscmp(p.arg[5],L"新\"名称"));
     assert(part_command_parse(L"CREO_OP PARAM board_1 CODE STRING \"\" \"新\"",&p)==1&&!p.arg[4][0]);
     assert(part_command_parse(L"CREO_OP COPY board_1 board_2",&p)==1&&p.verb==PART_COPY);
+    assert(part_command_parse(L"CREO_OP IMITATE board_1",&p)==1&&p.verb==PART_IMITATE);
+    assert(part_command_parse(L"CREO_OP IMITATE board_1 board_2",&p)==-1);
+    assert(part_command_parse(L"CREO_OP IMITATE_SIZE 222 600 200 300",&p)==1&&p.verb==PART_IMITATE_SIZE);
+    assert(part_command_parse(L"CREO_OP IMITATE_SIZE 222 600 200 0",&p)==1&&p.verb==PART_IMITATE_SIZE);
+    assert(part_command_parse(L"CREO_OP IMITATE_SIZE 222 0 0 0 THICK 2 HOLE 100 90",&p)==1);
+    assert(part_command_parse(L"CREO_OP IMITATE_SIZE 222 0 0 0",&p)==-1);
+    assert(part_command_parse(L"CREO_OP IMITATE_SIZE 222 0 0 0 HOLE 10 10",&p)==-1);
+    assert(part_command_parse(L"CREO_OP IMITATE_SIZE 222 0 0 0 THICK 2 THICK 3",&p)==-1);
+    assert(part_command_parse(L"CREO_OP IMITATE_LOCAL target source 444 SURFACE:90 PLANE:RIGHT 0 -5 POS",&p)==1&&p.verb==PART_IMITATE_LOCAL);
+    assert(part_command_parse(L"CREO_OP IMITATE_LOCAL target source 444 SELECTED PLANE:RIGHT 0 0 NEG",&p)==-1);
     assert(part_command_parse(L"CREO_OP RENAME board_1 board_2",&p)==1&&p.verb==PART_RENAME);
     assert(part_command_parse(L"CREO_OP DISPLAY board_1 board_2",&p)==1&&p.verb==PART_DISPLAY);
     assert(part_command_parse(L"CREO_OP EXTRUDE board_1 BOX 20 20 20 0",&p)==1&&p.verb==PART_EXTRUDE);

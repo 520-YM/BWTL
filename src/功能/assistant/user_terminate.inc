@@ -1,4 +1,6 @@
 __declspec(dllexport) void user_terminate(void) {
+    markup_ai_cleanup();
+    markup_capture_clear();
     foundation_reset();
     part_snapshot_clear(&request_snapshot);
     smart_cancel();native_images_clear();

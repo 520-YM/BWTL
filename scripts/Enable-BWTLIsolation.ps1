@@ -1,6 +1,11 @@
 ﻿[CmdletBinding()]
-param([string]$InstallRoot=(Join-Path $env:LOCALAPPDATA 'BWTL'),[string]$ProfileRoot=(Join-Path $env:LOCALAPPDATA 'BWTL-Profile'),[string]$StandardsConfig='C:\PTC\Pro_Stds-C\00_config\config.pro',[string]$CreoExecutable='C:\Program Files\PTC\Creo 10.0.0.0\Parametric\bin\parametric.exe',[switch]$PlanOnly)
+param([string]$InstallRoot,[string]$ProfileRoot,[string]$StandardsConfig='C:\PTC\Pro_Stds-C\00_config\config.pro',[string]$CreoExecutable='C:\Program Files\PTC\Creo 10.0.0.0\Parametric\bin\parametric.exe',[switch]$PlanOnly)
 $ErrorActionPreference='Stop'
+$managedRoot=[Environment]::GetEnvironmentVariable('BWTL_INSTALL_ROOT','User')
+if(!$InstallRoot){$InstallRoot=if($managedRoot){$managedRoot}else{Join-Path $env:LOCALAPPDATA 'BWTL'}}
+if($managedRoot -and [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($InstallRoot)) -ine [IO.Path]::GetPathRoot($managedRoot)){throw 'BWTL 路径必须位于配置的数据盘。'}
+if(!$ProfileRoot){$ProfileRoot=$InstallRoot+'-Profile'}
+if($managedRoot -and [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($ProfileRoot)) -ine [IO.Path]::GetPathRoot($managedRoot)){throw 'BWTL 专用配置必须位于配置的数据盘。'}
 $InstallRoot=[IO.Path]::GetFullPath($InstallRoot);$ProfileRoot=[IO.Path]::GetFullPath($ProfileRoot)
 $statePath=Join-Path $InstallRoot 'active.json';$state=Get-Content -LiteralPath $statePath -Raw -Encoding UTF8|ConvertFrom-Json
 $isolationPath=Join-Path $InstallRoot 'isolation.json';$newConfig=Join-Path $ProfileRoot 'home\config.pro'

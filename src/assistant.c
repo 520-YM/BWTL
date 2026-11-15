@@ -18,6 +18,7 @@
 #include <ProUIPushbutton.h>
 #include <ProMenu.h>
 #include <ProRibbon.h>
+#include "功能/runtime_paths/output_storage.inc"
 
 static char dialog_name[] = "codex_native_assistant";
 static int created = 0;
@@ -70,6 +71,7 @@ static int request_requires_current=0;
 #include "machining_prompt.h"
 static void append(const wchar_t *text);
 static void append_card(const wchar_t *role,const wchar_t *text);
+#include "功能/assistant/smart_committed_part.inc"
 #include "smart_checkpoint.h"
 #include "smart_session.h"
 
@@ -107,6 +109,9 @@ static void append_card(const wchar_t *role,const wchar_t *text);
 #include "功能/assistant/read_model.inc"
 
 
+static void imitation_write_progress(FILE *prompt,ProMdl active);
+static int method_explicit(const wchar_t *text);
+static int method_prompt_write(FILE *prompt,const wchar_t *request,wchar_t kind);
 #include "功能/assistant/ai_send.inc"
 
 
@@ -133,6 +138,20 @@ static HWND native_backend_window;
 
 
 #include "功能/assistant/native_workdir_action.inc"
+#include "功能/model_imitation/imitation_run.inc"
+#include "功能/model_imitation/imitation_resize.inc"
+#include "功能/model_imitation/imitation_local.inc"
+#include "功能/model_imitation/imitation_ui.inc"
+#include "功能/screenshot_markup/markup_capture.inc"
+#include "功能/screenshot_markup/markup_apply.inc"
+
+static void native_markup_post(UINT message,LPARAM argument){
+    if(!PostMessageW(native_backend_window,message,0,argument)&&message==MARKUP_APPLY){
+        markup_deliver(((MarkupRequest *)argument)->ticket,0,0,L"无法提交到 Creo，请重试。");
+        free((void *)argument);
+    }
+}
+
 #include "功能/assistant/native_backend_proc.inc"
 
 

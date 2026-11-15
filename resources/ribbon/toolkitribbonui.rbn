@@ -34,7 +34,7 @@
 4 mBitmap 
 4 mPlugin 
 4 mGroupType 1
-1 pageList [3]
+1 pageList [4]
 2 pageList 
 3 ChildUnion(RbnDBPage) ->
 4 RbnDBInheritContainer 
@@ -76,6 +76,25 @@
 2 pageList 
 3 ChildUnion(RbnDBPage) ->
 4 RbnDBInheritContainer 
+5 mName BWTL_Assistant_Page@prt_smt_main_adb_cat
+5 mType 11
+5 mLabel BWTL
+5 mAncestor 
+5 mKeyTip 
+5 mCustom 1
+5 Attributes 
+5 containerChildrenArray [1]
+6 containerChildrenArray 
+7 ChildUnion(RbnDBGroupRef) ->
+8 mName BWTL_Assistant_Group
+8 mType 15
+8 Attributes 
+8 mRuntimeRemoved 0
+4 mCloseButton 
+4 mPlugin 
+2 pageList 
+3 ChildUnion(RbnDBPage) ->
+4 RbnDBInheritContainer 
 5 mName BWTL_Assistant_Page@asm_main_adb_cat
 5 mType 11
 5 mLabel BWTL
@@ -92,7 +111,7 @@
 8 mRuntimeRemoved 0
 4 mCloseButton 
 4 mPlugin 
-1 ribbonList [3]
+1 ribbonList [4]
 2 ribbonList 
 3 ChildUnion(RbnDBRibbon) ->
 4 RbnDBContainer 
@@ -150,6 +169,33 @@
 2 ribbonList 
 3 ChildUnion(RbnDBRibbon) ->
 4 RbnDBContainer 
+5 mName prt_smt_main_adb_cat
+5 mType 10
+5 Attributes 
+6 mUiAttribs [1]
+7 mUiAttribs ->
+8 mKey 104
+8 mValue 1
+5 containerChildrenArray [2]
+6 containerChildrenArray 
+7 ChildUnion(RbnDBPosition) ->
+8 mName EOF
+8 mType 7
+8 Attributes 
+8 mIndex -1
+6 containerChildrenArray 
+7 ChildUnion(RbnDBPageRef) ->
+8 mName BWTL_Assistant_Page@prt_smt_main_adb_cat
+8 mType 16
+8 Attributes 
+8 mRuntimeRemoved 0
+4 mLabel __RBN_DB_NO_CHANGE__
+4 mDescription __RBN_DB_NO_CHANGE__
+4 mPlugin 
+4 mCustom 0
+2 ribbonList 
+3 ChildUnion(RbnDBRibbon) ->
+4 RbnDBContainer 
 5 mName asm_main_adb_cat
 5 mType 10
 5 Attributes 
@@ -174,7 +220,7 @@
 4 mDescription __RBN_DB_NO_CHANGE__
 4 mPlugin 
 4 mCustom 0
-1 modeList [3]
+1 modeList [4]
 2 modeList 
 3 ChildUnion(RbnDBMode) ->
 4 RbnDBContainer 
@@ -200,6 +246,20 @@
 8 mKey 104
 8 mValue 1
 4 mRibbon prt_main_adb_cat
+4 mLabel __RBN_DB_NO_CHANGE__
+4 mDescription __RBN_DB_NO_CHANGE__
+4 mDelete 0
+2 modeList 
+3 ChildUnion(RbnDBMode) ->
+4 RbnDBContainer 
+5 mName prt_smt_main_adb_cat
+5 mType 9
+5 Attributes 
+6 mUiAttribs [1]
+7 mUiAttribs ->
+8 mKey 104
+8 mValue 1
+4 mRibbon prt_smt_main_adb_cat
 4 mLabel __RBN_DB_NO_CHANGE__
 4 mDescription __RBN_DB_NO_CHANGE__
 4 mDelete 0

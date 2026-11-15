@@ -54,7 +54,7 @@ static void fab_expand(FabDxf *d,const double point[2]){
     for(int i=0;i<2;i++){d->low[i]=fmin(d->low[i],point[i]);d->high[i]=fmax(d->high[i],point[i]);}
 }
 
-static int fab_entity_finish(FabDxf *d,FabEntity *e){
+static int fab_entity_finish(FabDxf *d,FabEntity *e,int strict){
     if(!e->type)return 1;
     if(d->count==FAB_DXF_MAX||!e->layer||(e->layer==3&&e->type!=1))return 0;
     const unsigned required=e->type==1?15:e->type==2?115:19;
@@ -68,8 +68,10 @@ static int fab_entity_finish(FabDxf *d,FabEntity *e){
             fab_arc_point(e,e->start+e->sweep,e->b);
         }
     }
-    if(e->type==1&&fab_close_xy(e->a,e->b,FAB_JOIN))return 0;
-    for(int i=0;i<d->count;i++)if(fab_same_entity(e,&d->entities[i],FAB_JOIN))return 0;
+    if(strict){
+        if(e->type==1&&fab_close_xy(e->a,e->b,FAB_JOIN))return 0;
+        for(int i=0;i<d->count;i++)if(fab_same_entity(e,&d->entities[i],FAB_JOIN))return 0;
+    }
     d->entities[d->count++]=*e;
     if(e->layer==3)d->bends++;
     if(e->layer==2)d->holes++;
@@ -128,7 +130,7 @@ static int fab_dxf_contours(const FabDxf *d){
     return 1;
 }
 
-static ProError fab_dxf_read(const wchar_t *path,FabDxf *d){
+static ProError fab_dxf_load(const wchar_t *path,FabDxf *d,int strict){
     if(!dv_file_nonempty(path))return PRO_TK_CANT_OPEN;
     FILE *f=_wfopen(path,L"rt");
     if(!f)return PRO_TK_CANT_OPEN;
@@ -148,7 +150,7 @@ static ProError fab_dxf_read(const wchar_t *path,FabDxf *d){
             if(section==1&&seen_header++)break;
             if(section==2&&seen_entities++)break;
         }else if(!code&&!strcmp(value,"ENDSEC")){
-            if(!section||unit_field||!fab_entity_finish(d,&entity))break;
+            if(!section||unit_field||!fab_entity_finish(d,&entity,strict))break;
             section=0;
         }else if(!code&&!strcmp(value,"EOF")){
             if(!section&&fab_line_value(f,group,sizeof(group))==0)eof=1;
@@ -163,16 +165,18 @@ static ProError fab_dxf_read(const wchar_t *path,FabDxf *d){
             }
         }else if(section==2){
             if(!code){
-                if(!fab_entity_finish(d,&entity))break;
+                if(!fab_entity_finish(d,&entity,strict))break;
                 entity.type=!strcmp(value,"LINE")?1:!strcmp(value,"ARC")?2:!strcmp(value,"CIRCLE")?3:0;
                 if(!entity.type)break;
             }else if(!entity.type||!fab_entity_value(&entity,code,value))break;
         }else if(!section)break;
     }
-    const int valid=eof&&units&&seen_entities&&!ferror(f)&&fab_dxf_contours(d);
+    const int valid=eof&&units&&seen_entities&&!ferror(f)&&(!strict||fab_dxf_contours(d));
     fclose(f);
     return valid?PRO_TK_NO_ERROR:PRO_TK_BAD_CONTEXT;
 }
+
+static ProError fab_dxf_read(const wchar_t *path,FabDxf *d){return fab_dxf_load(path,d,1);}
 
 static ProError fab_flat_read(ProMdl model,const wchar_t *directory,const wchar_t *base,
                              const wchar_t *face,FabDxf *d,ProPath path){

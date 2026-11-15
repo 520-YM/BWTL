@@ -1,7 +1,17 @@
 ﻿[CmdletBinding()]
-param([string]$InstallRoot=(Join-Path $env:LOCALAPPDATA 'BWTL'),[switch]$PlanOnly,[switch]$NextAvailable)
+param([string]$InstallRoot,[switch]$PlanOnly,[switch]$NextAvailable)
 $ErrorActionPreference='Stop'
+$managedRoot=[Environment]::GetEnvironmentVariable('BWTL_INSTALL_ROOT','User')
+if(!$InstallRoot){
+    if(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'active.json')){$InstallRoot=$PSScriptRoot}
+    elseif($managedRoot){$InstallRoot=$managedRoot}
+    else{$InstallRoot='E:\BWTL'}
+}
 $InstallRoot=[IO.Path]::GetFullPath($InstallRoot).TrimEnd('\')
+$outputDrive='E:\'
+if(-not [IO.Directory]::Exists($outputDrive) -or [IO.Path]::GetPathRoot($InstallRoot) -ine $outputDrive){
+    throw 'BWTL 需要可用的 E 盘及 E 盘上的安装目录。'
+}
 # No argument means the normal desktop entry. Updates always pass an exact root.
 $auto=($NextAvailable -or -not $PSBoundParameters.ContainsKey('InstallRoot')) -and -not $PlanOnly
 $utf8=[Text.UTF8Encoding]::new($false)
@@ -86,6 +96,13 @@ try{
     $state=Read-Json (Join-Path $root 'active.json')
     $isolation=Read-Json (Join-Path $root 'isolation.json')
     if($state.Config -ine $isolation.Config){throw 'BWTL 启动配置与隔离配置不一致，请修复安装。'}
+    if($outputDrive){
+        foreach($path in @($root,$state.Directory,$state.Data,$state.Config,$isolation.ProfileRoot,
+                            $isolation.Home,$isolation.Alternate,$isolation.Workspace,$isolation.Cache,$isolation.Temp,$isolation.Logs)){
+            if(!$path -or [IO.Path]::GetPathRoot($path) -ine $outputDrive){throw "BWTL 数据路径必须位于 ${outputDrive}：$path"}
+            Assert-LocalPath $path
+        }
+    }
     foreach($path in @($isolation.Home,$isolation.Alternate,$isolation.Workspace)){
         if(-not(Test-Path -LiteralPath $path -PathType Container)){throw 'BWTL 隔离目录缺失。'}
     }
@@ -113,6 +130,7 @@ try{
     $start.EnvironmentVariables['PTC_WF_ROOT']=$isolation.Cache
     $start.EnvironmentVariables['BWTL_PROFILE_ROOT']=$isolation.ProfileRoot
     $start.EnvironmentVariables['BWTL_ISOLATED_SESSION']='1'
+    if($outputDrive){$start.EnvironmentVariables['BWTL_OUTPUT_DRIVE']=$outputDrive.Substring(0,1)}
     $start.EnvironmentVariables['BWTL_INSTANCE_NUMBER']=[string]$number
     $start.EnvironmentVariables['PRO_LANG']='chs'
     $start.EnvironmentVariables['LANG']='chs'

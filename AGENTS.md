@@ -16,16 +16,23 @@ The user explicitly required complete isolation from their earlier Codex–Creo 
 
 - User preference recorded on 2026-11-05: future BWTL updates are developed, installed, and verified on this computer by default.
 - User preference recorded on 2026-11-06: handle plugin development and updates in Codex. The BWTL chat window is for Creo tasks and has no development or upgrade controls.
-- Source checkout: `C:\Users\Administrator\Documents\BWTL`. Managed installation: `%LOCALAPPDATA%\BWTL`. Inspect the current `active.json`, source changes, and active Creo work before an update.
+- Source checkout: `E:\BWTL-Data\Documents\BWTL`. Managed installation: `E:\BWTL-Data\AppData\Local\BWTL` and `E:\BWTL-Data\AppData\Local\BWTL-Instances\2–8`. Pass the exact E-drive install root to management and deployment scripts. Inspect the current `active.json`, source changes, and active Creo work before an update.
+- User requirement recorded on 2026-11-12: keep all BWTL source, features, builds, test fixtures, releases, logs, caches, backups, chat data, and generated outputs on E. Create task and temporary directories on E. Use the BWTL session E-drive workspace or the user E-drive project directory for model saves and exports. Fail clearly if E is unavailable.
 - Back up affected configuration/data, preserve all existing chats and memory, retain the previous version for rollback, and document the change and how to verify/roll it back.
+- User preference recorded on 2026-11-11: deploy verified feature increments locally as they pass. Select the released features explicitly and update their menus, chat protocols, documentation and installed version with corresponding acceptance evidence.
 - Build and run checks appropriate to the change; verify through BWTL's own interface and diagnostics. Respect the isolation requirements above, and never use the old Codex–Creo bridge as a substitute for BWTL functionality or verification.
 - Default scope is local installation. Pushes and remote releases require an explicit request. Account for unsaved models before restarting Creo.
+
+# Creo traceback risk reminders
+
+- User preference recorded on 2026-11-11: before using or instructing the user to run a marked BWTL feature, explicitly flag the prior Creo traceback and the trigger from `docs/Creo回溯风险重点提醒.md`. The reminder applies to the NEXT branch of feature 52.
+- Keep the marked menu labels, installed feature list and pre-execution notices in sync when updating these functions. Document test-code incidents separately.
 
 # Feature source organization
 
 - Keep the main implementation of each BWTL feature or closely related feature group in its domain subfolder under `src/功能`. Group features by shared behavior and keep unrelated features in separate files.
 - Keep shared menu entries, command validation, and dispatch in their existing `src` integration files. Record the feature or feature group and its implementation path in `docs/feature-files.json` when adding or moving it.
 
-# Public release packaging
+# 执行用户明确要求
 
-- Keep credentials, diagnostic logs, company files and machine-specific settings out of new public artifacts. Publish a BWTL chat export only when explicitly requested, in a dedicated archive outside the installer.
+- 用户明确要求执行、继续或说「做到哪步算哪步」时，先按实际模型、当前回执和上下文执行能完成的步骤，建议可以一起给；尽量自己核对已有结果并保留已完成进展，仅在确实缺少必要条件时说明具体卡点。

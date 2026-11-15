@@ -50,6 +50,11 @@ static int working_directory_command(uiCmdCmdId command,uiCmdValue *value,void *
     }else if(action==WORKDIR_PICK){
         native_set_busy(2);
         error=ProDirectoryChoose(label,NULL,NULL,current,selected);
+        if(!error&&!storage_output_directory(selected)){
+            native_set_busy(0);
+            append(storage_output_message);
+            return 0;
+        }
         if(!error){
             error=ProDirectoryChange(selected);
             if(!error){

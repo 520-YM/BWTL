@@ -15,6 +15,7 @@ static void native_cancel_action(void){}
 static void native_details_action(void){}
 static void native_company_action(void){}
 static void native_workdir_action(UINT action){workdir_action=action;}
+static void native_imitation_action(UINT action){(void)action;}
 static BOOL WINAPI test_track_popup(HMENU menu,UINT flags,int x,int y,HWND owner,LPTPMPARAMS options){
  const wchar_t *labels[]={L"查看当前工作目录",L"打开当前工作目录",L"复制工作目录路径",L"切换工作目录…"};
  UINT ids[]={WORKDIR_VIEW,WORKDIR_OPEN,WORKDIR_COPY,WORKDIR_PICK};
@@ -68,14 +69,14 @@ int main(void){
   wchar_t rendered[2048];
   native_force_follow=1;assert(native_ui_history(cards));GetWindowTextW(native_history,rendered,2048);
   assert(wcsstr(rendered,L"用户内容 {\\rtf1} 中文😀"));
-  check_card_color(L"用户内容",RGB(232,241,255));
-  check_card_color(L"助手内容",RGB(232,246,240));
-  check_card_color(L"执行内容",RGB(242,236,255));
-  check_card_color(L"模型内容",RGB(255,246,226));
-  check_card_color(L"提示内容",RGB(235,240,245));
+  check_card_color(L"用户内容",chat_card_fill[0]);
+  check_card_color(L"助手内容",chat_card_fill[1]);
+  check_card_color(L"执行内容",chat_card_fill[2]);
+  check_card_color(L"模型内容",chat_card_fill[3]);
+  check_card_color(L"提示内容",chat_card_fill[4]);
   SetWindowPos(native_window,NULL,0,0,480,650,SWP_NOMOVE|SWP_NOACTIVATE|SWP_NOZORDER);
   GetWindowTextW(native_history,rendered,2048);assert(wcsstr(rendered,L"助手内容"));
-  check_card_color(L"模型内容",RGB(255,246,226));assert(!IsWindowVisible(native_window));
+  check_card_color(L"模型内容",chat_card_fill[3]);assert(!IsWindowVisible(native_window));
   puts("Role cards: five actual background colors, escaped RTF text, Chinese/emoji and hidden resize PASS");
  }
  assert(native_schedule_poll());start=GetTickCount();while(GetTickCount()-start<1500 && !ticks){while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}Sleep(5);}assert(ticks==1);
@@ -85,7 +86,7 @@ int main(void){
  assert(!GetDlgItem(native_window,CHAT_DETAILS));
  assert(GetDlgItem(native_window,CHAT_WORKDIR)==native_top_buttons[2]);
  GetWindowTextW(native_top_buttons[2],input,64);assert(!wcscmp(input,L"工作目录"));
- assert(IsWindowEnabled(native_top_buttons[2])&&!IsWindowEnabled(native_top_buttons[3])&&!IsWindowEnabled(native_top_buttons[4]));
+ assert(IsWindowEnabled(native_top_buttons[2])&&IsWindowEnabled(native_top_buttons[3])&&!IsWindowEnabled(native_top_buttons[4]));
  SendMessageW(native_top_buttons[2],BM_CLICK,0,0);assert(workdir_action==WORKDIR_PICK);
  workdir_action=0;native_set_busy(1);SendMessageW(native_window,WM_COMMAND,CHAT_WORKDIR,0);assert(!workdir_action);native_set_busy(0);
  puts("Working directory: visible active button, four actions and busy protection PASS");
@@ -104,7 +105,7 @@ int main(void){
  }
  puts("Unified chat: no mode selector, development entry or upgrade button; layout PASS at minimum and default widths");
  assert(!(GetWindowLongPtrW(native_preview,GWL_STYLE)&WS_VISIBLE));
- {RECT pane,edit;GetWindowRect(native_history,&pane);GetWindowRect(native_prompt,&edit);assert(edit.top-pane.bottom==10);}
+ {RECT pane,edit;GetWindowRect(native_history,&pane);GetWindowRect(native_prompt,&edit);assert(edit.top-pane.bottom==MulDiv(10,native_dpi,96));}
  native_set_busy(1);SendMessageW(native_window,WM_COMMAND,CHAT_SEND,0);assert(sends==0&&!IsWindowEnabled(native_buttons[1]));
  GetWindowTextW(native_buttons[1],input,64);assert(!wcscmp(input,L"处理中…"));
  native_set_busy(0);SendMessageW(native_window,WM_COMMAND,CHAT_SEND,0);assert(sends==1&&IsWindowEnabled(native_buttons[1]));

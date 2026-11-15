@@ -157,6 +157,7 @@ typedef struct {ProMdl model;PartText *out;int count;} FdRefList;
 #include "fabrication_tools.h"
 #include "quick_parts_tools.h"
 
+#include "sheetmetal_production_tools.h"
 #include "功能/foundation_tools/foundation_execute.inc"
 
 #endif

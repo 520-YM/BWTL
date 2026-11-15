@@ -4,6 +4,10 @@ static ProError foundation_execute(const PartCommand *cmd,ProMdl model,wchar_t *
     if(type==PRO_MDL_PART&&dv_kind(verb))return dv_execute(model,cmd,report,capacity);
     if(type==PRO_MDL_PART&&qa_kind(verb))return qa_execute(model,cmd,report,capacity);
     if(type==PRO_MDL_PART&&ux_kind(verb))return ux_execute(cmd,model,report,capacity);
+    if(type==PRO_MDL_PART&&smx_kind(verb)){
+        PartText out={report,capacity,0};
+        return smx_execute(model,cmd,smx_kind(verb),&out);
+    }
     if(type==PRO_MDL_PART&&sh_kind(verb))return sh_execute(cmd,model,report,capacity);
     if(type==PRO_MDL_PART&&pn_kind(verb))return pn_execute(cmd,model,sub==PROMDLSTYPE_PART_SHEETMETAL,report,capacity);
     if(type==PRO_MDL_PART&&org_kind(verb))return org_execute(cmd,model,report,capacity);

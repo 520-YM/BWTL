@@ -9,6 +9,7 @@ static void execute_model_plan(void) {
     if (!pending_plan.ready) { append(L"当前没有待执行的建模方案。请先说明零件形状与完整尺寸，等待 AI 给出方案。"); return; }
     if(!smart_active){smart_begin(L"执行建模");smart_local_plan=1;}
     if(smart_readonly){pending_plan.ready=0;smart_reply(smart_write_block_message);return;}
+    if(!storage_prepare_output()){pending_plan.ready=0;smart_reply(storage_output_message);return;}
     if(smart_progress){pending_plan.ready=0;smart_pause(L"已有已核对的模型改动，已拦截重复新建",1);return;}
     if(smart_local_plan)ProDirectoryCurrentGet(request_snapshot.directory);
     ProPath directory;

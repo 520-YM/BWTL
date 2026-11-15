@@ -146,6 +146,8 @@ static int smart_explicit_component_delete(const wchar_t *goal,const wchar_t *id
 
 static int smart_read_command(const PartCommand *c){
     if(c->verb==PART_FOUNDATION){
+        int sheetmetal=smx_kind(c->arg[0]);
+        if(sheetmetal)return smx_read_only(sheetmetal,c);
         int organize=org_kind(c->arg[0]);
         if(organize)return organize!=ORG_RENAME;
         int fabrication=fab_kind(c->arg[0]);if(fabrication)return fabrication==FAB_DXF_CHECK||fabrication==FAB_READBACK;

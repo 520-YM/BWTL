@@ -27,6 +27,18 @@ static int smart_binding_valid(void){return fake_binding;}
 static void ai_send(const wchar_t *text){}
 int main(void){
     int i;PartCommand write={0};assert(part_command_parse(L"CREO_OP EDGE_ROUND PRT1 R1 2 EDGE:1",&write)==1);
+    PartCommand copy, read, imitation, replay;
+    assert(part_command_parse(L"CREO_OP COPY 222 RESULT",&copy)==1);
+    assert(part_command_parse(L"CREO_OP READ 222",&read)==1);
+    assert(part_command_parse(L"CREO_OP IMITATE_SIZE 222 600 200 300",&imitation)==1);
+    assert(part_command_parse(L"CREO_OP IMITATE 222",&replay)==1);
+    smart_begin(L"仿照这个222画一个600*200*300的模型");
+    smart_intent=SMART_INTENT_NEW;smart_readonly=0;
+    assert(!smart_protocol_allowed(&copy)&&smart_protocol_allowed(&read)&&smart_protocol_allowed(&imitation)&&smart_protocol_allowed(&replay));
+    assert(!smart_protocol_allowed(&write));
+    smart_intent=SMART_INTENT_CHAT;smart_readonly=1;
+    assert(!smart_protocol_allowed(&copy)&&!smart_protocol_allowed(&read)&&!smart_protocol_allowed(&imitation));
+    smart_cancel();
     smart_begin(L"把当前零件倒圆角R2");assert(smart_active&&!smart_readonly&&busy);
     smart_target_model=(void *)1;smart_waiting_for_user=1;smart_begin(L"可以");assert(!smart_readonly&&smart_target_model==(void *)1&&wcsstr(smart_goal,L"倒圆角R2"));
     smart_waiting_for_user=1;smart_begin(L"半径3毫米");assert(!smart_readonly&&wcsstr(smart_goal,L"3毫米"));

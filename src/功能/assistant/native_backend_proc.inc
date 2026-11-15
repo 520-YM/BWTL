@@ -16,5 +16,10 @@ static LRESULT CALLBACK native_backend_proc(HWND window,UINT message,WPARAM w,LP
     return 0;
  }
  if(message==BWTL_WORKDIR_REQUEST){queue_workdir_command((UINT)w);return 0;}
+ if(message==WM_TIMER&&w==MARKUP_PROGRESS){markup_poll_intent();return 0;}
+ if(message==MARKUP_CANCEL){markup_cancel_intent((unsigned long)l);return 0;}
+ if(message==MARKUP_OPEN){markup_queue(1,NULL);return 0;}
+ if(message==MARKUP_APPLY){markup_queue(2,(MarkupRequest *)l);return 0;}
+ if(message==BWTL_IMITATION_REQUEST){imitation_queue_action((UINT)w);return 0;}
  return DefWindowProcW(window,message,w,l);
 }

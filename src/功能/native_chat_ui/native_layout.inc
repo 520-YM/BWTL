@@ -1,22 +1,54 @@
+static void native_layout_footer(int width,int height){
+    HWND buttons[]={native_buttons[0],native_buttons[1],native_stop_button,native_buttons[2]};
+    const int left[]={MulDiv(20,native_dpi,96),width-MulDiv(292,native_dpi,96),
+        width-MulDiv(154,native_dpi,96),width-MulDiv(80,native_dpi,96)};
+    const int widths[]={MulDiv(128,native_dpi,96),MulDiv(128,native_dpi,96),
+        MulDiv(64,native_dpi,96),MulDiv(60,native_dpi,96)};
+    const int top=height-MulDiv(40,native_dpi,96);
+    const int button_height=MulDiv(31,native_dpi,96);
+    const UINT flags=SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOREDRAW;
+    HDWP positions=BeginDeferWindowPos(_countof(buttons));
+    for(int i=0;positions&&i<_countof(buttons);i++)
+        positions=DeferWindowPos(positions,buttons[i],NULL,left[i],top,widths[i],button_height,flags);
+    if(!positions||!EndDeferWindowPos(positions)){
+        for(int i=0;i<_countof(buttons);i++)
+            SetWindowPos(buttons[i],NULL,left[i],top,widths[i],button_height,flags);
+    }
+}
+
 static void native_layout(void){
-    RECT r;int w,h,has_images,prompt_top,i,button_width;
+    RECT r;
+    int w,h,has_images,prompt_top,button_width;
     if(!native_window)return;
     GetClientRect(native_window,&r);w=r.right;h=r.bottom;
-    if(w<40||h<300)return;
+#define UI(px) MulDiv((px),native_dpi,96)
+    if(w<UI(40)||h<UI(300))return;
     AcquireSRWLockShared(&native_image_lock);
     has_images=native_image_count>0;
     ReleaseSRWLockShared(&native_image_lock);
-    prompt_top=h-158-(has_images?58:0);
-    MoveWindow(native_title,20,12,w-40,28,TRUE);
-    button_width=(w-72)/5;
-    if(button_width>112)button_width=112;
-    if(button_width>0)for(i=0;i<5;i++)
-        MoveWindow(native_top_buttons[i],20+i*(button_width+8),44,button_width,26,TRUE);
-    MoveWindow(native_history,20,76,w-40,prompt_top-86,TRUE);
-    MoveWindow(native_prompt,20,prompt_top,w-40,106,TRUE);
-    if(has_images)MoveWindow(native_preview,20,h-100,w-40,50,TRUE);
+    prompt_top=h-UI(has_images?216:158);
+    const int gutter=UI(20), width=w-2*gutter, history_top=UI(94);
+    const int title_width=width<UI(320)?width:UI(320);
+    native_layout_footer(w,h);
+    MoveWindow(native_title,gutter,UI(9),title_width,UI(32),TRUE);
+    button_width=(width-4*UI(8))/5;
+    if(button_width>UI(112))button_width=UI(112);
+    if(button_width>0)for(int i=0;i<5;i++)
+        MoveWindow(native_top_buttons[i],gutter+i*(button_width+UI(8)),UI(44),button_width,UI(30),TRUE);
+    MoveWindow(native_history,gutter,history_top,width,prompt_top-history_top-UI(10),TRUE);
+    MoveWindow(native_prompt,gutter,prompt_top,width,UI(106),TRUE);
+    GetClientRect(native_prompt,&r);
+    r.left+=UI(10);
+    r.top+=UI(8);
+    r.right-=UI(10);
+    r.bottom-=UI(8);
+    if(r.right>r.left&&r.bottom>r.top)SendMessageW(native_prompt,EM_SETRECT,0,(LPARAM)&r);
+    if(has_images)MoveWindow(native_preview,gutter,h-UI(100),width,UI(50),TRUE);
     ShowWindow(native_preview,has_images?SW_SHOWNA:SW_HIDE);
-    MoveWindow(native_buttons[0],20,h-40,128,28,TRUE);
-    MoveWindow(native_buttons[1],w-292,h-40,128,28,TRUE);MoveWindow(native_stop_button,w-154,h-40,64,28,TRUE);MoveWindow(native_buttons[2],w-80,h-40,60,28,TRUE);
-    if(native_render_source)native_ui_history(native_render_source);InvalidateRect(native_window,NULL,TRUE);
+    if(native_render_source)native_ui_history(native_render_source);
+    // The footer buttons are owner-drawn. Repaint all of them at their new positions.
+    RECT footer={0,h-UI(49),w,h};
+    RedrawWindow(native_window,&footer,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN);
+    InvalidateRect(native_window,NULL,FALSE);
+#undef UI
 }

@@ -1,6 +1,6 @@
 #define SH_DXF_MAX 2048
 typedef struct {ProEdge edge;int id,seen,hole;} ShDxfEdge;
-typedef struct {double a[2],b[2];} ShDxfBend;
+typedef struct {double a[2],b[2],width;int surface,direction;} ShDxfBend;
 typedef struct {
     ProMdl model;ProSurface surface;double scale;ProVector origin,u,v,normal;
     ShDxfEdge edges[SH_DXF_MAX];int count,faces,hole,face_edge_count;ProEdge face_edges[64];
@@ -46,7 +46,10 @@ static ProError sh_dxf_surface(ProSurface surface,ProError status,ProAppData dat
         if(chosen<0)return PRO_TK_BAD_CONTEXT;ad_sub(b[chosen],a[chosen],axis);if(!ad_unit(axis))return PRO_TK_BAD_CONTEXT;
         {ProVector start,end;double area;for(int j=0;j<3;j++){start[j]=mid[j]-axis[j]*span/2;end[j]=mid[j]+axis[j]*span/2;}
          if((e=ProSurfaceAreaEval(surface,&area))||fabs(area-span*developed)>fmax(.01*s->scale*s->scale,area*1e-5))return PRO_TK_BAD_CONTEXT;
-         if((e=sh_project(s,start,s->bends[s->bend_count].a))||(e=sh_project(s,end,s->bends[s->bend_count].b)))return e;s->bend_count++;}
+         ShDxfBend *bend=&s->bends[s->bend_count];
+         if((e=sh_project(s,start,bend->a))||(e=sh_project(s,end,bend->b)))return e;
+         bend->width=developed/s->scale;bend->surface=item.id;
+         s->bend_count++;}
     }
     return 0;
 }
