@@ -155,7 +155,7 @@ static ProError method_save_last(PartText *out){
     }
     wchar_t directory[MAX_PATH],path[MAX_PATH],temp[MAX_PATH];
     if(!method_directory(directory,1)){
-        part_text_add(out,L"无法在本会话的 E 盘数据目录中创建建模方法库。\n");
+        part_text_add(out,L"无法在本会话所选数据盘的目录中创建建模方法库。\n");
         return PRO_TK_CANT_WRITE;
     }
     if(method_last.saved[0]){

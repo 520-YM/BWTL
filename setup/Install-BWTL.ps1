@@ -4,7 +4,7 @@ $ErrorActionPreference='Stop'
 if(-not $PackageRoot){$PackageRoot=Split-Path -Parent $MyInvocation.MyCommand.Path}
 $script:utf8=[Text.UTF8Encoding]::new($false)
 $managedRoot=[Environment]::GetEnvironmentVariable('BWTL_INSTALL_ROOT','User')
-if(-not $InstallRoot){$InstallRoot=if($managedRoot){$managedRoot}else{'E:\BWTL'}}
+if(-not $InstallRoot){$InstallRoot=if($managedRoot){$managedRoot}else{Join-Path $env:LOCALAPPDATA 'BWTL'}}
 $InstallRoot=[IO.Path]::GetFullPath($InstallRoot)
 $PackageRoot=[IO.Path]::GetFullPath($PackageRoot)
 if(-not(Test-Path -LiteralPath (Join-Path $PackageRoot 'VERSION')) -and (Test-Path -LiteralPath (Join-Path (Split-Path -Parent $PSScriptRoot) 'VERSION'))){$PackageRoot=Split-Path -Parent $PSScriptRoot}
@@ -89,8 +89,11 @@ function Get-Isolation($Root){
         Config=(Join-Path $profile 'home\config.pro');CreoExecutable=[IO.Path]::GetFullPath($CreoExecutable)
     }
 }
-function Assert-ReleaseDataPath([string]$Path) {
-    if(!$Path -or [IO.Path]::GetPathRoot($Path) -ine 'E:\'){throw 'BWTL 安装及专用配置必须位于 E 盘。'}
+function Get-BwtlDataDrives {
+    [IO.DriveInfo]::GetDrives() | Where-Object {$_.DriveType -eq [IO.DriveType]::Fixed -and $_.IsReady}
+}
+function Assert-ReleaseDataPath([string]$Path,[string]$Drive) {
+    if(!$Path -or [IO.Path]::GetPathRoot($Path) -ine $Drive){throw "安装目录、数据及 Creo 专用配置必须位于所选数据盘 $Drive"}
     for($parent=[IO.Path]::GetFullPath($Path);$parent;$parent=Split-Path -Parent $parent){
         if((Test-Path -LiteralPath $parent) -and ((Get-Item -LiteralPath $parent -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){
             throw 'BWTL 数据路径不能经过链接或目录联接。'
@@ -99,15 +102,16 @@ function Assert-ReleaseDataPath([string]$Path) {
 }
 function Invoke-Install {
     $InstallRoot=[IO.Path]::GetFullPath($InstallRoot).TrimEnd('\')
-    if([IO.Path]::GetPathRoot($InstallRoot) -ine 'E:\' -or -not [IO.Directory]::Exists('E:\')){
-        throw 'BWTL 需要可用的 E 盘。请选择 E 盘上的 BWTL 安装目录。'
+    $dataDrive=[IO.Path]::GetPathRoot($InstallRoot)
+    if(-not (Get-BwtlDataDrives | Where-Object Name -EQ $dataDrive)){
+        throw '请选择可用的本地固定磁盘，并在盘内指定安装目录。'
     }
     $isolationPath=Join-Path $InstallRoot 'isolation.json'
     $newProfile=-not(Test-Path -LiteralPath $isolationPath)
     $isolation=Get-Isolation $InstallRoot
     foreach($path in @($isolation.ProfileRoot,$isolation.Config,$isolation.Home,$isolation.Alternate,
                         $isolation.Workspace,$isolation.Cache,$isolation.Temp,$isolation.Logs)){
-        Assert-ReleaseDataPath $path
+        Assert-ReleaseDataPath $path $dataDrive
     }
     $ConfigPath=if($ConfigPath){[IO.Path]::GetFullPath($ConfigPath)}else{$isolation.Config}
     if($ConfigPath -ine $isolation.Config){throw '本版本只允许更新BWTL专用配置，不修改旧Codex–Creo注册。'}
@@ -126,7 +130,7 @@ function Invoke-Install {
     foreach($required in @('resources/ribbon/toolkitribbonui.rbn','resources/text/ribbon/toolkitribbonui.rbn','bin/BWTL.dll')){if(-not(Test-Path -LiteralPath (Join-Path $PackageRoot $required))){throw ('安装包缺少必要组件：'+$required)}}
     $version=([IO.File]::ReadAllText((Join-Path $PackageRoot 'VERSION'))).Trim();if($version -notmatch '^\d+\.\d+\.\d+(?:-[\w.]+)?$'){throw '版本号无效。'}
     $versionDirectory=Join-Path $InstallRoot ('versions\'+$version);$data=Join-Path $InstallRoot 'data';$activePath=Join-Path $InstallRoot 'active.json'
-    if($PlanOnly){return [pscustomobject]@{Version=$version;InstallRoot=$InstallRoot;Config=$ConfigPath;Data=$data;VersionDirectory=$versionDirectory}}
+    if($PlanOnly){return [pscustomobject]@{Version=$version;InstallRoot=$InstallRoot;DataDrive=$dataDrive;Config=$ConfigPath;Data=$data;VersionDirectory=$versionDirectory}}
     if($newProfile){
         New-Item -ItemType Directory -Force -Path $InstallRoot,$isolation.Home,$isolation.Alternate,$isolation.Workspace,$isolation.Cache,$isolation.Temp,$isolation.Logs|Out-Null
         $logs=Native-Path $isolation.Logs
@@ -170,6 +174,7 @@ function Invoke-Install {
             $shortcut.TargetPath=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
             $shortcut.Arguments='-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$launcher+'" -InstallRoot "'+$InstallRoot+'" -NextAvailable'
             $shortcut.IconLocation=$isolation.CreoExecutable+',0';$shortcut.Save()
+            [Environment]::SetEnvironmentVariable('BWTL_INSTALL_ROOT',$InstallRoot,'User')
         }
         return $state
     }catch{
@@ -264,11 +269,47 @@ function Label($Text,$X,$Y,$W=600){$l=New-Object Windows.Forms.Label;$l.Text=$Te
 Label '霸威天龙：原生Creo助手 · 完整工具与聊天记忆' 20 18
 Label 'Creo 启动程序 parametric.exe（首次安装时使用）' 20 62
 $creoBox=New-Object Windows.Forms.TextBox;$creoBox.SetBounds(20,95,630,30);$creoBox.Text=$CreoExecutable;$form.Controls.Add($creoBox)
-Label '安装目录（按用户安装，默认无需管理员）' 20 137
-$rootBox=New-Object Windows.Forms.TextBox;$rootBox.Text=$InstallRoot;$rootBox.SetBounds(20,168,630,30);$form.Controls.Add($rootBox)
+Label '数据盘' 20 137 110
+Label 'BWTL 安装与数据目录' 140 137 390
+$driveBox=New-Object Windows.Forms.ComboBox
+$driveBox.AccessibleName='数据盘'
+$driveBox.DropDownStyle=[Windows.Forms.ComboBoxStyle]::DropDownList
+$driveBox.SetBounds(20,168,104,30)
+foreach($drive in @(Get-BwtlDataDrives)){$driveBox.Items.Add($drive.Name)|Out-Null}
+$form.Controls.Add($driveBox)
+$rootBox=New-Object Windows.Forms.TextBox
+$rootBox.AccessibleName='BWTL 安装与数据目录'
+$rootBox.Text=$InstallRoot
+$rootBox.SetBounds(140,168,420,30)
+$form.Controls.Add($rootBox)
+$rootBrowse=New-Object Windows.Forms.Button
+$rootBrowse.Text='浏览'
+$rootBrowse.SetBounds(570,167,80,31)
+$form.Controls.Add($rootBrowse)
+$initialRoot=$InstallRoot
+$rootBox.Add_TextChanged({
+    $drive=if($rootBox.Text -match '^[a-zA-Z]:[\\/]'){$rootBox.Text.Substring(0,2).ToUpperInvariant()+'\'}
+    $driveBox.SelectedIndex=if($drive){$driveBox.Items.IndexOf($drive)}else{-1}
+})
+$driveBox.SelectedIndex=$driveBox.Items.IndexOf([IO.Path]::GetPathRoot($InstallRoot).ToUpperInvariant())
+$driveBox.Add_SelectionChangeCommitted({
+    $drive=[string]$driveBox.SelectedItem
+    if([IO.Path]::GetPathRoot($initialRoot) -ieq $drive){$rootBox.Text=$initialRoot}
+    elseif([IO.Path]::GetPathRoot($env:LOCALAPPDATA) -ieq $drive){$rootBox.Text=Join-Path $env:LOCALAPPDATA 'BWTL'}
+    else{$rootBox.Text=Join-Path $drive 'BWTL'}
+})
+$rootBrowse.Add_Click({
+    $browser=New-Object Windows.Forms.FolderBrowserDialog
+    try{
+        $browser.Description='选择将存放 BWTL 程序、数据和备份的文件夹'
+        if(Test-Path -LiteralPath $rootBox.Text -PathType Container){$browser.SelectedPath=$rootBox.Text}
+        elseif($driveBox.SelectedItem){$browser.SelectedPath=[string]$driveBox.SelectedItem}
+        if($browser.ShowDialog($form) -eq [Windows.Forms.DialogResult]::OK){$rootBox.Text=$browser.SelectedPath}
+    }finally{$browser.Dispose()}
+})
 Label 'Codex引擎路径（可留空自动检测；AI使用者需在本机登录）' 20 207
 $codexBox=New-Object Windows.Forms.TextBox;$codexBox.Text=$CodexPath;$codexBox.SetBounds(20,238,630,30);$form.Controls.Add($codexBox)
-Label '新安装创建专用配置；升级保留已有聊天和记忆。' 20 281
+Label '聊天、记忆、缓存、日志和备份使用所选盘。升级请选原安装目录。' 20 281
 $status=New-Object Windows.Forms.Label;$status.SetBounds(20,435,630,50);$form.Controls.Add($status)
 $install=New-Object Windows.Forms.Button;$install.Text='一键安装 / 升级';$install.SetBounds(490,375,160,40);$form.Controls.Add($install)
 $uninstallButton=New-Object Windows.Forms.Button;$uninstallButton.Text='卸载 / 数据清理';$uninstallButton.SetBounds(20,375,150,40);$form.Controls.Add($uninstallButton)
@@ -278,6 +319,6 @@ $diagnoseButton.Add_Click({try{$report=Export-BwtlDiagnostics $rootBox.Text;[Win
 $rollbackButton=New-Object Windows.Forms.Button;$rollbackButton.Text='回退上一版';$rollbackButton.SetBounds(320,375,140,40);$form.Controls.Add($rollbackButton)
 $rollbackButton.Add_Click({try{Start-BwtlManagement '-Rollback' $rootBox.Text}catch{[Windows.Forms.MessageBox]::Show($_.Exception.Message,'霸威天龙')|Out-Null}})
 $install.Add_Click({
-    $install.Enabled=$false;try{$script:InstallRoot=$rootBox.Text;$script:CreoExecutable=$creoBox.Text;$script:CodexPath=$codexBox.Text;$status.Text='正在校验并安装…';$form.Refresh();$result=Invoke-Install;$status.Text='安装完成：'+$result.Version;[Windows.Forms.MessageBox]::Show("从开始菜单打开「Creo（BWTL）」，然后点击 Creo 顶部的 BWTL。AI 使用本机已登录的 Codex。",'BWTL')|Out-Null}catch{$status.Text='安装未完成';[Windows.Forms.MessageBox]::Show($_.Exception.Message,'BWTL')|Out-Null}finally{$install.Enabled=$true}
+    $install.Enabled=$false;try{if($driveBox.SelectedIndex -lt 0){throw '请选择数据盘并填写该盘上的安装目录。'};$script:InstallRoot=$rootBox.Text;$script:CreoExecutable=$creoBox.Text;$script:CodexPath=$codexBox.Text;$status.Text='正在校验并安装…';$form.Refresh();$result=Invoke-Install;$status.Text='安装完成：'+$result.Version;[Windows.Forms.MessageBox]::Show("从开始菜单打开「Creo（BWTL）」，然后点击 Creo 顶部的 BWTL。AI 使用本机已登录的 Codex。",'BWTL')|Out-Null}catch{$status.Text='安装未完成';[Windows.Forms.MessageBox]::Show($_.Exception.Message,'BWTL')|Out-Null}finally{$install.Enabled=$true}
 })
 [void]$form.ShowDialog()

@@ -31,7 +31,7 @@ static ProError markup_apply_edits(const MarkupCapture *capture,const MarkupRequ
         wcscpy_s(reply,capacity,L"模型、版本或工作目录已变化。请重新截图。");
         return PRO_TK_BAD_CONTEXT;
     }
-    if(!storage_directory_on_drive(capture->directory,L'E')){
+    if(!storage_output_directory(capture->directory)){
         wcscpy_s(reply,capacity,storage_output_message);
         return PRO_TK_CANT_WRITE;
     }
@@ -159,7 +159,7 @@ static int markup_native_command(uiCmdCmdId id,uiCmdValue *value,void *data){
         if(error){
             markup_capture_clear();
             const wchar_t *message=error==PRO_TK_INVALID_TYPE?L"请先激活一个 Creo 零件。":
-                L"无法截取当前 Creo 窗口。请确认窗口已展开，并检查 E 盘数据目录。";
+                L"无法截取当前 Creo 窗口。请确认窗口已展开，并检查本会话的数据目录。";
             append_card(L"截图改图",message);
             markup_deliver(0,0,0,message);
             trace("Screenshot capture failed",error);

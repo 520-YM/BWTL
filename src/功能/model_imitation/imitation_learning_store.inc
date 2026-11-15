@@ -68,15 +68,8 @@ static int method_explicit(const wchar_t *text){
 }
 
 static int method_directory(wchar_t path[MAX_PATH],int create){
-    if(towupper(runtime_data[0])!=L'E'||runtime_data[1]!=L':'||
+    if(!storage_output_directory(runtime_data)||
        swprintf_s(path,MAX_PATH,L"%ls\\建模方法库",runtime_data)<0)return 0;
-    HANDLE root=CreateFileW(runtime_data,FILE_READ_ATTRIBUTES,FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,
-        NULL,OPEN_EXISTING,FILE_FLAG_BACKUP_SEMANTICS,NULL);
-    if(root==INVALID_HANDLE_VALUE)return 0;
-    wchar_t resolved[MAX_PATH];
-    DWORD n=GetFinalPathNameByHandleW(root,resolved,_countof(resolved),VOLUME_NAME_DOS);
-    CloseHandle(root);
-    if(n<7||n>=_countof(resolved)||_wcsnicmp(resolved,L"\\\\?\\E:\\",7))return 0;
     if(create&&!CreateDirectoryW(path,NULL)&&GetLastError()!=ERROR_ALREADY_EXISTS)return 0;
     DWORD attributes=GetFileAttributesW(path);
     return attributes!=INVALID_FILE_ATTRIBUTES&&(attributes&FILE_ATTRIBUTE_DIRECTORY)&&

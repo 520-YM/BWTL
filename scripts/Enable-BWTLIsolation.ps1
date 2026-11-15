@@ -3,10 +3,13 @@ param([string]$InstallRoot,[string]$ProfileRoot,[string]$StandardsConfig='C:\PTC
 $ErrorActionPreference='Stop'
 $managedRoot=[Environment]::GetEnvironmentVariable('BWTL_INSTALL_ROOT','User')
 if(!$InstallRoot){$InstallRoot=if($managedRoot){$managedRoot}else{Join-Path $env:LOCALAPPDATA 'BWTL'}}
-if($managedRoot -and [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($InstallRoot)) -ine [IO.Path]::GetPathRoot($managedRoot)){throw 'BWTL 路径必须位于配置的数据盘。'}
 if(!$ProfileRoot){$ProfileRoot=$InstallRoot+'-Profile'}
-if($managedRoot -and [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($ProfileRoot)) -ine [IO.Path]::GetPathRoot($managedRoot)){throw 'BWTL 专用配置必须位于配置的数据盘。'}
 $InstallRoot=[IO.Path]::GetFullPath($InstallRoot);$ProfileRoot=[IO.Path]::GetFullPath($ProfileRoot)
+$drive=[IO.Path]::GetPathRoot($InstallRoot)
+if($drive -ine [IO.Path]::GetPathRoot($ProfileRoot) -or
+   -not ([IO.DriveInfo]::GetDrives() | Where-Object {$_.Name -ieq $drive -and $_.DriveType -eq [IO.DriveType]::Fixed -and $_.IsReady})){
+    throw 'BWTL 安装目录和专用配置必须位于同一个可用的本地固定数据盘。'
+}
 $statePath=Join-Path $InstallRoot 'active.json';$state=Get-Content -LiteralPath $statePath -Raw -Encoding UTF8|ConvertFrom-Json
 $isolationPath=Join-Path $InstallRoot 'isolation.json';$newConfig=Join-Path $ProfileRoot 'home\config.pro'
 if(Test-Path -LiteralPath $isolationPath){

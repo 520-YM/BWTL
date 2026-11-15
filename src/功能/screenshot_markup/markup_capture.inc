@@ -311,7 +311,7 @@ static ProError markup_take(MarkupCapture *capture){
     ProError error=ProMdlCurrentGet(&capture->model);
     if(!error)error=ProMdlTypeGet(capture->model,&type);
     if(error||type!=PRO_MDL_PART)return PRO_TK_INVALID_TYPE;
-    if(!storage_directory_on_drive(runtime_data,L'E'))
+    if(!storage_output_directory(runtime_data))
         return PRO_TK_CANT_WRITE;
     if((error=ProDirectoryCurrentGet(capture->directory))||
        (error=ProWindowCurrentGet(&capture->window))||

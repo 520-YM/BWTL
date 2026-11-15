@@ -1,6 +1,6 @@
 {
-  "version": "0.23.0-preview.3",
-  "source_local_version": "0.23.0-local.markup.53",
+  "version": "0.23.0-preview.4",
+  "previous_release": "0.23.0-preview.3",
   "attempted": true,
   "exit_code": 0,
   "unlocked": true,
@@ -8,11 +8,10 @@
   "requires_toolkit_development_license": false,
   "target_creo": "10.0.0.0",
   "cross_machine_verified": false,
-  "binary_sha256": "3f7e6bc792309584a0412b40646ee3aad4d0228d652739256c74ba2282198080",
+  "binary_sha256": "3c5e5c4179e741a5275e78ea81e261fec55f23c041ce653f5f8da81b50ce484e",
   "noninteractive_suites": 11,
-  "native_marked_screenshot_suites": 3,
-  "native_imitation_regression_suites": 21,
+  "native_selectable_storage_suites": 3,
   "payload_policy": "Release package contains source, tools, resources, tests, guides and the verified DLL.",
-  "validation": "docs/VALIDATION.md",
-  "release_notes": "docs/releases/0.23.0-preview.3.md"
+  "validation": "docs/releases/0.23.0-preview.4.md",
+  "release_notes": "docs/releases/0.23.0-preview.4.md"
 }

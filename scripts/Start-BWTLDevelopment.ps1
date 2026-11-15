@@ -3,9 +3,10 @@ param([ValidateSet('Start','Validate','VerifyNative','Apply','Activate')][string
 $ErrorActionPreference='Stop'
 $managedRoot=[Environment]::GetEnvironmentVariable('BWTL_INSTALL_ROOT','User')
 if(!$InstallRoot){$InstallRoot=if($managedRoot){$managedRoot}else{Join-Path $env:LOCALAPPDATA 'BWTL'}}
-if($managedRoot -and [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($InstallRoot)) -ine [IO.Path]::GetPathRoot($managedRoot)){throw 'BWTL 路径必须位于配置的数据盘。'}
 if(!$SourceRoot){$SourceRoot=Split-Path -Parent $PSScriptRoot}
-if($managedRoot -and [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($SourceRoot)) -ine [IO.Path]::GetPathRoot($managedRoot)){throw 'BWTL 源码必须位于配置的数据盘。'}
+if([IO.Path]::GetPathRoot([IO.Path]::GetFullPath($SourceRoot)) -ine [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($InstallRoot))){
+    throw 'BWTL 源码必须位于该实例所选的数据盘。'
+}
 # Creo can inherit PowerShell 7 module paths. Resolve hashing from the
 # Windows PowerShell installation used by the native development launcher.
 if($PSVersionTable.PSEdition -eq 'Desktop'){

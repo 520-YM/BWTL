@@ -5,12 +5,12 @@ $managedRoot=[Environment]::GetEnvironmentVariable('BWTL_INSTALL_ROOT','User')
 if(!$InstallRoot){
     if(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'active.json')){$InstallRoot=$PSScriptRoot}
     elseif($managedRoot){$InstallRoot=$managedRoot}
-    else{$InstallRoot='E:\BWTL'}
+    else{$InstallRoot=Join-Path $env:LOCALAPPDATA 'BWTL'}
 }
 $InstallRoot=[IO.Path]::GetFullPath($InstallRoot).TrimEnd('\')
-$outputDrive='E:\'
-if(-not [IO.Directory]::Exists($outputDrive) -or [IO.Path]::GetPathRoot($InstallRoot) -ine $outputDrive){
-    throw 'BWTL 需要可用的 E 盘及 E 盘上的安装目录。'
+$outputDrive=[IO.Path]::GetPathRoot($InstallRoot)
+if(-not ([IO.DriveInfo]::GetDrives() | Where-Object {$_.Name -ieq $outputDrive -and $_.DriveType -eq [IO.DriveType]::Fixed -and $_.IsReady})){
+    throw "BWTL 的数据盘 $outputDrive 当前不可用。"
 }
 # No argument means the normal desktop entry. Updates always pass an exact root.
 $auto=($NextAvailable -or -not $PSBoundParameters.ContainsKey('InstallRoot')) -and -not $PlanOnly
@@ -119,7 +119,7 @@ try{
     if(-not(Test-Path -LiteralPath $exe -PathType Leaf)){throw 'Creo 启动程序不存在。'}
     if($PlanOnly){
         return [pscustomobject]@{Executable=$exe;Instance=$number;Home=$isolation.Home;Workspace=$isolation.Workspace
-            Cache=$isolation.Cache;Config=$state.Config;Data=$state.Data;Isolated=$true;ExistingBwtlPIDs=@($loaded | ForEach-Object Id);PendingLauncherPID=$pending}
+            Cache=$isolation.Cache;Config=$state.Config;Data=$state.Data;DataDrive=$outputDrive;Isolated=$true;ExistingBwtlPIDs=@($loaded | ForEach-Object Id);PendingLauncherPID=$pending}
     }
     if($loaded.Count -or $pending){throw "BWTL 会话 $number 已在运行或正在启动。"}
     $start=[Diagnostics.ProcessStartInfo]::new($exe)

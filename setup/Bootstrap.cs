@@ -7,14 +7,12 @@ using System.Windows.Forms;
 class Setup {
  static string PayloadParent() {
   string managed=Environment.GetEnvironmentVariable("BWTL_INSTALL_ROOT",EnvironmentVariableTarget.User);
-  string root=String.IsNullOrEmpty(managed)?@"E:\":Path.GetFullPath(managed);
-  if(!String.Equals(Path.GetPathRoot(root),@"E:\",StringComparison.OrdinalIgnoreCase)||!Directory.Exists(@"E:\"))
-   throw new IOException("BWTL 安装需要可用的 E 盘。");
+  string root=!String.IsNullOrEmpty(managed)&&Directory.Exists(managed)?Path.GetFullPath(managed):Path.GetTempPath();
   return Path.Combine(root,"BWTL-Setup");
  }
- static void CleanTemporaryPayload(string root) {
+ static void CleanTemporaryPayload(string root,string temporaryParent) {
   if(String.IsNullOrEmpty(root)||!Directory.Exists(root))return;
-  string parent=PayloadParent()+Path.DirectorySeparatorChar;
+  string parent=temporaryParent+Path.DirectorySeparatorChar;
   if(!Path.GetFullPath(root).StartsWith(parent,StringComparison.OrdinalIgnoreCase))return;
   var pending=new System.Collections.Generic.Stack<string>();pending.Push(root);
   while(pending.Count>0){string dir=pending.Pop();if((File.GetAttributes(dir)&FileAttributes.ReparsePoint)!=0)return;
@@ -23,10 +21,11 @@ class Setup {
   Directory.Delete(root,true);
  }
  [STAThread] static int Main(string[] args) {
-  string temporary=null;
+  string temporary=null,temporaryParent=null;
   try {
    bool extractOnly=args.Length==2 && args[0]=="--extract-only";
-   string root=extractOnly?Path.GetFullPath(args[1]):Path.Combine(PayloadParent(),Guid.NewGuid().ToString("N"));
+   if(!extractOnly)temporaryParent=PayloadParent();
+   string root=extractOnly?Path.GetFullPath(args[1]):Path.Combine(temporaryParent,Guid.NewGuid().ToString("N"));
    if(!extractOnly)temporary=root;
    if(extractOnly && Directory.Exists(root))throw new Exception("测试提取目录已存在");Directory.CreateDirectory(root);
    using(Stream payload=Assembly.GetExecutingAssembly().GetManifestResourceStream("BWTLPayload"))
@@ -44,6 +43,6 @@ class Setup {
    p.UseShellExecute=false;p.CreateNoWindow=true;p.WindowStyle=ProcessWindowStyle.Hidden;
    using(var process=Process.Start(p)){process.WaitForExit();return process.ExitCode;}
   } catch(Exception e) {if(args.Length>0)return 1;MessageBox.Show(e.Message,"霸威天龙安装失败");return 1;}
-  finally {try{CleanTemporaryPayload(temporary);}catch{/* A locked payload is left for OS temporary-file cleanup. */}}
+  finally {try{CleanTemporaryPayload(temporary,temporaryParent);}catch{/* A locked payload is left for OS temporary-file cleanup. */}}
  }
 }
