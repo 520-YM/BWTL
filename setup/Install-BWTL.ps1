@@ -49,6 +49,22 @@ function Verify-Payload {
         if(-not(Test-Path -LiteralPath $path -PathType Leaf) -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ine $entry.SHA256){throw ('安装包文件校验失败：'+$entry.Path)}
     }
 }
+function Add-MethodExamples($Data,$Seed){
+    foreach($name in @(
+    '装配方法库\BWTL-DEMO-CSYS.bwtlasm.txt'
+    '建模方法库\BWTL-DEMO-SHEET-CUT.bwtlmethod.txt'
+    )){
+        $source=Join-Path $Seed $name
+        if(!(Test-Path -LiteralPath $source -PathType Leaf)){continue}
+        $target=Join-Path $Data $name
+        [void](Assert-ManagedTree $target)
+        [IO.Directory]::CreateDirectory((Split-Path -Parent $target))|Out-Null
+        if(!(Test-Path -LiteralPath $target)){
+            try { [IO.File]::Copy($source,$target,$false) }
+            catch [IO.IOException] { if(!(Test-Path -LiteralPath $target -PathType Leaf)){throw} }
+        }
+    }
+}
 function Add-Seed($Data,$Seed,$Version){
     New-Item -ItemType Directory -Force -Path $Data|Out-Null
     if(Test-Path -LiteralPath (Join-Path $InstallRoot 'instance.json')){
@@ -152,6 +168,7 @@ function Invoke-Install {
         if(Test-Path -LiteralPath $versionDirectory){
             if((Get-FileHash -LiteralPath (Join-Path $versionDirectory 'payload-manifest.json')).Hash -ne (Get-FileHash -LiteralPath (Join-Path $PackageRoot 'payload-manifest.json')).Hash){throw '相同版本号已有不同内容，拒绝覆盖；请使用新版本号。'}
         }else{New-Item -ItemType Directory -Force -Path $versionDirectory|Out-Null;$createdVersion=$true;foreach($name in @('bin','resources','src','docs','tests','setup','scripts','compatibility','archive','seed','VERSION','CHANGELOG.md','README.md','DEPLOYMENT.json','payload-manifest.json','build.cmd','AGENTS.md')){$path=Join-Path $PackageRoot $name;if(Test-Path -LiteralPath $path){Copy-Item -LiteralPath $path -Destination (Join-Path $versionDirectory $name) -Recurse}}}
+        Add-MethodExamples $data (Join-Path $PackageRoot "seed")
         if(-not $PreserveData -or -not $prior){Add-Seed $data (Join-Path $PackageRoot 'seed') $version}
         if(-not $CodexPath -and $prior -and $prior.CodexPath){$CodexPath=$prior.CodexPath}
         [IO.File]::WriteAllText((Join-Path $versionDirectory 'settings.ini'),"[Runtime]`r`nCodexPath=$CodexPath`r`nDataDirectory=$data`r`n",[Text.Encoding]::Unicode)

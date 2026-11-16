@@ -7,8 +7,9 @@ static ProError replay_history_open(ImitationReplay *replay,ProFeature *feature,
     if(!error)error=ProFeatureInit((ProSolid)replay->history_owner,feature->id,&history->feature);
     if(!error)error=ProFeatureElemtreeExtract(&history->feature,NULL,PRO_FEAT_EXTRACT_NO_OPTS,&history->tree);
     ProFeature previous;
-    if(!error&&!replay->last_feature)error=PRO_TK_E_NOT_FOUND;
-    if(!error)error=ProFeatureInit((ProSolid)replay->history_owner,replay->last_feature,&previous);
+    int last=replay->rebuilding_remove&&replay->last_pattern_member?replay->last_pattern_member:replay->last_feature;
+    if(!error&&!last)error=PRO_TK_E_NOT_FOUND;
+    if(!error)error=ProFeatureInit((ProSolid)replay->history_owner,last,&previous);
     if(!error)error=ProFeatureInsertmodeWithoptionsActivate(&previous,PRO_REGEN_NO_RESOLVE_MODE);
     return error;
 }

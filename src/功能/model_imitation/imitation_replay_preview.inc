@@ -92,8 +92,13 @@ static ProError replay_preview_feature(ProFeature *feature,ProError status,ProAp
     const int local_group=type==PRO_FEAT_GROUP_HEAD&&!issue&&!replay_local_group_read(feature,&group);
     if(type==PRO_FEAT_RM_SURF){
         int member;
-        supported=!replay_exclusion_member(feature,&member);
-        if(supported)operation=L"阵列实例几何排除";
+        if(!replay_exclusion_member(feature,&member))operation=L"阵列实例几何排除";
+        else if(!issue){
+            ProElement tree=NULL;
+            ProError read=ProFeatureElemtreeExtract(feature,NULL,PRO_FEAT_EXTRACT_NO_OPTS,&tree);
+            supported=!read&&replay_definition_supported(tree,type,&operation);
+            if(tree)ProFeatureElemtreeFree(feature,tree);
+        }
     }
     if(local_group)operation=group.patterned?L"本地特征组阵列":L"本地特征组";
     if(!issue&&!local_group&&supported&&(type==PRO_FEAT_GROUP_HEAD||type==PRO_FEAT_CURVE||type==PRO_FEAT_DATUM_SURF||type==PRO_FEAT_SRF_MDL||type==PRO_FEAT_DATUM_QUILT||type==PRO_FEAT_EXTEND||type==PRO_FEAT_BOOLEANBODIES||type==PRO_FEAT_SPLIT_BODY||type==PRO_FEAT_WALL||type==PRO_FEAT_HOLE||

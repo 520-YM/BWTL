@@ -217,6 +217,11 @@ static const NativeFeature native_features[]={
     {L"308 按组件间隙生成垫片",L"根据两相向矩形实体面的实测间隙，创建并固定独立垫片。请填写组件实例、实体面、坐标系及长宽。"},
     {L"309 生成装配定位标记",L"在当前装配中只出现一次的直接零件上创建直线基准。请填写组件实例、零件坐标系和两个端点。"},
     {L"310 核对装配加工影响范围",L"读取顶层加工特征的 Creo 相交记录、可见层级和同模型其他实例。请填写特征名。"},
+#define AX_WORK_GROUP(category, title) {L##title,NULL},
+#define AX_WORK(number, suffix, category, title, inputs) {L##title,L"对当前装配执行「" L##title L"」。" L##inputs L"。"},
+#include "功能/assembly/ax_workbench_catalog.inc"
+#undef AX_WORK_GROUP
+#undef AX_WORK
     {L"装配质量检查",NULL},
     {L"311 装配重生成诊断",L"读取失败组件、特征和实例路径。请指定当前装配。"},
     {L"312 按区域设置间隙规则",L"按屏幕、玻璃、PCB 或机箱分别测量最小间隙。请填写实例对与要求。"},

@@ -191,6 +191,11 @@ static ProError replay_pattern_seed_dimensions(ProSection section){
     return error;
 }
 
+/* These entities never become edges of a profile. Toolkit may report them
+   as non-construction after recreating an independent section. */
+static int replay_intrinsic_sketch_reference(Pro2dEntType type){
+    return type==PRO_2D_POINT||type==PRO_2D_CENTER_LINE||type==PRO_2D_COORD_SYS;
+}
 static ProError replay_draw_section(ImitationReplay *replay,ProSection source,ProSection target,
                                     ReplaySectionMode mode,int *drawn,int *dimensions){
     const int independent=mode!=REPLAY_ASSOCIATIVE_SECTION;
@@ -270,8 +275,7 @@ static ProError replay_draw_section(ImitationReplay *replay,ProSection source,Pr
         if(!error)error=ProSectionEntityAdd(target,entity,&id);
         if(error){trace("Replay draw entity type",entity->type);trace("Replay draw entity",error);}
         if(!error)map[mapped++]=(ReplaySectionEntity){ids[i],id};
-        if(!error&&construction&&entity->type!=PRO_2D_CENTER_LINE&&entity->type!=PRO_2D_COORD_SYS&&
-           entity->type!=PRO_2D_POINT)
+        if(!error&&construction&&!replay_intrinsic_sketch_reference(entity->type))
             error=ProSectionEntityConstructionSet(target,id,PRO_B_TRUE);
         if(error)trace("Replay mark construction geometry",error);
         if(!error&&!construction)(*drawn)++;
@@ -302,7 +306,12 @@ static ProError replay_draw_section(ImitationReplay *replay,ProSection source,Pr
             ProBoolean original=PRO_B_FALSE,rebuilt=PRO_B_FALSE;
             error=ProSectionEntityIsConstruction(source,map[i].source,&original);
             if(!error)error=ProSectionEntityIsConstruction(target,map[i].target,&rebuilt);
-            if(!error&&original!=rebuilt)error=PRO_TK_INCOMPLETE;
+            if(!error&&original!=rebuilt){
+                Pro2dEntdef *reference=NULL;
+                if(!original||rebuilt||ProSectionEntityGet(source,map[i].source,&reference)||
+                   !replay_intrinsic_sketch_reference(reference->type))
+                    error=PRO_TK_INCOMPLETE;
+            }
         }
         if(error){
             trace("Replay changed solved entity",map[i].source);

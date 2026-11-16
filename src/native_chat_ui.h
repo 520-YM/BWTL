@@ -56,7 +56,8 @@ static int native_ui_history(const wchar_t *text);
 enum {WORKDIR_VIEW=1,WORKDIR_OPEN,WORKDIR_COPY,WORKDIR_PICK};
 enum {IMITATION_CURRENT=1,IMITATION_FILE,IMITATION_STRICT,IMITATION_DIAGNOSE,
       IMITATION_COMPARE,IMITATION_BATCH,IMITATION_LIBRARY,IMITATION_BATCH_LIBRARY,IMITATION_BATCH_PREVIEW,
-      IMITATION_COVERAGE,IMITATION_OPEN_STANDARD,IMITATION_LEARN,IMITATION_COMPARE_FLAT,IMITATION_NEUTRAL,IMITATION_MANUAL};
+      IMITATION_COVERAGE,IMITATION_OPEN_STANDARD,IMITATION_LEARN,IMITATION_COMPARE_FLAT,IMITATION_NEUTRAL,IMITATION_MANUAL,IMITATION_ASSEMBLY_LEARN,IMITATION_MEMORY,
+      IMITATION_CSYS_METHOD,IMITATION_SHEET_CUT_METHOD};
 static void native_set_busy(int busy){if(native_window)SendMessageW(native_window,CHAT_BUSY,busy,0);}
 static void native_layout(void);
 static void native_attachment_changed(void){if(native_preview)native_layout();}
@@ -108,7 +109,15 @@ static HMENU native_imitation_menu_create(void){
     AppendMenuW(menu,MF_STRING,IMITATION_COMPARE_FLAT,L"比对钣金展开…");
     AppendMenuW(menu,MF_STRING,IMITATION_NEUTRAL,L"从 STEP／IGES 推断并重建…");
     AppendMenuW(menu,MF_STRING,IMITATION_BATCH,L"批量按原步骤重建…");
-    AppendMenuW(menu,MF_STRING,IMITATION_LEARN,L"学习建模方法");
+    AppendMenuW(menu,MF_STRING,IMITATION_LEARN,L"保存最近的建模方法");
+    AppendMenuW(menu,MF_STRING,IMITATION_ASSEMBLY_LEARN,L"装配学习");
+    AppendMenuW(menu,MF_STRING,IMITATION_MEMORY,L"查看学习记忆");
+    HMENU methods=CreatePopupMenu();
+    if(methods){
+        AppendMenuW(methods,MF_STRING,IMITATION_CSYS_METHOD,L"装配坐标系定位");
+        AppendMenuW(methods,MF_STRING,IMITATION_SHEET_CUT_METHOD,L"钣金首壁与独立切口");
+        if(!AppendMenuW(menu,MF_POPUP,(UINT_PTR)methods,L"已验证的做法"))DestroyMenu(methods);
+    }
     AppendMenuW(menu,MF_SEPARATOR,0,NULL);
     AppendMenuW(menu,MF_STRING,IMITATION_LIBRARY,L"将上次结果存为公司标准件");
     AppendMenuW(menu,MF_STRING,IMITATION_BATCH_LIBRARY,L"将上次批量通过项存为公司标准件");
@@ -124,7 +133,16 @@ static void native_imitation_menu(HWND button){
     RECT at;
     if(GetWindowRect(button,&at)){
         UINT action=TrackPopupMenu(menu,TPM_RETURNCMD|TPM_NONOTIFY|TPM_LEFTALIGN,at.left,at.bottom,0,native_window,NULL);
-        if(action)native_imitation_action(action);
+        const wchar_t *draft=NULL;
+        if(action==IMITATION_CSYS_METHOD)
+            draft=L"用已学的坐标系定位法，把当前总装里的组件〔待填：组件型号或当前实例 ID〕"
+                L"按案例〔待填：源装配名，或上次学习的案例〕定位。核对新组件和当前总装的两个坐标系后直接执行。";
+        else if(action==IMITATION_SHEET_CUT_METHOD)
+            draft=L"按已学的钣金首壁与独立切口建模方法，新建一块矩形钣金板。"
+                L"长〔待填：毫米〕，宽〔待填：毫米〕，板厚〔待填：毫米〕，"
+                L"圆形贯穿切口直径〔待填：毫米〕，圆心〔待填：草绘坐标 X、Y，或居中〕。直接建模。";
+        if(draft){native_prompt_set(draft);SetFocus(native_prompt);}
+        else if(action)native_imitation_action(action);
     }
     DestroyMenu(menu);
 }

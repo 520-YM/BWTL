@@ -10,11 +10,12 @@ typedef struct {wchar_t path[MAX_PATH],name[100];HBITMAP thumbnail;} NativeImage
 #define NATIVE_IMAGE_MAX 4
 static int store_ready,queued,busy;static HANDLE ai_process;
 static int replies,saved;
+static wchar_t shown[PART_TEXT_MAX],logged[PART_TEXT_MAX];
 static PartCommand pending_part;static ModelPlan pending_plan;
 static int native_images_snapshot(NativeImage *images){return 0;}
 static void native_set_busy(int value){busy=value;}
-static void append_card(const wchar_t *role,const wchar_t *s){replies++;}
-static void save_turn(const wchar_t *role,const wchar_t *s){saved++;}
+static void append_card(const wchar_t *role,const wchar_t *s){replies++;wcsncpy_s(shown,_countof(shown),s,_TRUNCATE);}
+static void save_turn(const wchar_t *role,const wchar_t *s){saved++;wcsncpy_s(logged,_countof(logged),s,_TRUNCATE);}
 #include "../src/功能/chat_store/store_tail_add.inc"
 static void ai_cleanup(void){ai_process=NULL;}
 static void native_stop_poll(void){}
@@ -25,7 +26,41 @@ static void smart_binding_clear(void){}
 static int smart_binding_valid(void){return fake_binding;}
 #include "../src/smart_session.h"
 static void ai_send(const wchar_t *text){}
+static void test_failure_brief(void){
+    PartCommand sketch;
+    assert(part_command_parse(L"CREO_OP SMT_SKETCH PRT TestBase PLANE:FRONT PLANE:RIGHT RECT -100 -75 200 150",&sketch)==1);
+    const wchar_t *receipt=L"高级加工未完成：regenerate and verify native feature，错误码-1。未新增或已核对移除本次特征，原实体保持；未保存。";
+    int count=replies;
+    smart_begin(L"试一下钣金草绘");
+    smart_after_tool(0,L"已创建空钣金零件",1);
+    smart_step(&sketch,sketch.arg[0],-1,receipt,0,0,1);
+    const wchar_t *brief=wcsstr(shown,L"\n简单说：");
+    assert(replies==count+1&&saved==replies&&!wcscmp(shown,logged));
+    assert(brief&&wcsstr(brief,L"画钣金草绘没成功")&&wcsstr(brief,L"重新生成或检查特征")&&
+           wcsstr(brief,L"没有留下新特征")&&!wcsstr(brief+1,L"\n简单说："));
+    assert(wcsstr(shown,receipt)&&wcsstr(smart_details,receipt)&&!wcsstr(smart_details,L"简单说："));
+    assert(shown[wcslen(shown)-1]==L'。');
+
+    smart_begin(L"试一下钣金草绘");
+    smart_step(&sketch,sketch.arg[0],-1,L"指定草绘未完成，回滚未能验证。",0,1,0);
+    assert(wcsstr(shown,L"没有说明具体原因")&&wcsstr(shown,L"改动是否撤回还没有确认")&&
+           !wcsstr(shown,L"没有留下新特征"));
+
+    smart_begin(L"试一下钣金草绘");
+    count=replies;
+    smart_step(&sketch,sketch.arg[0],-1,L"fd_sketch_setup(tx,cmd->arg[3],cmd->arg[4])",0,0,0);
+    assert(replies==count&&smart_active);
+    smart_step(&sketch,sketch.arg[0],0,L"更换参照后画好了草绘。",1,1,0);
+    assert(replies==count+1&&!wcsstr(shown,L"简单说："));
+
+    smart_begin(L"试一下钣金草绘");
+    smart_step(&sketch,sketch.arg[0],-1,L"未执行：活动模型、工作目录或模型版本与请求时不一致。",0,1,0);
+    assert(wcsstr(shown,L"与提交时对不上")&&!wcsstr(shown,L"没有说明具体原因"));
+    smart_begin(L"试一下钣金草绘");smart_stop();
+    assert(!wcsstr(shown,L"简单说："));
+}
 int main(void){
+    test_failure_brief();replies=saved=0;
     int i;PartCommand write={0};assert(part_command_parse(L"CREO_OP EDGE_ROUND PRT1 R1 2 EDGE:1",&write)==1);
     PartCommand copy, read, imitation, replay;
     assert(part_command_parse(L"CREO_OP COPY 222 RESULT",&copy)==1);

@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([ValidateSet('Core','Solid','Machining','Custom')][string]$Suite='Core',[string]$Root,[string]$CustomSource,[Parameter(Mandatory=$true)][string]$WorkDirectory,[string]$StandardsConfig='C:\PTC\Pro_Stds-C\00_config\config.pro',[string]$CreoBase='C:\Program Files\PTC\Creo 10.0.0.0')
+param([ValidateSet('Core','Solid','Machining','Custom')][string]$Suite='Core',[string]$Root,[string]$CustomSource,[string]$FixtureProfileRoot,[switch]$ReuseFixture,[Parameter(Mandatory=$true)][string]$WorkDirectory,[string]$StandardsConfig='C:\PTC\Pro_Stds-C\00_config\config.pro',[string]$CreoBase='C:\Program Files\PTC\Creo 10.0.0.0')
 $ErrorActionPreference='Stop'
 $repo=if($Root){[IO.Path]::GetFullPath($Root)}else{Split-Path -Parent $PSScriptRoot};$testRoot=Join-Path $repo "tests";$WorkDirectory=[IO.Path]::GetFullPath($WorkDirectory)
 if(Test-Path -LiteralPath $WorkDirectory){throw 'Native test work directory must be new.'}
@@ -31,6 +31,15 @@ $start=[Diagnostics.ProcessStartInfo]::new((Join-Path $CreoBase 'Parametric\bin\
 $start.EnvironmentVariables['PTC_WF_ROOT']=Join-Path $WorkDirectory 'cache';$start.EnvironmentVariables['TEMP']=Join-Path $WorkDirectory 'temp';$start.EnvironmentVariables['TMP']=Join-Path $WorkDirectory 'temp'
 $start.EnvironmentVariables['HOME']=Join-Path $WorkDirectory 'home';$start.EnvironmentVariables['PTC_CREO_ALT_SETTINGS_PATH']=Join-Path $WorkDirectory 'alternate'
 $start.EnvironmentVariables['BWTL_ISOLATED_SESSION']='1';$start.EnvironmentVariables['BWTL_PROFILE_ROOT']=$WorkDirectory
+if($FixtureProfileRoot){
+    if($Suite -ne 'Custom' -or !(Test-Path -LiteralPath (Join-Path $FixtureProfileRoot 'data/isolation-session.txt'))){throw 'Select a completed isolated fixture profile.'}
+    $profile=(Resolve-Path -LiteralPath $FixtureProfileRoot).Path
+    $start.EnvironmentVariables['BWTL_PROFILE_ROOT']=$profile
+    $fixtureData=Join-Path $profile 'data'
+    [IO.File]::WriteAllText((Join-Path $WorkDirectory 'settings.ini'),"[Runtime]`r`nDataDirectory=$fixtureData`r`n",[Text.Encoding]::Unicode)
+}
+if($ReuseFixture){$start.EnvironmentVariables['BWTL_TEST_REUSE']='1'}
+$start.EnvironmentVariables['BWTL_OUTPUT_DRIVE']=[IO.Path]::GetPathRoot($WorkDirectory).Substring(0,1)
 $start.EnvironmentVariables['BWTL_NATIVE_CORE_TEST']='yes';$start.EnvironmentVariables['BWTL_FOUNDATION_SELFTEST']='yes'
 $start.EnvironmentVariables['PRO_LANG']='chs';$start.EnvironmentVariables['LANG']='chs'
 Add-Type -TypeDefinition @"

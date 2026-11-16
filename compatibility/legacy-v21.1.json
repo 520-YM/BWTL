@@ -3,11 +3,15 @@
   "RuntimeRelease": "0.23.0-local.imitation.11",
   "Created": "2026-11-04",
   "Policy": "No automatic baseline refresh. Legacy modifications require explicit review and applicable regression, including Creo native tests for behavioral changes.",
-  "ReviewedChanges": ["0.23.0-local.imitation.47: native_chat_ui.h adds a new BWTL-only menu item and appends its action ID, preserving existing actions."],
+  "ReviewedChanges": [
+    "0.23.0-local.imitation.47: native_chat_ui.h adds a new BWTL-only menu item and appends its action ID, preserving existing actions.",
+    "0.23.0-local.assemblylearning.60: adds one imitation menu action and learned assembly context, with the existing native model dispatch retained.",
+    "0.23.0-preview.5: BWTL-only method-library status, verified workflow menu and chat intake. Existing menu action numbers and Creo command contracts remain compatible."
+  ],
   "Files": [
     {
       "Path": "src/assistant.c",
-      "SHA256": "d43cdbf4e4c6854d1b5d481002ee235b3c078ae04fd16beb987f3f5ca6bbd405"
+      "SHA256": "acf54accae2511458aa28b9ccabfe5bae463b789fb0e8bf551ee5ee7919362a9"
     },
     {
       "Path": "src/chat_store.h",
@@ -39,7 +43,7 @@
     },
     {
       "Path": "src/native_chat_ui.h",
-      "SHA256": "11b12868ebf7731f28db6cafdf96af6f42f8437a2e0146f759dfea1fd12aefae"
+      "SHA256": "6f55c5d0d9afef895073421196e52bf67c6150aceff989ac1a31e4e7801f3fd0"
     },
     {
       "Path": "src/native_model.h",
@@ -95,7 +99,7 @@
     },
     {
       "Path": "src/功能/assistant/ai_send.inc",
-      "SHA256": "086301b07c42d7ef113884d8367f8860f937eb24b42d512f51045173e6e6295e"
+      "SHA256": "edfe7c2f3f2e46c2682d1030cfe5842c9f1f40668a154dc1f1b0cd9457b9cc2d"
     },
     {
       "Path": "src/功能/assistant/append_card.inc",
@@ -119,7 +123,7 @@
     },
     {
       "Path": "src/功能/assistant/execute_part_command.inc",
-      "SHA256": "301382d6157171166c7646b4ecd1aef0d97053b5150a97ba7bebb965ac241f80"
+      "SHA256": "c1ee7d5f3118b875e4d50e3f834f39de251f0040219dbe3cca448c9acba662ec"
     },
     {
       "Path": "src/功能/assistant/inspect_native_command.inc",
@@ -163,7 +167,7 @@
     },
     {
       "Path": "src/功能/assistant/run_local.inc",
-      "SHA256": "1671b9ee29d5e02834bc14dfde2a4b86aa67c09d9febdee75b035cc6d8262b83"
+      "SHA256": "b0762e8a9acd40e98ce99c2b8f616540cb42795a90c5dbb6e940689e60e186a6"
     },
     {
       "Path": "src/功能/assistant/save_pending_plan.inc",
@@ -267,7 +271,7 @@
     },
     {
       "Path": "src/功能/foundation_plan/foundation_plan_valid.inc",
-      "SHA256": "689f8a92c5a47c9d0a192720079e234717fee2f5799307b102922738eed7e913"
+      "SHA256": "5a8a7abea6f0433b976c619d2460da1e34c50d11ba2664abcd7d1f74465a6701"
     },
     {
       "Path": "src/功能/foundation_prompt/foundation_request.inc",
@@ -323,7 +327,7 @@
     },
     {
       "Path": "src/功能/foundation_tools/fd_dimension_create.inc",
-      "SHA256": "820437b832b66cb26595fc07682856529b3ec2f3f9dff87cb004ebcf0b45b795"
+      "SHA256": "f545f75d0b98c40bc7482fa2a5a08a61279424ed10b2e353bbc7f3de8d5dff99"
     },
     {
       "Path": "src/功能/foundation_tools/fd_dimensions_capture.inc",
@@ -383,7 +387,7 @@
     },
     {
       "Path": "src/功能/foundation_tools/fd_sketch_create.inc",
-      "SHA256": "bd3435a5f7695e794ce46c10d57db7a05a04dd1c70b36f08dbcd7524a43cef87"
+      "SHA256": "f567d9c73ba36b9d19a67e03819b89d3c83351c72fe1988de2c82357a3dd46f9"
     },
     {
       "Path": "src/功能/foundation_tools/fd_sketch_edit.inc",
@@ -415,7 +419,7 @@
     },
     {
       "Path": "src/功能/foundation_tools/foundation_execute.inc",
-      "SHA256": "a9515dd404e7ee40be324c3cb6b7cf21b249c9a42f2cff59144e390e3844447d"
+      "SHA256": "a8b8146e127a2d297a5095e416866307f9312525d090452c670243bd066b8314"
     },
     {
       "Path": "src/功能/foundation_tools/foundation_references.inc",

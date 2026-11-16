@@ -62,18 +62,13 @@ static unsigned method_word_tags(const wchar_t *text){
 }
 
 static int method_explicit(const wchar_t *text){
-    return wcsstr(text,L"学过")||wcsstr(text,L"学到")||wcsstr(text,L"建模方法")||
+    return wcsstr(text,L"学过")||wcsstr(text,L"学到")||wcsstr(text,L"已学")||wcsstr(text,L"建模方法")||
         wcsstr(text,L"建模经验")||wcsstr(text,L"我教你的")||wcsstr(text,L"我的画法")||
         wcsstr(text,L"我的画图方式")||wcsstr(text,L"之前学")||wcsstr(text,L"按我教");
 }
 
 static int method_directory(wchar_t path[MAX_PATH],int create){
-    if(!storage_output_directory(runtime_data)||
-       swprintf_s(path,MAX_PATH,L"%ls\\建模方法库",runtime_data)<0)return 0;
-    if(create&&!CreateDirectoryW(path,NULL)&&GetLastError()!=ERROR_ALREADY_EXISTS)return 0;
-    DWORD attributes=GetFileAttributesW(path);
-    return attributes!=INVALID_FILE_ATTRIBUTES&&(attributes&FILE_ATTRIBUTE_DIRECTORY)&&
-        !(attributes&FILE_ATTRIBUTE_REPARSE_POINT);
+    return storage_method_directory(path,L"建模方法库",create);
 }
 
 static int method_header_read(const wchar_t *path,ModelingMethod *method){
@@ -165,6 +160,7 @@ static int method_prompt_write(FILE *prompt,const wchar_t *request,wchar_t kind)
         MethodMatch match={0};
         if(!method_header_read(file,&match.method))continue;
         match.score=method_score(&match.method,requested,kind,explicit);
+        if(match.score&&_wcsicmp(data.cFileName,L"BWTL-DEMO-SHEET-CUT.bwtlmethod.txt"))match.score++;
         if(match.score){match.saved=data.ftLastWriteTime;method_rank(best,&match);}
     }while(FindNextFileW(search,&data));
     FindClose(search);
@@ -192,4 +188,43 @@ static int method_prompt_write(FILE *prompt,const wchar_t *request,wchar_t kind)
             fwprintf(prompt,L"- %ls\n",method_categories[i].principle);
     fwprintf(prompt,L"</已学建模方法参考>\n");
     return used;
+}
+static void imitation_memory_entries(PartText *out,int assembly){
+    const wchar_t *label=assembly?L"装配方法":L"零件建模方法";
+    wchar_t directory[MAX_PATH],glob[MAX_PATH];
+    int have=assembly?ax_learning_directory(directory,0):method_directory(directory,0);
+    if(!have||swprintf_s(glob,MAX_PATH,L"%ls\\%ls",directory,
+        assembly?L"*" AX_LEARNING_SUFFIX:METHOD_FILE_GLOB)<0){
+        part_text_add(out,L"%ls：尚无可读取的案例。\n",label);
+        return;
+    }
+    WIN32_FIND_DATAW record;
+    HANDLE search=FindFirstFileW(glob,&record);
+    unsigned count=0;
+    if(search!=INVALID_HANDLE_VALUE){
+        do{
+            if(record.dwFileAttributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT))continue;
+            wchar_t path[MAX_PATH];
+            if(swprintf_s(path,MAX_PATH,L"%ls\\%ls",directory,record.cFileName)<0)continue;
+            if(assembly){
+                FILE *file=ax_learning_open(path);
+                if(!file)continue;
+                ProMdlName name;
+                count+=ax_learning_header(file,name);
+                fclose(file);
+            }else{
+                ModelingMethod evidence={0};
+                count+=method_header_read(path,&evidence);
+            }
+        }while(FindNextFileW(search,&record));
+        FindClose(search);
+    }
+    part_text_add(out,L"%ls：%u 份可读取的案例。\n%ls\n",label,count,directory);
+}
+
+static void imitation_memory_report(PartText *out){
+    imitation_memory_entries(out,1);
+    imitation_memory_entries(out,0);
+    part_text_add(out,L"\n装配学习及验收通过的按原特征重建会自动存档。"
+        L"可以在「仿照模型 → 已验证的做法」打开可编辑指令，也可以直接描述新组件、新尺寸和希望沿用的方法。\n");
 }

@@ -1,4 +1,5 @@
 #include "traceback_risk.inc"
+#include "smart_sketch_recovery.inc"
 static ProError imitation_run_chat(ProMdl source,ProPath delivered,int *partial,PartText *out);
 static ProError imitation_resize_command(const PartCommand *command,const PartSnapshot *snapshot,
                                          wchar_t *text,size_t capacity);
@@ -97,7 +98,7 @@ static void execute_part_command(void){
          wcsstr(smart_goal,L"检查结果汇总"));
     int assembly_lookup=quality_report_flow||(foundation&&((smart_intent==SMART_INTENT_CURRENT&&
         (ax_read_diagnostic(ax_kind(verb))||ax_delete_preview(&command)))||
-        (smart_intent==SMART_INTENT_READ&&ax_motion_inspection_request(smart_goal)&&ax_read_diagnostic(ax_kind(verb)))));
+        (smart_intent==SMART_INTENT_READ&&(ax_motion_inspection_request(smart_goal)||aw_request(smart_goal))&&ax_read_diagnostic(ax_kind(verb)))));
     int final=quality==AX_Q_REPORT||independent||(special&&!smart_chain&&!assembly_lookup)||command.verb==PART_DISPLAY;
     int write=!smart_read_command(&command);
     if(smart_block_duplicate(&command))return;
@@ -106,6 +107,9 @@ static void execute_part_command(void){
         if(check){smart_step(NULL,L"零件工具自检",check,result,0,1,1);return;}
     }
 
+    SmartPartSignature before={0};
+    fd_sketch_rolled_back_model=NULL;
+    if(smart_sketch_can_check(&command,&request_snapshot))before=smart_part_signature(request_snapshot.model);
     bwtl_warn_traceback(&command);
     ProError error=part_execute(&command,&request_snapshot,result,PART_TEXT_MAX);
     trace("PERF native_execute_ms",(int)(GetTickCount64()-execution_started));
@@ -115,8 +119,18 @@ static void execute_part_command(void){
         if(error){
             ProMdl target=NULL;
             unsafe=part_check_binding(&command,&request_snapshot,&target)!=PRO_TK_NO_ERROR;
-            if(!unsafe&&!final&&(!smart_readonly||assembly_lookup))
+            if(!final&&smart_sketch_rechecked(&command,&request_snapshot,&before,error)){
+                target=request_snapshot.model;
                 unsafe=!smart_binding_set(target,request_snapshot.window_model,request_snapshot.directory);
+                if(!unsafe){
+                    smart_committed_part=before;
+                    PartText feedback={result,_countof(result),0};
+                    part_text_add(&feedback,L"\n已复核活动零件、工作目录、已有特征和尺寸。保留已完成步骤，从当前零件继续。"
+                        L"先按本轮实测数据换参照或草绘方法，避免重复原操作。");
+                }
+            }else if(!unsafe&&!final&&(!smart_readonly||assembly_lookup)){
+                unsafe=!smart_binding_set(target,request_snapshot.window_model,request_snapshot.directory);
+            }
         }else{
             ProMdl target=request_snapshot.model;
             ProWVerstamp now=NULL;

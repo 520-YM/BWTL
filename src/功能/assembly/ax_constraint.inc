@@ -26,6 +26,9 @@ static int ax_frames_aligned(ProCsysdata *root,ProCsysdata *part,ProMatrix pose,
     return 1;
 }
 
+#ifdef BWTL_ASSEMBLY_WORKBENCH_TEST
+static int aw_test_failed_candidate;
+#endif
 static ProError ax_constrain(ProMdl assembly,const PartCommand *cmd,double scale,PartText *out){
     AxComponent component={0};
     ProCsysdata root_frame,part_frame;
@@ -60,6 +63,13 @@ static ProError ax_constrain(ProMdl assembly,const PartCommand *cmd,double scale
     if(count!=1||!ax_frames_aligned(&root_frame,&part_frame,actual,scale)){
         error=PRO_TK_GENERAL_ERROR;goto done;
     }
+#ifdef BWTL_ASSEMBLY_WORKBENCH_TEST
+    if(aw_test_failed_candidate){
+        aw_test_failed_candidate=0;
+        error=PRO_TK_BAD_INPUTS;
+        goto done;
+    }
+#endif
     part_text_add(out,L"%ls 已建立坐标系重合约束。%ls 与 %ls 的原点和三个坐标轴已核对重合。\n",
         cmd->arg[2],cmd->arg[3],cmd->arg[4]);
 done:

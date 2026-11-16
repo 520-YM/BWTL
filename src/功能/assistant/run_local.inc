@@ -23,6 +23,15 @@ static void run_local(char *dialog, char *component, ProAppData data) {
             return;
         }
     }
+    if(!wcscmp(value,L"查看学习记忆")||!wcscmp(value,L"装配学习")||!wcscmp(value,L"学习当前装配")){
+        if(native_busy||smart_active||ai_process)append(L"请等待当前任务完成。");
+        else{
+            imitation_queue_action(!wcscmp(value,L"查看学习记忆")?IMITATION_MEMORY:IMITATION_ASSEMBLY_LEARN);
+            native_prompt_set(L"");
+        }
+        free(value);
+        return;
+    }
     if(!wcscmp(value,L"继续上次任务")){
         if(smart_active)append(L"当前任务仍在运行。");
         else if(!smart_resume())append(L"本会话没有可继续的任务，或活动模型、版本、工作目录与暂停时不同。");

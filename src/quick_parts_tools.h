@@ -6,6 +6,7 @@
 #include "功能/quick_parts/qp_bends.inc"
 #include "功能/quick_parts/qp_step.inc"
 #include "功能/quick_parts/qp_stool.inc"
+#include "功能/quick_parts/qp_plate_legs.inc"
 #include "功能/quick_parts/qp_backrest.inc"
 #include "功能/quick_parts/qp_execute.inc"
 #endif

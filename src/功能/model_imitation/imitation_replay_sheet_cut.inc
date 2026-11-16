@@ -22,7 +22,8 @@ static ProError replay_cut_tree(ImitationReplay *replay,ProElement source,FdTxn 
     if(!error)error=ProElementIntegerGet(from,NULL,&from_type);
     if(!error)error=ProElementIntegerGet(to,NULL,&to_type);
     if(error)return error;
-    if(from_type!=PRO_EXT_DEPTH_FROM_NONE||(to_type!=PRO_EXT_DEPTH_TO_NEXT&&to_type!=PRO_EXT_DEPTH_TO_ALL&&
+    if((from_type!=PRO_EXT_DEPTH_FROM_NONE&&from_type!=PRO_EXT_DEPTH_FROM_NEXT)||
+       (to_type!=PRO_EXT_DEPTH_TO_NEXT&&to_type!=PRO_EXT_DEPTH_TO_ALL&&
        to_type!=PRO_EXT_DEPTH_TO_BLIND))return PRO_TK_UNSUPPORTED;
     if((error=model_element(tx->root,PRO_E_BODY,0,0,&body))||
        (error=model_element(body,PRO_E_BODY_USE,1,PRO_BODY_USE_SELECTED,NULL))||

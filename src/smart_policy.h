@@ -106,6 +106,7 @@ static int smart_analysis_request(const wchar_t *s){
     if(fab_request(s))return wcsstr(s,L"下料DXF出图前检查")||wcsstr(s,L"导出后回读检查")||wcsstr(s,L"FAB_DXF_CHECK")||wcsstr(s,L"FAB_READBACK");
     if(org_rename_request(s))return 0;
     if(org_request(s)||in_request(s))return 1;
+    if(wcsstr(s,L"装配失败后自动换参照")||wcsstr(s,L"批量装配失败后续做")||wcsstr(s,L"ASM_W_ALIGN"))return 0;
     if(pn_request(s)&&(wcsstr(s,L"开")||wcsstr(s,L"打")||wcsstr(s,L"做")||wcsstr(s,L"布置")||wcsstr(s,L"帮我")))return 0;
     if(cm_request(s)&&(wcsstr(s,L"做")||wcsstr(s,L"帮我")||wcsstr(s,L"缩短")||wcsstr(s,L"留缝")))return 0;
     if(rv_request(s)&&(wcsstr(s,L"改")||wcsstr(s,L"平移")||wcsstr(s,L"统一")||wcsstr(s,L"换")||wcsstr(s,L"REV_")))return 0;
@@ -152,6 +153,10 @@ static int smart_read_command(const PartCommand *c){
         if(organize)return organize!=ORG_RENAME;
         int fabrication=fab_kind(c->arg[0]);if(fabrication)return fabrication==FAB_DXF_CHECK||fabrication==FAB_READBACK;
         int assembly=ax_kind(c->arg[0]);
+        if(assembly==AW_BEAM_LAYOUT||assembly==AW_TRAY_LAYOUT)return !wcscmp(c->arg[7],L"PREVIEW");
+        if(assembly==AW_INTERFACE_DRAW||assembly==AW_REMOVAL_DRAW)return 0;
+        if(assembly>AW_NONE)return !aw_mutates(assembly)&&assembly!=AW_METHOD_RECORD&&
+            (assembly!=AW_ISSUE_LIST||c->count==3)&&(assembly!=AW_REWORK||c->count==5);
         if(assembly==AX_Q_REPORT||assembly==AX_B_CHECK)return c->count==2;
         if(assembly)return (assembly>=AX_MOTION_SWEEP&&assembly<=AX_TOOL_SWEEP)||(assembly>=AX_LAYOUT_REFS&&assembly<=AX_LAYOUT_COMPARE)||assembly==AX_FIELD_AUDIT||assembly==AX_V_COMPARE||(assembly>=AX_Q_REGEN&&assembly<AX_Q_REPORT)||assembly==AX_SEAL_CHECK||assembly==AX_FASTENER_FIT||assembly==AX_FASTENER_AUDIT||ax_delete_preview(c)||ax_read_diagnostic(assembly)||assembly==AX_CLEARANCE||assembly==AX_INTERFERENCE||assembly==AX_MASS;
     }

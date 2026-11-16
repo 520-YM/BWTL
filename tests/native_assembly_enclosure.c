@@ -154,6 +154,7 @@ done:
 #undef DO
 }
 
+#ifndef BWTL_REUSE_ENCLOSURE_FIXTURE
 __declspec(dllexport) int user_initialize(int argc,char **argv,char *version,char *build,wchar_t error_buffer[80]){
     char enabled[16];
     if(!GetEnvironmentVariableA("BWTL_FOUNDATION_SELFTEST",enabled,sizeof(enabled))||strcmp(enabled,"yes"))return PRO_TK_BAD_CONTEXT;
@@ -170,3 +171,4 @@ __declspec(dllexport) int user_initialize(int argc,char **argv,char *version,cha
     ProError error=ProCmdActionAdd("BWTLEnclosureProbe",enclosure_run,uiProe2ndImmediate,NULL,PRO_B_TRUE,PRO_B_TRUE,&id);
     return error?error:ProMacroLoad(L"~ Command `BWTLEnclosureProbe`;");
 }
+#endif

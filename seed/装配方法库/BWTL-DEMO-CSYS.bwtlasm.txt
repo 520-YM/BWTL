@@ -1,0 +1,9 @@
+BWTL-ASSEMBLY-1 BWTL_DEMO_ASSEMBLY
+样件装配 BWTL_DEMO_ASSEMBLY，按 Creo 模型树记录 1 个实例。
+实例 BWTL_DEMO_PANEL	ID:42 父装配 ROOT 模型树序号 1 零件 活动
+  总装实测原点 (-2, 0, 0) mm，X (1, 0, 0)，Y (0, 1, 0)，Z (0, 0, 1)。
+  定位状态 Creo 未报告欠约束。
+  父装配内的原生依赖特征 ID 7
+  定位约束 1 条。
+  约束 1 坐标系重合（原生类型 6） 基准 所在模型 BWTL_DEMO_ASSEMBLY CSYS:8 所属命名特征=AL_LOCATOR（侧 1） ↔ 组件 ID:42 BWTL_DEMO_PANEL CSYS:36 所属命名特征=AL_INTERFACE（侧 1）
+汇总：子装配 0，实测姿态 1，定位约束 1，Creo 未报告欠约束 1，未读取定位的实例 0，读取缺项 0。

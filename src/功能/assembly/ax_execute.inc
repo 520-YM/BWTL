@@ -79,7 +79,7 @@ static ProError ax_execute(ProMdl assembly,const PartCommand *cmd,wchar_t *repor
     case AX_B_TREE:case AX_B_BUY:case AX_B_DIFF:case AX_B_CHECK:case AX_B_FAST:case AX_B_WIRE:
     case AX_B_SPARE:case AX_B_ROUTE:case AX_B_NATIVE:case AX_B_PACK:
         error=ax_bom_delivery(assembly,cmd,kind,&out);break;
-    default:error=PRO_TK_BAD_INPUTS;break;
+    default:error=kind>AW_NONE?aw_execute(assembly,cmd,kind,scale,&out):PRO_TK_BAD_INPUTS;break;
     }
 done:
     if(error)part_text_add(&out,L"%ls 未完成（Creo %d）。请核对组件路径、装配状态和操作范围。\n",cmd->arg[0],error);

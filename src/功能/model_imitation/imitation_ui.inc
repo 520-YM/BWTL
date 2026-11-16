@@ -22,7 +22,7 @@ static int imitation_file_info(const wchar_t *path,BY_HANDLE_FILE_INFORMATION *i
 }
 
 static void imitation_queue_action(UINT action){
-    if(action<IMITATION_CURRENT||action>IMITATION_NEUTRAL||imitation_pending||native_busy||smart_active||ai_process)return;
+    if(action<IMITATION_CURRENT||action>IMITATION_MEMORY||imitation_pending||native_busy||smart_active||ai_process)return;
     imitation_pending=action;
     if(ProMacroLoad(L"~ Command `BWTLImitateModel`;")){
         imitation_pending=0;
@@ -371,7 +371,12 @@ static int imitation_ui_command(uiCmdCmdId command,uiCmdValue *value,void *data)
     }
     native_set_busy(3);
     ProError error;
-    if(action==IMITATION_LEARN)error=method_save_last(&out);
+    if(action==IMITATION_ASSEMBLY_LEARN){
+        ProMdl active=NULL;
+        ProMdlCurrentGet(&active);
+        error=ax_learning_save(active,&out);
+    }else if(action==IMITATION_MEMORY){imitation_memory_report(&out);error=PRO_TK_NO_ERROR;}
+    else if(action==IMITATION_LEARN)error=method_save_last(&out);
     else if(action==IMITATION_LIBRARY)error=imitation_save_library(&imitation_last,&out);
     else if(action==IMITATION_OPEN_STANDARD)error=imitation_open_standard_dialog(&out);
     else if(action==IMITATION_BATCH)error=imitation_batch_run(&out);
@@ -420,7 +425,8 @@ static int imitation_ui_command(uiCmdCmdId command,uiCmdValue *value,void *data)
     native_set_busy(0);
     if(error==PRO_TK_USER_ABORT)return 0;
     if(error)part_text_add(&out,L"操作未完成（Creo %d）。\n",error);
-    append_card(L"仿照模型",report);
-    save_turn(L"仿照模型",report);
+    const wchar_t *role=action==IMITATION_ASSEMBLY_LEARN?L"装配学习":action==IMITATION_MEMORY?L"学习记忆":L"仿照模型";
+    append_card(role,report);
+    if(action!=IMITATION_MEMORY)save_turn(role,report);
     return 0;
 }

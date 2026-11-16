@@ -6,7 +6,7 @@
 static int smart_active,smart_followup,smart_readonly,smart_steps,smart_failures,smart_failures_without_progress;
 static int smart_total_failures,smart_progress,smart_paused,smart_chain,smart_duplicate_replan;
 static wchar_t smart_goal[6001],smart_feedback[PART_TEXT_MAX],smart_details[SMART_DETAILS_CAP],smart_new_model_result[1024];
-static wchar_t smart_last_failure[1530];
+static wchar_t smart_last_failure[1530],smart_last_failure_brief[360];
 static NativeImage smart_images[NATIVE_IMAGE_MAX];static int smart_image_count;
 static ULONGLONG smart_started;
 static ProMdl smart_target_model;
@@ -16,6 +16,8 @@ static int smart_has_details,smart_local_plan,smart_sheetmetal_demo,smart_protoc
 static int smart_intent,smart_intent_retry;
 static void ai_send(const wchar_t *value);
 static void smart_queue_next(void);
+static int smart_unsafe_receipt(const wchar_t *receipt);
+#include "功能/assistant/smart_failure_brief.inc"
 
 static int smart_sequence_request(const wchar_t *text){
     static const wchar_t *const words[]={L"然后",L"接着",L"随后",L"之后",L"再开",L"再加",L"再做",L"再建",L"再倒",L"再切",L"分步完成",L"连续执行",L"做到哪步算哪步",L"能做多少做多少"};
@@ -31,8 +33,17 @@ static const wchar_t *smart_details_tail(size_t maximum){
 
 static void smart_finish(void){smart_active=smart_followup=smart_sheetmetal_demo=0;native_set_busy(0);}
 static void smart_reply(const wchar_t *text){
+    wchar_t *combined=NULL;
+    if(smart_failures_without_progress&&smart_last_failure_brief[0]){
+        size_t capacity=wcslen(text)+wcslen(smart_last_failure_brief)+2;
+        combined=malloc(capacity*sizeof(*combined));
+        if(combined){
+            if(swprintf_s(combined,capacity,L"%ls\n%ls",text,smart_last_failure_brief)>=0)text=combined;
+        }
+    }
     append_card(L"AI",text);
     save_turn(L"助手",text);
+    free(combined);
     smart_finish();
     if(!smart_paused&&!smart_waiting_for_user)smart_binding_clear();
 }
@@ -48,7 +59,7 @@ static void smart_begin(const wchar_t *value){
         smart_binding_clear();
         smart_steps=smart_failures=smart_total_failures=smart_failures_without_progress=smart_progress=0;
         smart_attempt_count=smart_generation=smart_has_details=0;
-        smart_feedback[0]=smart_new_model_result[0]=smart_last_failure[0]=0;
+        smart_feedback[0]=smart_new_model_result[0]=smart_last_failure[0]=smart_last_failure_brief[0]=0;
     }
     smart_target_model=supplement?prior_target:NULL;
     wcsncpy_s(smart_goal,6001,value,_TRUNCATE);
@@ -138,7 +149,10 @@ static void smart_step(const PartCommand *cmd,const wchar_t *operation,ProError 
     int receipt_limit=!error&&cmd&&cmd->verb==PART_FOUNDATION&&ax_read_diagnostic(ax_kind(cmd->arg[0]))?6800:880;
     swprintf_s(entry,_countof(entry),L"第 %d 步｜%ls｜%ls｜Creo %d\n%.*ls",
         smart_steps,error?L"失败":L"成功",label,error,receipt_limit,receipt);
-    if(error)wcscpy_s(smart_last_failure,_countof(smart_last_failure),entry);
+    if(error){
+        wcscpy_s(smart_last_failure,_countof(smart_last_failure),entry);
+        smart_describe_failure(cmd,receipt,smart_last_failure_brief,_countof(smart_last_failure_brief));
+    }
     smart_record_tool(entry);
     if(unsafe||smart_unsafe_receipt(receipt)){
         smart_pause(L"原生回执或模型版本提示状态需要核对，已停止自动操作",0);

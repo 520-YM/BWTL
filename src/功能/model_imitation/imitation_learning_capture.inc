@@ -147,29 +147,30 @@ static void method_capture(ProMdl source,ProMdl verified,ProMdlsubtype subtype,
 
 }
 
-static ProError method_save_last(PartText *out){
-    const ModelingMethod *method=&method_last.method;
+static ProError method_save(ModelingLesson *lesson,PartText *out){
+    const ModelingMethod *method=&lesson->method;
     if(!method->sequence[0]){
         part_text_add(out,L"本次会话还没有通过验收的仿照案例。请先完成一次按原步骤重建。\n");
         return PRO_TK_BAD_CONTEXT;
     }
     wchar_t directory[MAX_PATH],path[MAX_PATH],temp[MAX_PATH];
     if(!method_directory(directory,1)){
-        part_text_add(out,L"无法在本会话所选数据盘的目录中创建建模方法库。\n");
+        part_text_add(out,L"无法在当前实例的数据目录中创建建模方法库。\n");
         return PRO_TK_CANT_WRITE;
     }
-    if(method_last.saved[0]){
+    if(lesson->saved[0]){
         ModelingMethod saved={0};
-        if(method_header_read(method_last.saved,&saved)&&!wcscmp(saved.sequence,method->sequence)){
-            part_text_add(out,L"这次建模方法已学习。\n%ls\n",method_last.saved);
+        if(method_header_read(lesson->saved,&saved)&&saved.kind==method->kind&&
+           saved.edit_verified==method->edit_verified&&!wcscmp(saved.sequence,method->sequence)){
+            part_text_add(out,L"这次建模方法已学习。\n%ls\n",lesson->saved);
             return PRO_TK_NO_ERROR;
         }
-        method_last.saved[0]=0;
+        lesson->saved[0]=0;
     }
     wchar_t label[25];
-    size_t name_length=wcsnlen(method_last.source,_countof(label)-1);
+    size_t name_length=wcsnlen(lesson->source,_countof(label)-1);
     for(size_t i=0;i<name_length;i++){
-        const wchar_t ch=method_last.source[i];
+        const wchar_t ch=lesson->source[i];
         label[i]=ch>=L' '&&!wcschr(L"<>:\"/\\|?*",ch)?ch:L'_';
     }
     label[name_length]=0;
@@ -181,7 +182,7 @@ static ProError method_save_last(PartText *out){
     FILE *file=_wfopen(temp,L"wtx, ccs=UTF-8");
     if(!file)return PRO_TK_CANT_WRITE;
     int ok=fwprintf(file,L"%ls%lc %d %ls\n\n%ls\n可复用做法（依据实际特征归纳）\n",METHOD_FILE_PREFIX,
-        method->kind,method->edit_verified,method->sequence,method_last.evidence)>=0;
+        method->kind,method->edit_verified,method->sequence,lesson->evidence)>=0;
     for(int i=0;ok&&i<_countof(method_categories);i++)
         if((method->tags&method_categories[i].tag)&&*method_categories[i].principle)
             ok=fwprintf(file,L"- %ls\n",method_categories[i].principle)>=0;
@@ -190,8 +191,15 @@ static ProError method_save_last(PartText *out){
         DeleteFileW(temp);
         return PRO_TK_CANT_WRITE;
     }
-    wcscpy_s(method_last.saved,_countof(method_last.saved),path);
+    wcscpy_s(lesson->saved,_countof(lesson->saved),path);
     part_text_add(out,L"已学习 %ls 的建模方法，并保存为独立文件。之后建模时，BWTL 会按新需求选用相关做法。\n%ls\n",
-        method_last.source,path);
+        lesson->source,path);
     return PRO_TK_NO_ERROR;
+}
+
+static ProError method_save_last(PartText *out){
+    ProError error=method_save(&method_last,out);
+    if(error==PRO_TK_CANT_WRITE)
+        part_text_add(out,L"建模记忆未写入。可以检查数据盘后重试。\n");
+    return error;
 }

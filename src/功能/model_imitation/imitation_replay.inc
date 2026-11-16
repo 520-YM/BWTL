@@ -248,7 +248,7 @@ static int replay_definition_supported(ProElement tree,ProFeattype type,const wc
             !replay_tree_integer(tree,PRO_E_DRAFT_CONSTANT_OR_VARIABLE,&angle)&&angle==PRO_DRAFT_UI_CONSTANT;
     }
     if(type==PRO_FEAT_RM_SURF){
-        *label=L"阵列实例几何排除";
+        *label=L"移除面";
         int attach=0;
         return !replay_tree_integer(tree,PRO_E_RM_SURF_ATTACH_TYPE,&attach)&&attach==FM_RM_SURF_ATTACH_SAME;
     }
@@ -390,13 +390,15 @@ static ProError replay_build_feature(ImitationReplay *replay,ProFeature *source,
     ProMassProperty old_mass,new_mass;
     const char *stage="read native feature definition";
     double extend_distance=0;
-    if(type==PRO_FEAT_RM_SURF){
+    int excluded_member=0;
+    if(type==PRO_FEAT_RM_SURF&&!replay_exclusion_member(source,&excluded_member)){
         *operation=L"阵列实例几何排除";
         return replay_exclusion(replay,source,created);
     }
+    replay->rebuilding_remove=type==PRO_FEAT_RM_SURF;
     ProError error=type==PRO_FEAT_EXTEND?replay_original_extend(replay,source->id,&extend_distance):PRO_TK_NO_ERROR;
     if(error)goto done;
-    error=(type==PRO_FEAT_CORN_CHAMF||type==PRO_FEAT_DATUM_QUILT||type==PRO_FEAT_EXTEND||
+    error=(type==PRO_FEAT_RM_SURF||type==PRO_FEAT_CORN_CHAMF||type==PRO_FEAT_DATUM_QUILT||type==PRO_FEAT_EXTEND||
                     (type==PRO_FEAT_ROUND&&replay->external_total))?
         replay_history_open(replay,source,&original):
         ProFeatureElemtreeExtract(source,NULL,PRO_FEAT_EXTRACT_NO_OPTS,&original.tree);
@@ -414,6 +416,16 @@ static ProError replay_build_feature(ImitationReplay *replay,ProFeature *source,
         }
     }
 
+    if(attached){
+        int kind=0;
+        if(!replay_tree_integer(original.tree,PRO_E_SMT_WALL_TYPE,&kind)&&kind==PRO_SMT_WALL_TYPE_FLANGE&&
+           replay_flange_has_single_attachment_edge(original.tree)){
+            stage="read flange attachment before later sheet-metal changes";
+            fd_sketch_free(&original);
+            error=replay_history_open(replay,source,&original);
+            if(error)goto done;
+        }
+    }
     if(!replay_definition_supported(original.tree,type,operation)){error=PRO_TK_UNSUPPORTED;goto done;}
     if(type==PRO_FEAT_SPLIT_BODY){
         stage="rebuild native body split";
@@ -606,6 +618,7 @@ done:
     /* The whole newly created scratch model is discarded on failure. */
     fd_cleanup(&tx,PRO_TK_NO_ERROR);
     if(attachment)ProSectionFree(&attachment);
+    replay->rebuilding_remove=0;
     if(replay->history_owner){
         ProError cleanup=ProMdlErase(replay->history_owner);
         replay->history_owner=NULL;
@@ -782,13 +795,26 @@ static ProError replay_verify_order_impl(ProMdl source,ProMdl result,int read_ca
         part_text_add(out,L"原生派生特征数量不一致，原件 %d，结果 %d。\n",old.derived,fresh.derived);
         return PRO_TK_INCOMPLETE;
     }
+    int coincident_patterns=0;
     for(int i=0;i<old.count;i++){
         if(old.step[i].type!=fresh.step[i].type||old.step[i].sections!=fresh.step[i].sections||
-           old.step[i].pattern_type!=fresh.step[i].pattern_type||old.step[i].members!=fresh.step[i].members||
+           old.step[i].pattern_type!=fresh.step[i].pattern_type||
            old.step[i].conversion!=fresh.step[i].conversion){
             part_text_add(out,L"第 %d 步的原生特征类型、截面数量或阵列定义有差异，源特征 %d，新特征 %d。\n",
                 i+1,old.step[i].id,fresh.step[i].id);
             return PRO_TK_INCOMPLETE;
+        }
+        if(old.step[i].members!=fresh.step[i].members){
+            if(old.step[i].pattern_type!=PRO_GENPAT_DIR_DRIVEN||
+               replay_verify_coincident_direction(source,result,old.step[i].id,fresh.step[i].id)){
+                part_text_add(out,L"第 %d 步阵列实例不一致，原件 %d，结果 %d。\n",
+                    i+1,old.step[i].members,fresh.step[i].members);
+                return PRO_TK_INCOMPLETE;
+            }
+            coincident_patterns++;
+            part_text_add(out,L"第 %d 步保留方向阵列和孔位。原件 %d 个实例，结果 %d 个，多出的 %d 个与现有孔重合。"
+                L"原来的排除位置没有写入；单独修改一个方向的间距后，重合关系可能变化。\n",
+                i+1,old.step[i].members,fresh.step[i].members,fresh.step[i].members-old.step[i].members);
         }
         if(old.step[i].group!=fresh.step[i].group||old.step[i].section_link!=fresh.step[i].section_link){
             part_text_add(out,L"第 %d 步的所属特征组或草绘归属不同，源特征 %d，新特征 %d。\n",
@@ -796,7 +822,8 @@ static ProError replay_verify_order_impl(ProMdl source,ProMdl result,int read_ca
             return PRO_TK_INCOMPLETE;
         }
     }
-    part_text_add(out,L"逐项核对 %d 道建模步骤的顺序、类型、组成员、草绘归属和阵列实例数。\n",old.count);
+    part_text_add(out,L"逐项核对 %d 道建模步骤的顺序、类型、组成员和草绘归属。%ls\n",old.count,
+        coincident_patterns?L"方向阵列的重合位置另行核对。":L"阵列实例数一致。");
     if(old.derived)part_text_add(out,L"另核对 %d 项组内派生特征。\n",old.derived);
     if(verified_order)*verified_order=fresh;
     return PRO_TK_NO_ERROR;
@@ -919,6 +946,7 @@ static ProError replay_feature(ProFeature *feature,ProError status,ProAppData da
     }
     if(!error)error=replay_add_mapping(replay,feature->id,created.id);
     if(!error&&type==PRO_FEAT_GROUP_HEAD)error=replay_mirror_members(replay,feature,&created);
+    if(!standard)replay->last_pattern_member=0;
     if(!error&&pattern==PRO_PATTERN_LEADER)error=replay_pattern(replay,feature,&created,PRO_FEAT_PATTERN);
     if(!standard)replay_diagnostic_end(replay,feature,error);
     if(error)replay_report_reference_failure(&replay->reference_error,replay->out);

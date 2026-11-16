@@ -5,6 +5,32 @@ static ProError replay_relation_symbol(ImitationReplay *replay,ProModelitem *a,P
     ProName symbol;
     wmemcpy(symbol,token,length);
     symbol[length]=0;
+    const wchar_t *native[]={L"IF",L"ELSE",L"ENDIF",L"EXTRACT",L"STRING_LENGTH",L"REL_MODEL_NAME",L"MP_MASS",L"YES",L"NO",
+        L"EXISTS",L"MATERIAL_PARAM",L"PTC_MATERIAL_NAME"};
+    for(int i=0;i<_countof(native);i++){
+        if(!_wcsicmp(symbol,native[i])){
+            wcscpy_s(mapped,PRO_NAME_SIZE,symbol);
+            return PRO_TK_NO_ERROR;
+        }
+    }
+    const wchar_t *sheet_parameters[]={L"SMT_THICKNESS",L"SMT_DFLT_CRNR_REL_WIDTH",L"SMT_DFLT_CRNR_REL_DEPTH",
+        L"SMT_DFLT_BEND_REL_WIDTH",L"SMT_DFLT_BEND_REL_DEPTH",L"SMT_DFLT_BEND_REL_LENGTH",
+        L"SMT_GAP",L"SMT_DFLT_EDGE_TREA_WIDTH",L"SMT_DFLT_MITER_CUT_WIDTH",L"SMT_DFLT_MITER_CUT_OFFSET",
+        L"SMT_UPDATE_BEND_ALLOW_INFO",L"SMT_PART_BEND_TABLE_NAME",L"SMT_PART_BEND_ALLOW_FACTOR_TYPE",
+        L"SMT_PART_BEND_ALLOWANCE_FACTOR",L"SMT_DFLT_BEND_RADIUS"};
+    for(int i=0;i<_countof(sheet_parameters);i++){
+        if(!_wcsicmp(symbol,sheet_parameters[i])){
+            ProMdlsubtype before,after;
+            ProParameter source,target;
+            ProError check=ProMdlSubtypeGet(replay->source,&before);
+            if(!check)check=ProMdlSubtypeGet(replay->target,&after);
+            if(!check&&(before!=PROMDLSTYPE_PART_SHEETMETAL||after!=before))check=PRO_TK_UNSUPPORTED;
+            if(!check)check=ProParameterInit(a,symbol,&source);
+            if(!check)check=ProParameterInit(b,symbol,&target);
+            if(!check)wcscpy_s(mapped,PRO_NAME_SIZE,symbol);
+            return check;
+        }
+    }
     UxDimension dimension;
     ProError error=ux_dimension(replay->source,symbol,&dimension);
     if(!error){
@@ -26,7 +52,7 @@ static ProError replay_relation_symbol(ImitationReplay *replay,ProModelitem *a,P
     ProParamvalue value;
     ProUnititem unit={0};
     error=ProParameterValueWithUnitsGet(&parameter,&value,&unit);
-    if(!error&&(unit.name[0]||(value.type!=PRO_PARAM_DOUBLE&&value.type!=PRO_PARAM_INTEGER)))
+    if(!error&&(unit.name[0]||(value.type!=PRO_PARAM_DOUBLE&&value.type!=PRO_PARAM_INTEGER&&value.type!=PRO_PARAM_STRING)))
         error=PRO_TK_UNSUPPORTED;
     if(!error){
         error=ProParameterInit(b,symbol,&parameter);
@@ -40,33 +66,47 @@ static ProError replay_relation_symbol(ImitationReplay *replay,ProModelitem *a,P
 static ProError replay_relation_line(ImitationReplay *replay,ProModelitem *a,ProModelitem *b,
                                      const wchar_t *source,ProLine line)
 {
+    /* Match the legacy stock bend-allowance guard to the material
+       representation of a newly created Creo model. */
+    const wchar_t *condition=source;
+    while(iswspace(*condition))condition++;
+    if(!_wcsicmp(condition,L"if ( PTC_MATERIAL_NAME != \"UNASSIGNED\" )")){
+        wcscpy_s(line,PRO_LINE_SIZE,L"if ( PTC_MASTER_MATERIAL != \"PTC_SYSTEM_MTRL_PROPS\" )");
+        return PRO_TK_NO_ERROR;
+    }
     size_t used=0;
-    int assignment=0;
     while(*source){
         if(source[0]==L'/'&&source[1]==L'*'){
             if(wcslen(source)>=PRO_LINE_SIZE-used)return PRO_TK_LINE_TOO_LONG;
             wcscpy_s(line+used,PRO_LINE_SIZE-used,source);
             return PRO_TK_NO_ERROR;
         }
-        if(iswalpha(*source)||*source==L'_'){
+        if(*source==L'\''||*source==L'"'){
+            const wchar_t *literal=source++;
+            while(*source&&*source!=*literal)source++;
+            if(!*source)return PRO_TK_UNSUPPORTED;
+            const size_t length=(size_t)(++source-literal);
+            if(length>=PRO_LINE_SIZE-used)return PRO_TK_LINE_TOO_LONG;
+            wmemcpy(line+used,literal,length);
+            used+=length;
+        }else if(iswalpha(*source)||*source==L'_'){
             const wchar_t *begin=source++;
             while(iswalnum(*source)||*source==L'_')source++;
             ProName mapped;
             ProError error=replay_relation_symbol(replay,a,b,begin,(int)(source-begin),mapped);
-            if(error)return error;
+            if(error){part_text_add(replay->out,L"关系符号 %.*ls，Creo %d。\n",(int)(source-begin),begin,error);return error;}
             const size_t length=wcslen(mapped);
             if(length>=PRO_LINE_SIZE-used)return PRO_TK_LINE_TOO_LONG;
             wmemcpy(line+used,mapped,length);
             used+=length;
         }else{
-            if(*source==L'=')assignment++;
-            else if(!iswdigit(*source)&&!iswspace(*source)&&!wcschr(L".+-*/()",*source))return PRO_TK_UNSUPPORTED;
+            if(!iswdigit(*source)&&!iswspace(*source)&&!wcschr(L".+-*/(),=<>!&|\\",*source))return PRO_TK_UNSUPPORTED;
             if(used>=PRO_LINE_SIZE-1)return PRO_TK_LINE_TOO_LONG;
             line[used++]=*source++;
         }
     }
     line[used]=0;
-    return assignment==1||!used?PRO_TK_NO_ERROR:PRO_TK_UNSUPPORTED;
+    return PRO_TK_NO_ERROR;
 }
 
 static ProError replay_relations(ImitationReplay *replay)
@@ -124,5 +164,15 @@ done:
     if(rebuilt)ProArrayFree((ProArray *)&rebuilt);
     free(storage);
     if(lines)ProWstringproarrayFree(lines);
+    return error;
+}
+
+static ProError replay_regenerate_model_relations(ProMdl model){
+    ProModelitem item;
+    ProRelset relations;
+    ProError error=ProMdlToModelitem(model,&item);
+    if(!error)error=ProModelitemToRelset(&item,&relations);
+    if(error==PRO_TK_E_NOT_FOUND)return PRO_TK_NO_ERROR;
+    if(!error)error=ProRelsetRegenerate(&relations);
     return error;
 }

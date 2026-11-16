@@ -86,6 +86,30 @@ static ProError replay_stock_wall(ImitationReplay *replay,ProFeature *source,Pro
         name,height*unit,fabs(start*unit),fabs(end*unit),bend,radius*unit);
     return error;
 }
+static int replay_flange_has_single_attachment_edge(ProElement tree){
+    ProElement element;
+    ProCollection collection=NULL;
+    ProCrvcollinstr *instructions=NULL;
+    ProReference *references=NULL;
+    ProCrvcollinstrType kind;
+    ProType type=0;
+    int count=0;
+    ProError error=mc_tree_element(tree,(ProElemId[]){PRO_E_STD_CURVE_COLLECTION_APPL},1,&element);
+    if(!error)error=ProElementCollectionGet(element,NULL,&collection);
+    if(!error)error=ProCrvcollectionInstructionsGet(collection,&instructions);
+    if(!error)error=ProArraySizeGet((ProArray)instructions,&count);
+    if(!error&&count!=1)error=PRO_TK_UNSUPPORTED;
+    if(!error)error=ProCrvcollinstrTypeGet(instructions[0],&kind);
+    if(!error&&kind!=PRO_CURVCOLL_ADD_ONE_INSTR)error=PRO_TK_UNSUPPORTED;
+    if(!error)error=ProCrvcollinstrReferencesGet(instructions[0],&references);
+    if(!error)error=ProArraySizeGet((ProArray)references,&count);
+    if(!error&&count!=1)error=PRO_TK_UNSUPPORTED;
+    if(!error)error=ProReferenceTypeGet(references[0],&type);
+    if(references)ProReferencearrayFree(references);
+    if(instructions)ProCrvcollinstrArrayFree(instructions);
+    if(collection)ProCollectionFree(&collection);
+    return !error&&type==PRO_EDGE;
+}
 /* Circular wall profiles are native one-line sweeps around a complete hole.
    Use the same ring and editable stock section checks as the cabinet tool. */
 static ProError replay_ring_wall(ImitationReplay *replay,ProElement tree,ProSection section,
@@ -123,7 +147,11 @@ static ProError replay_ring_wall(ImitationReplay *replay,ProElement tree,ProSect
     if(!error)error=ProCrvcollinstrReferencesGet(list[0],&refs);
     if(!error)error=ProArraySizeGet((ProArray)refs,&count);
     if(!error&&count!=1)error=PRO_TK_UNSUPPORTED;
-    if(!error)error=replay_reference_item(replay,refs[0],&mapped,0);
+    if(!error){
+        error=replay_reference_item(replay,refs[0],&mapped,0);
+        if(error==PRO_TK_E_AMBIGUOUS||error==PRO_TK_E_NOT_FOUND||error==PRO_TK_EMPTY||error==PRO_TK_BAD_INPUTS)
+            error=PRO_TK_UNSUPPORTED;
+    }
     if(!error&&mapped.type!=PRO_EDGE)error=PRO_TK_UNSUPPORTED;
     if(!error)error=ProGeomitemToEdge(&mapped,&edge);
     if(!error)error=ProEdgeTypeGet(edge,&kind);

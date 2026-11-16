@@ -1,3 +1,69 @@
+typedef struct {
+    ProSolid solid;
+    ProVector point, normal;
+    double tolerance;
+    int matched;
+} ImitationSurfacePoint;
+
+static ProError imitation_surface_at_point(ProSurface face,ProError status,ProAppData data){
+    if(status)return status;
+    ImitationSurfacePoint *search=data;
+    ProUvParam uv;
+    ProVector point,normal;
+    ProUvStatus location;
+    ProError error=ProSurfaceParamEval(search->solid,face,search->point,uv);
+    if(error==PRO_TK_E_NOT_FOUND||error==PRO_TK_BAD_INPUTS)return PRO_TK_NO_ERROR;
+    if(!error)error=ProSurfaceXyzdataEval(face,uv,point,NULL,NULL,normal);
+    if(!error&&!ad_near(point,search->point,search->tolerance))return PRO_TK_NO_ERROR;
+    if(!error&&(!ad_unit(normal)||fabs(ad_dot(normal,search->normal))<=0.9999))return PRO_TK_NO_ERROR;
+    if(!error)error=ProSurfaceUvpntVerify(search->solid,face,uv,&location);
+    if(!error&&(location==PRO_UV_INSIDE||location==PRO_UV_AMBIGUOUS)){
+        search->matched=1;
+        return PRO_TK_USER_ABORT;
+    }
+    return error;
+}
+
+/* Ray picking can return only an edge at coincident cylindrical seams. Verify
+   the point and normal directly on the trimmed faces of an active body. */
+static ProError imitation_project_boundary(ProMdl model,double mm,
+                                          const ProVector point,const ProVector normal,int *matched){
+    ImitationSurfacePoint search={.solid=(ProSolid)model,.tolerance=0.001/mm};
+    for(int i=0;i<3;i++)search.point[i]=point[i]/mm;
+    memcpy(search.normal,normal,sizeof(search.normal));
+    ProSolidBody *bodies=NULL;
+    int count=0;
+    ProError error=ProSolidBodiesCollect(search.solid,&bodies);
+    if(!error)error=ProArraySizeGet((ProArray)bodies,&count);
+    for(int i=0;!error&&!search.matched&&i<count;i++){
+        ProSolidBodyState state;
+        error=ProSolidBodyStateGet(&bodies[i],&state);
+        if(!error&&state==PRO_BODY_STATE_ACTIVE)
+            error=ProSolidBodySurfaceVisit(&bodies[i],imitation_surface_at_point,&search);
+    }
+    if(bodies)ProArrayFree((ProArray *)&bodies);
+    *matched=search.matched;
+    return search.matched&&error==PRO_TK_USER_ABORT?PRO_TK_NO_ERROR:error;
+}
+
+static int imitation_ray_crossing_match(ProMdl source,ProMdl target,double source_mm,double target_mm,
+                                        const ProRay *ray,const QualityCrossing *hit){
+    ProVector point,position,normal;
+    for(int i=0;i<3;i++){
+        point[i]=ray->start_point[i]+hit->depth*ray->dir_vector[i];
+        position[i]=source_mm*point[i];
+    }
+    ProGeomitem item;
+    ProSurface face;
+    ProUvParam uv;
+    ProError error=ProModelitemInit(source,hit->surface_id,PRO_SURFACE,&item);
+    if(!error)error=ProGeomitemToSurface(&item,&face);
+    if(!error)error=ProSurfaceParamEval((ProSolid)source,face,point,uv);
+    if(!error)error=ProSurfaceXyzdataEval(face,uv,point,NULL,NULL,normal);
+    if(error||!ad_unit(normal))return 0;
+    int matched=0;
+    return !imitation_project_boundary(target,target_mm,position,normal,&matched)&&matched;
+}
 /* Geometry at a trimmed face point is checked against solid ray hits.
    Work in mm across the source and destination unit systems. */
 static ProError imitation_boundary_at(ProMdl model, double mm, const ProOutline bounds,
@@ -12,7 +78,7 @@ static ProError imitation_boundary_at(ProMdl model, double mm, const ProOutline 
     ProSelection *hits = NULL;
     int count = 0;
     ProError error = ProSolidRayIntersectionCompute((ProSolid)model, 0.1, &ray, &hits, &count);
-    if (error == PRO_TK_E_NOT_FOUND) return PRO_TK_NO_ERROR;
+    if (error == PRO_TK_E_NOT_FOUND) return imitation_project_boundary(model,mm,position,normal,matched);
     if (error) return error;
     for (int i = 0; i < count; i++) {
         double depth;
@@ -39,7 +105,7 @@ static ProError imitation_boundary_at(ProMdl model, double mm, const ProOutline 
             return PRO_TK_NO_ERROR;
         }
     }
-    return PRO_TK_NO_ERROR;
+    return imitation_project_boundary(model,mm,position,normal,matched);
 }
 
 typedef struct {

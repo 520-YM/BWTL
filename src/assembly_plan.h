@@ -23,6 +23,10 @@ enum AssemblyCommand {
     AX_B_TREE,AX_B_BUY,AX_B_DIFF,AX_B_CHECK,AX_B_FAST,AX_B_WIRE,AX_B_SPARE,AX_B_ROUTE,AX_B_NATIVE,AX_B_PACK
 };
 
+static int aw_kind(const wchar_t *verb);
+static int aw_request(const wchar_t *text);
+static int aw_diagnostic(int kind);
+static int aw_mutates(int kind);
 static int ax_kind(const wchar_t *verb){
     static const wchar_t *const names[]={
         L"ASM_TREE",L"ASM_INSERT",L"ASM_CSYS",L"ASM_MOVE",L"ASM_STATE",
@@ -49,7 +53,7 @@ static int ax_kind(const wchar_t *verb){
     };
     for(int i=0;i<_countof(names);i++)
         if(!wcscmp(verb,names[i]))return i+1;
-    return AX_NONE;
+    return aw_kind(verb);
 }
 
 static int ax_request(const wchar_t *text){
@@ -62,7 +66,7 @@ static int ax_request(const wchar_t *text){
         L"机构位置",L"运动干涉",L"开启空间",L"抽出空间",L"工具操作空间",L"安装基准",L"空间包络",L"骨架布局",
         L"骨架驱动",L"模块安装接口",L"公共安装参照",L"总装控制尺寸",L"跨零件外部参照",L"循环引用",L"断链",L"装配布局",L"装配切除",L"装配通孔",L"装配孔组",L"传递孔位",L"分层孔型",L"避让窗口",L"过线孔",L"间隙生成垫片",L"装配定位标记",L"装配加工影响范围",L"装配重生成诊断",L"区域间隙",L"分区域间隙",L"干涉白名单",L"白名单筛选干涉",L"紧固孔对位",L"面板齐平",L"安装面共面",L"装配公差",L"重心与支撑",L"安装空间",L"装配检查报告",L"装配质量检查",L"装配质量报告",L"检查结果汇总",L"简化表示",L"隔离显示",L"装配视图",L"装配视角",L"装配剖切",L"爆炸视图",L"装配顺序",L"产品配置",L"配置表",L"切换组件型号",L"比较不同配置",L"订单专用装配",L"订单装配",L"分层BOM",L"分层 BOM",L"采购BOM",L"采购 BOM",L"采购分类",L"BOM资料",L"BOM 资料",L"版BOM",L"版 BOM",L"紧固件用量",L"附件安装表",L"线束安装表",L"维修备件",L"装配工序卡",L"原生装配",L"装配交付包"};
     for(int i=0;i<_countof(terms);i++)if(wcsstr(text,terms[i]))return 1;
-    return 0;
+    return aw_request(text);
 }
 
 /* Component IDs are occurrence paths, not model names or filesystem paths. */
@@ -92,7 +96,7 @@ static int ax_delete_preview(const PartCommand *cmd){
     return !wcscmp(cmd->arg[0],L"ASM_DELETE_COMPONENT")&&cmd->count==5&&!wcscmp(cmd->arg[4],L"CHECK");
 }
 
-static int ax_read_diagnostic(int kind){return kind==AX_TREE||kind==AX_REFS||kind==AX_PLACEMENT||kind==AX_Q_REGEN||kind==AX_Q_REPORT;}
+static int ax_read_diagnostic(int kind){return kind==AX_TREE||kind==AX_REFS||kind==AX_PLACEMENT||kind==AX_Q_REGEN||kind==AX_Q_REPORT||aw_diagnostic(kind);}
 static int ax_motion_inspection_request(const wchar_t *text){
     const wchar_t *terms[]={L"运动干涉",L"开启空间",L"抽出空间",L"工具操作空间",
         L"第287项",L"第288项",L"第289项",L"第290项",
@@ -100,7 +104,7 @@ static int ax_motion_inspection_request(const wchar_t *text){
     for(int i=0;i<_countof(terms);i++)if(wcsstr(text,terms[i]))return 1;
     return 0;
 }
-static int ax_mutates(int kind){return (kind>=AX_INSERT&&kind<=AX_STATE)||(kind>=AX_FIX&&kind<AX_SEAL_CHECK&&kind!=AX_FASTENER_FIT&&kind!=AX_FASTENER_AUDIT)||(kind>=AX_JOINT_PIN&&kind<=AX_MOTION_PRESET)||(kind>=AX_LAYOUT_DATUM&&kind<=AX_LAYOUT_DIM)||(kind>=AX_FIELD_CUT&&kind<=AX_FIELD_MARK)||(kind>=AX_V_REP&&kind<=AX_V_ORDER&&kind!=AX_V_COMPARE);}
+static int ax_mutates(int kind){return aw_mutates(kind)||(kind>=AX_INSERT&&kind<=AX_STATE)||(kind>=AX_FIX&&kind<AX_SEAL_CHECK&&kind!=AX_FASTENER_FIT&&kind!=AX_FASTENER_AUDIT)||(kind>=AX_JOINT_PIN&&kind<=AX_MOTION_PRESET)||(kind>=AX_LAYOUT_DATUM&&kind<=AX_LAYOUT_DIM)||(kind>=AX_FIELD_CUT&&kind<=AX_FIELD_MARK)||(kind>=AX_V_REP&&kind<=AX_V_ORDER&&kind!=AX_V_COMPARE);}
 
 static int ax_ref_token(const wchar_t *token){
     int id;
@@ -322,8 +326,11 @@ static int ax_b_plan_valid(int kind,int count,wchar_t args[][PART_TOKEN_MAX]){
     return 1;
 }
 
+#include "功能/assembly/ax_workbench_plan.inc"
+
 static int assembly_plan_valid(int count,wchar_t args[][PART_TOKEN_MAX]){
     int kind=ax_kind(args[0]),path[AX_PATH_DEPTH];
+    if(kind>AW_NONE)return aw_valid(kind,count,args);
     switch(kind){
     case AX_Q_REGEN:case AX_Q_GAPS:case AX_Q_INTERF:case AX_Q_HOLES:case AX_Q_FLUSH:
     case AX_Q_COPLANE:case AX_Q_STACK:case AX_Q_SUPPORT:case AX_Q_SPACE:case AX_Q_REPORT:
@@ -537,7 +544,7 @@ static int assembly_plan_valid(int count,wchar_t args[][PART_TOKEN_MAX]){
         return count==3&&(!wcscmp(args[2],L"ALL")||!wcscmp(args[2],L"ROOT")||ax_path_parse(args[2],path))?1:-1;
     case AX_LAYOUT_COMPARE:case AX_V_COMPARE:
         return count==5&&dv_safe_leaf(args[2])&&(!wcscmp(args[3],L"NONE")||ax_csys_token(args[3]))&&
-            qa_number(args[4],0.001,1000)?1:-1;
+            qa_number(args[4],0.001,1000)?1:-1;
     case AX_FIELD_CUT:case AX_FIELD_HOLE:case AX_FIELD_GRID:case AX_FIELD_TRANSFER:
     case AX_FIELD_LAYERS:case AX_FIELD_WINDOW:case AX_FIELD_ROUTE:
         return ax_field_operation_valid(kind,count,args);

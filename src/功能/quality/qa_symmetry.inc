@@ -12,9 +12,18 @@ static void qa_reflect(ProVector vector,const ProVector normal,double offset){
     for(int i=0;i<3;i++)vector[i]-=amount*normal[i];
 }
 
-static ProError qa_compare_rays(ProMdl first,ProMdl second,double scale_a,double scale_b,
+typedef int (*QualityCrossingMatch)(ProMdl,ProMdl,double,double,const ProRay *,const QualityCrossing *);
+
+static int qa_crossings_match(QualityCrossingMatch match,ProMdl first,ProMdl second,
+                              double scale_a,double scale_b,const ProRay *ray,const QualityRay *hits){
+    for(int i=0;i<hits->count;i++)
+        if(!match(first,second,scale_a,scale_b,ray,&hits->crossing[i]))return 0;
+    return 1;
+}
+
+static ProError qa_compare_rays_with_check(ProMdl first,ProMdl second,double scale_a,double scale_b,
     ProVector lower,ProVector upper,const ProVector mirror,double offset,
-    int grid,double tolerance,QualityComparison *comparison){
+    int grid,double tolerance,QualityComparison *comparison,QualityCrossingMatch match){
     memset(comparison,0,sizeof(*comparison));
     for(int axis=0;axis<3;axis++){
         int u=(axis+1)%3,v=(axis+2)%3;
@@ -41,6 +50,8 @@ static ProError qa_compare_rays(ProMdl first,ProMdl second,double scale_a,double
             comparison->checked++;
             if(hits_a.count||hits_b.count)comparison->material_rays++;
             if(hits_a.count!=hits_b.count){
+                if(match&&qa_crossings_match(match,first,second,scale_a,scale_b,&a,&hits_a)&&
+                   qa_crossings_match(match,second,first,scale_b,scale_a,&b,&hits_b))continue;
                 comparison->different++;
                 comparison->topology++;
                 continue;
@@ -53,6 +64,13 @@ static ProError qa_compare_rays(ProMdl first,ProMdl second,double scale_a,double
         }
     }
     return PRO_TK_NO_ERROR;
+}
+
+static ProError qa_compare_rays(ProMdl first,ProMdl second,double scale_a,double scale_b,
+    ProVector lower,ProVector upper,const ProVector mirror,double offset,
+    int grid,double tolerance,QualityComparison *comparison){
+    return qa_compare_rays_with_check(first,second,scale_a,scale_b,lower,upper,mirror,offset,
+        grid,tolerance,comparison,NULL);
 }
 
 static void qa_comparison_report(PartText *out,const QualityComparison *result,double tolerance,int additional_difference){

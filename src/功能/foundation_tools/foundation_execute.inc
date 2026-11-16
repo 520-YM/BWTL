@@ -23,6 +23,7 @@ static ProError foundation_execute(const PartCommand *cmd,ProMdl model,wchar_t *
         return PRO_TK_BAD_CONTEXT;
     }
     if(type!=PRO_MDL_PART||sub==PROMDLSTYPE_PART_SHEETMETAL){wcscpy_s(report,capacity,L"此批基准与草绘功能限普通实体零件，请激活普通零件后重发。");return PRO_TK_BAD_CONTEXT;}
+    if(!wcscmp(verb,L"PLATE_LEGS"))return quick_plate_legs(model,cmd,report,capacity);
     if(mp_kind(verb))return mp_execute(cmd,model,report,capacity);
     if(sf_kind(verb))return sf_execute(cmd,model,report,capacity);
     if(am_kind(verb))return am_execute(cmd,model,report,capacity);

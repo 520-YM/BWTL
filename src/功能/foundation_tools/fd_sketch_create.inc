@@ -1,4 +1,12 @@
+/* Native evidence, consumed by the originating synchronous sketch command. */
+static ProMdl fd_sketch_rolled_back_model;
+static ProError fd_sketch_rolled_back_error;
+#ifdef BWTL_SKETCH_RECOVERY_TEST
+static int fd_test_first_sketch_failure;
+#endif
 static ProError fd_sketch_create_at(const PartCommand *cmd,ProMdl model,const double *center,wchar_t *report,size_t capacity){
+    fd_sketch_rolled_back_model=NULL;
+    fd_sketch_rolled_back_error=PRO_TK_NO_ERROR;
     FdTxn tx={0};FdSketch s={0};ProError e;int ids[AS_LIMIT]={0},count=0;
     const wchar_t *plane=cmd->arg[3],*orient=cmd->arg[4];int shape_start=5;
     if(!wcscmp(cmd->arg[0],L"SKETCH_ADD")){
@@ -13,6 +21,12 @@ static ProError fd_sketch_create_at(const PartCommand *cmd,ProMdl model,const do
     FS_TRY("create incomplete referenced sketch",fd_create(&tx,1));s.feature=tx.feature;
     FS_TRY("extract referenced sketch tree",ProFeatureElemtreeExtract(&s.feature,NULL,PRO_FEAT_EXTRACT_NO_OPTS,&s.tree));
     FS_TRY("get owned sketch section",fd_section_from_tree(s.tree,&s.section));
+#ifdef BWTL_SKETCH_RECOVERY_TEST
+    if(fd_test_first_sketch_failure){
+        fd_test_first_sketch_failure=0;
+        FS_TRY("test rejected sketch dimension input",PRO_TK_BAD_INPUTS);
+    }
+#endif
     if(center){
         ProMatrix frame;
         PartCommand positioned=*cmd;
@@ -33,6 +47,10 @@ static ProError fd_sketch_create_at(const PartCommand *cmd,ProMdl model,const do
     swprintf_s(report,capacity,L"已在当前零件创建关联草绘 %ls（%ls），共 %d 个图元，首个编号 %d。草绘求解与参照父子关系检查通过，未保存。",cmd->arg[2],cmd->arg[shape_start],count,ids[0]);
 done:
     fd_sketch_free(&s);fd_cleanup(&tx,e);
+    if(e&&tx.created&&tx.before_count&&tx.rollback_ok){
+        fd_sketch_rolled_back_model=model;
+        fd_sketch_rolled_back_error=e;
+    }
     if(e)swprintf_s(report,capacity,L"关联草绘未完成：%hs，错误码%d；%ls，未保存。",tx.stage,e,tx.rollback_ok?L"未创建或已核对移除本次新增特征":L"回滚未能验证，请检查模型");
     return e;
 #undef FS_TRY

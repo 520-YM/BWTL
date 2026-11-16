@@ -2,6 +2,9 @@ static int foundation_plan_valid(int n,wchar_t args[][PART_TOKEN_MAX]){
     {int organize=organize_plan_valid(n,args);if(organize)return organize;}
     {int fabrication=fabrication_plan_valid(n,args);if(fabrication)return fabrication;}
     {int quick=quick_plan(n,args,NULL);if(quick)return quick;}
+    if(!wcscmp(args[0],L"PLATE_LEGS"))
+        return n==5&&fd_name(args[1])&&qa_number(args[2],0.1,2000)&&
+            qa_number(args[3],0.1,2000)&&qa_number(args[4],0,2000)?1:-1;
     if(!wcscmp(args[0],L"STOOL_BACK"))
         return n==5&&fd_name(args[1])&&qa_number(args[2],0.1,2000)&&
             qa_number(args[3],0.1,2000)&&qa_number(args[4],0.1,2000)?1:-1;

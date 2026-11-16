@@ -6,7 +6,13 @@ static ProError fd_dimension_create(ProSection sec,ProSecdimType kind,int n,int 
         if(!ProSecdimTypeGet(sec,all[i],&type)&&type==kind&&!ProSecdimReferencesGet(sec,all[i],&entities,&points,&refs)&&refs==n&&fd_same_refs(n,ids,senses,entities,points))found=all[i];
         if(entities)ProArrayFree((ProArray *)&entities);if(points)ProArrayFree((ProArray *)&points);if(found>=0)break;
     }if(all)ProArrayFree((ProArray *)&all);
-    if(found<0){if((e=ProSecdimCreate(sec,ids,senses,n,kind,place,&found)))return e;}
-    if((e=ProSecdimValueSet(sec,found,value)))return e;
+    if(found<0){
+        e=ProSecdimCreate(sec,ids,senses,n,kind,place,&found);
+        trace("create sketch driving dimension",e);
+        if(e)return e;
+    }
+    e=ProSecdimValueSet(sec,found,value);
+    trace("set sketch driving dimension value",e);
+    if(e)return e;
     e=ProSecdimStrengthen(sec,found);if(e==PRO_TK_E_FOUND)e=0;if(!e)*dimension=found;return e;
 }

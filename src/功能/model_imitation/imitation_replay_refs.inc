@@ -26,7 +26,7 @@ typedef struct {
 typedef struct {
     ProMdl source,target,definition_owner,history_owner;
     PartText *out;
-    int count,steps,current_feature,last_feature,external_planes,external_datums,external_total;
+    int count,steps,current_feature,last_feature,last_pattern_member,external_planes,external_datums,external_total;
     unsigned char external_used[REPLAY_EXTERNAL_MAX];
     ProModelitem external_local[REPLAY_EXTERNAL_MAX];
     struct { int source,target; } mapped[REPLAY_FEATURE_MAX];
@@ -34,7 +34,7 @@ typedef struct {
     int extend_count;
     ReplayReferencePattern *reference_pattern;
     ReplayFailure *failure;
-    int keep_prefix,completed,prefix_intact,manual;
+    int keep_prefix,completed,prefix_intact,manual,rebuilding_remove;
     ReplayReferenceFailure reference_error;
     ReplayLocalGroup local_group;
 } ImitationReplay;
@@ -213,6 +213,76 @@ static ProError replay_current_face(ProSurface surface,ProError status,ProAppDat
 
 #include "imitation_replay_manual.inc"
 
+typedef struct {
+    ProSurface surface;
+    const int *ids;
+    unsigned char *active;
+    int count;
+} ReplayBodyEdges;
+
+static ProError replay_body_edge(ProEdge edge,ProError status,ProAppData data){
+    if(status)return status;
+    ReplayBodyEdges *search=data;
+    int id=0;
+    ProError error=ProEdgeIdGet(edge,&id);
+    for(int i=0;!error&&i<search->count;i++)
+        if(search->ids[i]==id)search->active[i]=1;
+    return error;
+}
+
+static ProError replay_body_contour(ProContour contour,ProError status,ProAppData data){
+    ReplayBodyEdges *search=data;
+    return status?status:ProContourEdgeVisit(search->surface,contour,replay_body_edge,NULL,search);
+}
+
+static ProError replay_body_face_edges(ProSurface surface,ProError status,ProAppData data){
+    if(status)return status;
+    ReplayBodyEdges *search=data;
+    search->surface=surface;
+    ProError error=ProSurfaceContourVisit(surface,replay_body_contour,NULL,search);
+    return error==PRO_TK_E_NOT_FOUND?PRO_TK_NO_ERROR:error;
+}
+
+static ProError replay_body_edges(ProMdl model,const int *ids,int count,unsigned char *active){
+    ReplayBodyEdges search={.ids=ids,.active=active,.count=count};
+    ProSolidBody *bodies=NULL;
+    int total=0;
+    ProError error=ProSolidBodiesCollect((ProSolid)model,&bodies);
+    if(!error)error=ProArraySizeGet((ProArray)bodies,&total);
+    for(int i=0;!error&&i<total;i++){
+        ProSolidBodyState state;
+        error=ProSolidBodyStateGet(&bodies[i],&state);
+        if(!error&&state==PRO_BODY_STATE_ACTIVE){
+            ProBoolean construction;
+            error=ProSolidBodyIsConstruction(&bodies[i],&construction);
+            if(!error&&!construction)error=ProSolidBodySurfaceVisit(&bodies[i],replay_body_face_edges,&search);
+            if(error==PRO_TK_E_NOT_FOUND)error=PRO_TK_NO_ERROR;
+        }
+    }
+    if(bodies)ProArrayFree((ProArray *)&bodies);
+    return error;
+}
+
+/* A recreated wall can expose a section-derived edge and an active solid
+   edge at the same position. Use an active edge only when the source also
+   belongs to an active solid and the matching target is unique. */
+static ProError replay_filter_active_edges(const ProGeomitem *original,ProMdl target,ReplayGeometry *search){
+    unsigned char source_active=0;
+    ProError error=replay_body_edges(original->owner,&original->id,1,&source_active);
+    if(error||!source_active)return error;
+    unsigned char active[REPLAY_FEATURE_MAX]={0};
+    error=replay_body_edges(target,search->ids,search->count,active);
+    if(error)return error;
+    int count=0,match=0;
+    for(int i=0;i<search->count;i++){
+        if(!active[i])continue;
+        match=search->ids[i];
+        search->ids[count++]=match;
+    }
+    if(count==1)error=ProModelitemInit(target,match,PRO_EDGE,&search->match);
+    if(!error)search->count=count;
+    return error;
+}
 static ProError replay_reference_find(ImitationReplay *replay,ProReference ref,ProModelitem *target,int edge_endpoint){
     ProType type;
     int id;
@@ -352,6 +422,10 @@ static ProError replay_reference_find(ImitationReplay *replay,ProReference ref,P
             error=replay_match_geometry(&item,PRO_TK_NO_ERROR,&search);
             if(error)return error;
         }
+    }
+    if(type==PRO_EDGE&&search.count>1&&replay->history_owner){
+        error=replay_filter_active_edges(&original,replay->target,&search);
+        if(error)return error;
     }
     if(search.count>1&&replay->manual&&(type==PRO_SURFACE||type==PRO_EDGE))
         return replay_manual_reference(replay,&created,type,&search,target);

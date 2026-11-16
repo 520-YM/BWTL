@@ -303,9 +303,9 @@ static ProError imitation_shape_verify_impl(ProMdl source,ProMdl result,const Im
         ProVector lower, upper;
         memcpy(lower, a->bounds[0], sizeof(lower));
         memcpy(upper, a->bounds[1], sizeof(upper));
-        error = qa_compare_rays(source, result, a->mm, b.mm, lower, upper, NULL, 0, 11, tol, &check);
+        error = qa_compare_rays_with_check(source, result, a->mm, b.mm, lower, upper, NULL, 0, 11, tol, &check,imitation_ray_crossing_match);
         if(!error&&!check.different&&check.checked<300)
-            error=qa_compare_rays(source,result,a->mm,b.mm,lower,upper,NULL,0,15,tol,&check);
+            error=qa_compare_rays_with_check(source,result,a->mm,b.mm,lower,upper,NULL,0,15,tol,&check,imitation_ray_crossing_match);
         if (error) return error;
         const int ray_diff=check.different||!check.material_rays||check.checked<300;
         if(ray_diff){

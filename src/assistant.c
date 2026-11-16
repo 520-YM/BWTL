@@ -18,6 +18,7 @@
 #include <ProUIPushbutton.h>
 #include <ProMenu.h>
 #include <ProRibbon.h>
+#include <ProDrawing.h>
 #include "功能/runtime_paths/output_storage.inc"
 
 static char dialog_name[] = "codex_native_assistant";
@@ -110,8 +111,12 @@ static void append_card(const wchar_t *role,const wchar_t *text);
 
 
 static void imitation_write_progress(FILE *prompt,ProMdl active);
+static void imitation_memory_report(PartText *out);
+static void imitation_queue_action(UINT action);
 static int method_explicit(const wchar_t *text);
 static int method_prompt_write(FILE *prompt,const wchar_t *request,wchar_t kind);
+#include "功能/assembly/ax_learning_store.inc"
+#include "功能/assembly/ax_learning_capture.inc"
 #include "功能/assistant/ai_send.inc"
 
 

@@ -69,11 +69,18 @@ static ProError ax_list_ref(ProGeomitem *item,ProError status,ProAppData data){
     AxRefList *list=data;
     if(status)return status;
     if(list->count>=96){list->limited=1;return PRO_TK_NO_ERROR;}
-    AxGeometry shape;
-    if(ax_geometry(item,&shape))return PRO_TK_NO_ERROR;
     ProFeature owner;
     ProName name=L"";
     if(!ProGeomitemFeatureGet(item,&owner))ProModelitemNameGet(&owner,name);
+    if(item->type==PRO_CSYS){
+        if(fd_name(name)){
+            part_text_add(list->out,L"CSYS:%ls 坐标系\n",name);
+            list->count++;
+        }
+        return PRO_TK_NO_ERROR;
+    }
+    AxGeometry shape;
+    if(ax_geometry(item,&shape))return PRO_TK_NO_ERROR;
     if(item->type==PRO_AXIS){
         if(!fd_name(name))return PRO_TK_NO_ERROR;
         part_text_add(list->out,L"AXIS:%ls 基准轴",name);
@@ -104,7 +111,9 @@ static ProError ax_ref_feature(ProFeature *feature,ProError status,ProAppData da
     ProError error=ProFeatureStatusGet(feature,&state);
     if(!error)error=ProFeatureTypeGet(feature,&type);
     if(error||state!=PRO_FEAT_ACTIVE||type==PRO_FEAT_COMPONENT)return error;
-    error=ProFeatureGeomitemVisit(feature,PRO_SURFACE,ax_list_ref,NULL,data);
+    error=ProFeatureGeomitemVisit(feature,PRO_CSYS,ax_list_ref,NULL,data);
+    if(!error||error==PRO_TK_E_NOT_FOUND)
+        error=ProFeatureGeomitemVisit(feature,PRO_SURFACE,ax_list_ref,NULL,data);
     if(!error||error==PRO_TK_E_NOT_FOUND)
         error=ProFeatureGeomitemVisit(feature,PRO_AXIS,ax_list_ref,NULL,data);
     return error==PRO_TK_E_NOT_FOUND?PRO_TK_NO_ERROR:error;

@@ -308,7 +308,7 @@ static ProError imitation_run_mode_impl(ProMdl source,ProPath delivered,int disp
         part_text_add(out,L"从空白模板开始，依据导入几何推断建模步骤。\n");
     }else{
         part_text_add(out,L"从空白模板开始，按原特征树逐步创建。\n");
-        if(display)lesson=calloc(1,sizeof(*lesson));
+        lesson=calloc(1,sizeof(*lesson));
     }
 #define IMITATE_RUN(call) do{error=(call);if(error){trace(#call,error);part_text_add(out,L"原生步骤 %hs 返回 %d。\n",#call,error);goto done;}}while(0)
     IMITATE_RUN(ProMdlVerstampGet(source,&before));
@@ -326,6 +326,8 @@ static ProError imitation_run_mode_impl(ProMdl source,ProPath delivered,int disp
     }
     if(outcome)outcome->stage=L"保存和重开暂存件";
     IMITATE_RUN(ProMdlnameRename(model,result_name));
+    if(!inferred)IMITATE_RUN(replay_regenerate_model_relations(model));
+    if(!inferred)IMITATE_RUN(imitation_bend_table_replay(source,model,subtype,out));
     IMITATE_RUN(imitation_reopen_candidate(&model,&work,result_name));
     if(outcome)outcome->stage=L"核对依赖、特征树与几何";
     IMITATE_RUN(dv_no_external_dependencies(model));
@@ -412,9 +414,17 @@ done:
     if(before)ProVerstampFree(&before);
     if(after)ProVerstampFree(&after);
     error=fab_discard(&work,error,out);
-    if(!error&&delivered[0]&&display){
-        if(lesson&&lesson->method.sequence[0])method_last=*lesson;
-        else memset(&method_last,0,sizeof(method_last));
+    if(!error&&delivered[0]){
+        if(lesson&&lesson->method.sequence[0]){
+            ProError learning_error=method_save(lesson,out);
+            trace("Modeling method auto-save",learning_error);
+            if(learning_error)
+                part_text_add(out,L"零件已验收，建模记忆未写入（%d）。请检查当前实例的数据盘。\n",learning_error);
+            if(display)method_last=*lesson;
+        }else{
+            if(!inferred)part_text_add(out,L"零件已验收，本次没有生成可保存的原生建模步骤。\n");
+            if(display)memset(&method_last,0,sizeof(method_last));
+        }
     }
     free(lesson);
     free(inferred);

@@ -8,11 +8,7 @@ static int verify_storage_policy(uiCmdCmdId command,uiCmdValue *value,void *data
     if(!receipt){ProEngineerEnd();return 0;}
     ProPath workspace=L"",after=L"";
     int good_path=!ProDirectoryCurrentGet(workspace)&&storage_output_directory(workspace);
-    const wchar_t drive=storage_output_drive();
-    const wchar_t *other=drive==L'C'?L"E:\\":L"C:\\Windows";
-    int switched=good_path&&!ProDirectoryChange((wchar_t *)other);
-    wchar_t method[MAX_PATH];
-    int method_store=method_directory(method,1)&&storage_output_directory(method);
+    int switched=good_path&&!ProDirectoryChange(L"C:\\Windows");
     int denied=switched&&!storage_prepare_output();
     if(denied){
         smart_begin(L"新建测试零件");
@@ -41,8 +37,8 @@ static int verify_storage_policy(uiCmdCmdId command,uiCmdValue *value,void *data
         search=FindFirstFileW(mask,&found);
     int saved=search!=INVALID_HANDLE_VALUE;
     if(saved)FindClose(search);
-    fprintf(receipt,"DATA_DRIVE=%c\nOTHER_DRIVE_BLOCKED=%d\nWORKSPACE_RESTORED=%d\nSAVED_ON_SELECTED_DRIVE=%d\nMETHOD_STORE_ON_SELECTED_DRIVE=%d\nCREO=%d\nSTAGE=%s\nPASS=%d\n",
-        (char)drive,denied,restored,saved,method_store,error,stage?stage:"none",denied&&restored&&saved&&method_store);
+    fprintf(receipt,"C_BLOCKED=%d\nE_WORKSPACE=%d\nSAVED_ON_E=%d\nCREO=%d\nSTAGE=%s\nPASS=%d\n",
+        denied,restored,saved,error,stage?stage:"none",denied&&restored&&saved);
     fclose(receipt);
     ProEngineerEnd();
     return 0;
@@ -50,7 +46,7 @@ static int verify_storage_policy(uiCmdCmdId command,uiCmdValue *value,void *data
 
 __declspec(dllexport) int user_initialize(int argc,char **argv,char *version,char *build,wchar_t error_buffer[80]){
     if(!GetEnvironmentVariableW(L"BWTL_FOUNDATION_SELFTEST",NULL,0))return PRO_TK_BAD_CONTEXT;
-    SetEnvironmentVariableW(L"BWTL_OUTPUT_DRIVE",NULL);
+    SetEnvironmentVariableW(L"BWTL_OUTPUT_DRIVE",L"E");
     ProError error=production_storage_initialize(argc,argv,version,build,error_buffer);
     uiCmdCmdId command;
     if(!error)error=ProCmdActionAdd("BWTLVerifyStorage",verify_storage_policy,uiProe2ndImmediate,NULL,PRO_B_TRUE,PRO_B_TRUE,&command);

@@ -31,6 +31,14 @@ Get-ChildItem -LiteralPath (Join-Path $SourceRoot 'tests') -File | Copy-Item -De
 Copy-Item -LiteralPath $dll -Destination (Join-Path $stage 'bin\BWTL.dll')
 $featureList=Get-ChildItem -LiteralPath (Join-Path $SourceRoot 'docs') -Filter 'BWTL *.txt' | Select-Object -First 1
 Copy-Item -LiteralPath $featureList.FullName -Destination (Join-Path $stage 'seed\feature-guide.md')
+foreach($name in @(
+    '装配方法库\BWTL-DEMO-CSYS.bwtlasm.txt'
+    '建模方法库\BWTL-DEMO-SHEET-CUT.bwtlmethod.txt'
+)){
+    $destination=Join-Path $stage ("seed\"+$name)
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destination)|Out-Null
+    Copy-Item -LiteralPath (Join-Path $SourceRoot ("seed\"+$name)) -Destination $destination
+}
 $manifest=@(Get-ChildItem -LiteralPath $stage -Recurse -File | ForEach-Object {
     [ordered]@{Path=$_.FullName.Substring($stage.Length+1).Replace('\','/');SHA256=(Get-FileHash -LiteralPath $_.FullName).Hash.ToLowerInvariant();Bytes=$_.Length}
 })

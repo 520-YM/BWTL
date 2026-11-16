@@ -29,7 +29,10 @@ static ProError ax_motion_sample_fit(ProSelection moving,ProSelection fixed,doub
     return PRO_TK_NO_ERROR;
 }
 
-static ProError ax_motion_sweep(ProMdl assembly,const PartCommand *cmd,int kind,double mm,PartText *out){
+typedef struct {int samples,collisions,failed;double minimum,first_failure;} AxMotionResult;
+
+static ProError ax_motion_measure(ProMdl assembly,const PartCommand *cmd,int kind,double mm,
+    ProMatrix starting,ProMatrix ending,AxMotionResult *result,PartText *out){
     AxComponent moving={0},fixed={0},a={0},b={0};
     ProMdl scratch=NULL;
     ProSolid transient=NULL;
@@ -55,6 +58,17 @@ static ProError ax_motion_sweep(ProMdl assembly,const PartCommand *cmd,int kind,
     if(fixed.model!=moving.model)MS(dv_no_external_dependencies(fixed.model));
     MS(ax_device_line(&moving,cmd->arg[4],1,&line));
     MS(ax_device_pose(&moving,origin));
+    if(starting){
+        ProMatrix inverse;
+        AxGeometry local=line;
+        ax_device_inverse(origin,inverse);
+        MS(ProPntTrfEval(line.point,inverse,local.point));
+        MS(ProVectorTrfEval(line.direction,inverse,local.direction));
+        MS(ProPntTrfEval(local.point,starting,line.point));
+        MS(ProVectorTrfEval(local.direction,starting,line.direction));
+        if(!ad_unit(line.direction)){error=PRO_TK_BAD_CONTEXT;goto done;}
+        memcpy(origin,starting,sizeof(origin));
+    }
     MS(ax_device_pose(&fixed,obstacle));
     MS(ProMdlVerstampGet(assembly,&stamp));
     MS(ProMdlVerstampGet(moving.model,&moving_stamp));
@@ -94,6 +108,11 @@ static ProError ax_motion_sweep(ProMdl assembly,const PartCommand *cmd,int kind,
     part_text_add(out,L"完成 %d 个离散姿态，干涉 %d 个、未满足间隙 %d 个，最小间隙 %.8g mm。\n",count,collisions,failures,smallest);
     if(first_collision>=0)part_text_add(out,L"首次采样干涉位置 %.8g %ls。\n",low+(high-low)*first_collision/(count-1),rotate?L"度":L"mm");
     if(first_failed>=0)part_text_add(out,L"首次未通过位置 %.8g %ls。\n",low+(high-low)*first_failed/(count-1),rotate?L"度":L"mm");
+    if(result){
+        *result=(AxMotionResult){count,collisions,failures,smallest,
+            first_failed<0?0:low+(high-low)*first_failed/(count-1)};
+    }
+    if(ending)memcpy(ending,actual,sizeof(actual));
 done:
     if(sa)ProSelectionFree(&sa);
     if(sb)ProSelectionFree(&sb);
@@ -115,4 +134,8 @@ done:
     if(!error)part_text_add(out,L"已核对原装配及两零件的模型版本保持。\n");
     return error;
 #undef MS
+}
+
+static ProError ax_motion_sweep(ProMdl assembly,const PartCommand *cmd,int kind,double mm,PartText *out){
+    return ax_motion_measure(assembly,cmd,kind,mm,NULL,NULL,NULL,out);
 }
