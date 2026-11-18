@@ -1,6 +1,6 @@
 # BWTL
 
-BWTL 是 Creo Parametric 10.0.0.0 的 Windows x64 原生插件。当前预发行版为 **0.23.0-preview.4**，安装时可选择本地数据盘。
+BWTL 是 Creo Parametric 10.0.0.0 的 Windows x64 原生插件。当前预发行版为 **0.23.0-preview.6**，安装时可选择本地数据盘。
 
 - **截图改图**支持整窗截图、圈选、箭头、框选、文字贴注和最多 8 处标注。可修改独立孔径或受支持的矩形贯穿开口，结果由 Creo 再生并读回。
 - **仿照模型**从空白件按源特征树重建可编辑原生特征，支持批量预检、建模方法学习和标准件入库。100 项清单中有 99 项具备至少一种验收路径，具体几何、参照条件及待验证范围见说明。 [仿照模型](docs/仿照模型.md)
@@ -11,7 +11,7 @@ BWTL 是 Creo Parametric 10.0.0.0 的 Windows x64 原生插件。当前预发行
 
 在 [GitHub Releases](https://github.com/520-YM/BWTL/releases) 下载 EXE 或 Windows x64 ZIP。需要 Creo 10.0.0.0。AI 使用你在本机已登录的 Codex。使用 ZIP 时解压后运行 install.cmd。在安装界面选择数据盘及文件夹。已有安装选择原目录升级。 [安装、校验与回退](docs/INSTALL.zh-CN.md)
 
-C 盘迁移核对见 [E 盘存储与迁移说明](docs/E盘存储.md)。完整变更见 [发行说明](docs/releases/0.23.0-preview.4.md) 和 [更新记录](CHANGELOG.md)。
+C 盘迁移核对见 [E 盘存储与迁移说明](docs/E盘存储.md)。完整变更见 [发行说明](docs/releases/0.23.0-preview.6.md) 和 [更新记录](CHANGELOG.md)。
 
 ## 开发
 

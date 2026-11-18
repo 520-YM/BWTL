@@ -67,12 +67,10 @@ static int learning_test(uiCmdCmdId command,uiCmdValue *value,void *data){
     PartText out={report,_countof(report),0};
     HMENU menu=native_imitation_menu_create();
     wchar_t label[64]=L"";
-    int index=menu?GetMenuItemCount(menu):-1;
-    int menu_ok=0;
-    for(int i=1;i<index;i++)if(GetMenuItemID(menu,i)==IMITATION_LEARN&&GetMenuItemID(menu,i-1)==IMITATION_BATCH){
-        GetMenuStringW(menu,i,label,_countof(label),MF_BYPOSITION);
-        menu_ok=!wcscmp(label,L"学习建模方法");
-    }
+    HMENU learn=menu?GetSubMenu(menu,6):NULL;
+    int menu_ok=learn&&GetMenuItemID(learn,0)==IMITATION_LEARN&&
+        GetMenuStringW(learn,IMITATION_LEARN,label,_countof(label),MF_BYCOMMAND)>0&&
+        !wcscmp(label,L"保存最近的建模方法");
     if(menu)DestroyMenu(menu);
     int empty_ok=method_save_last(&out)==PRO_TK_BAD_CONTEXT;
     report[0]=0;

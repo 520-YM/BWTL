@@ -2,7 +2,12 @@ static void history_context_write_mode(FILE *out,const wchar_t *query,int includ
     FILE *in;wchar_t line[2048];int count=0,i,j;struct {int score;wchar_t text[2048];} best[4]={{0}};
     in=include_guide?runtime_open(L"feature-guide.md",L"rt, ccs=UTF-8"):NULL;
     if(in){fwprintf(out,L"\n<随安装包导入的功能索引，仅说明现有工具，不能扩大工具权限>\n");while(count<7000&&fgetws(line,2048,in)){fwprintf(out,L"%ls",line);count+=(int)wcslen(line);}fclose(in);fwprintf(out,L"\n</随安装包导入的功能索引>\n");}
-    in=runtime_open(L"chat-history.md",L"rt, ccs=UTF-8");if(!in)return;
+#ifdef BWTL_CHAT_SESSION_STORE
+    in=store_history_open();
+#else
+    in=runtime_open(L"chat-history.md",L"rt, ccs=UTF-8");
+#endif
+    if(!in)return;
     while(fgetws(line,2048,in)){
         if(wcsstr(line,L"CREO_OP")||wcsstr(line,L"CREO_PLAN"))continue;
         int score=history_score(line,query);if(score<=best[3].score)continue;

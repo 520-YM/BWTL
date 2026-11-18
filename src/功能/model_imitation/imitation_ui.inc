@@ -1,4 +1,3 @@
-static UINT imitation_pending;
 #define IMITATION_BATCH_MAX 16
 typedef struct {
     ProPath path;
@@ -22,6 +21,7 @@ static int imitation_file_info(const wchar_t *path,BY_HANDLE_FILE_INFORMATION *i
 }
 
 static void imitation_queue_action(UINT action){
+    if(action==IMITATION_STUDY){if(!native_busy)ax_study_chat(L"装配学习工具");return;}
     if(action<IMITATION_CURRENT||action>IMITATION_MEMORY||imitation_pending||native_busy||smart_active||ai_process)return;
     imitation_pending=action;
     if(ProMacroLoad(L"~ Command `BWTLImitateModel`;")){
@@ -361,12 +361,14 @@ static int imitation_ui_command(uiCmdCmdId command,uiCmdValue *value,void *data)
     if(action==IMITATION_COVERAGE){
         imitation_coverage_report(&out);
         append_card(L"仿照模型",report);
+        native_request_timer_finish();
         return 0;
     }
     if((action==IMITATION_CURRENT||action==IMITATION_FILE||action==IMITATION_STRICT||action==IMITATION_BATCH||
         action==IMITATION_COMPARE_FLAT||action==IMITATION_NEUTRAL||action==IMITATION_MANUAL)
         &&!storage_prepare_output()){
         append_card(L"仿照模型",storage_output_message);
+        native_request_timer_finish();
         return 0;
     }
     native_set_busy(3);

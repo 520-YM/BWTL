@@ -5,7 +5,13 @@
 #include <stdlib.h>
 #include <math.h>
 #include "model_artifact_request.h"
-typedef struct { int cylinder; double a, b, height, hole; int ready; int empty_kind; int centered; } ModelPlan;
+typedef struct { int cylinder; double a, b, height, hole; int ready; int empty_kind; int centered; wchar_t assembly_name[32]; } ModelPlan;
+static int model_assembly_name_valid(const wchar_t *name){
+    size_t length=wcslen(name);
+    if(!length||length>31)return 0;
+    return
+        wcsspn(name,L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-")==length;
+}
 /* Host routing guard: a current-model request must not silently become a
    new file merely because an AI returned the older CREO_PLAN protocol. */
 

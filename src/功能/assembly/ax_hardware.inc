@@ -115,19 +115,15 @@ static ProError ax_hw_fit(ProMdl assembly,const PartCommand *cmd,double mm,PartT
     return PRO_TK_NO_ERROR;
 }
 
-static ProError ax_hw_audit(ProMdl assembly,const PartCommand *cmd,double mm,PartText *out){
-    AxComponent base={0};
-    AxHardwareSite sites[12];
+static ProError ax_hw_count_placements(ProMdl assembly,const wchar_t *name,const wchar_t *shaft,
+    const AxHardwareSite *sites,int n,double mm,int *matches){
     AxScan *scan=NULL;
-    int matches[12]={0},n=cmd->count-6;
-    ProError error=ax_hw_occurrence(assembly,cmd->arg[2],mm,&base);
-    if(!error)error=ax_hw_sites(&base,cmd,6,mm,sites);
-    if(!error)error=ax_scan(assembly,1,&scan);
+    ProError error=ax_scan(assembly,1,&scan);
     if(error)goto done;
     if(scan->suppressed){error=PRO_TK_INCOMPLETE;goto done;}
     for(int i=0;i<scan->count;i++){
         AxOccurrence *item=&scan->occurrences[i];
-        if(!item->model||item->type!=PRO_MDL_PART||_wcsicmp(item->name,cmd->arg[4]))continue;
+        if(!item->model||item->type!=PRO_MDL_PART||_wcsicmp(item->name,name))continue;
         ProIdTable ids={0};
         AxComponent fastener={0};
         AxHardwareSite actual={0};
@@ -137,7 +133,7 @@ static ProError ax_hw_audit(ProMdl assembly,const PartCommand *cmd,double mm,Par
         if((error=ProAsmcomppathInit((ProSolid)assembly,ids,item->depth,&fastener.path))||
            (error=qa_mm_per_unit(fastener.model,&model_mm)))goto done;
         if(!part_close(model_mm,mm)){error=PRO_TK_BAD_CONTEXT;goto done;}
-        error=ax_hw_cylinder(&fastener,cmd->arg[5],&actual.cylinder,actual.end,&actual.bore);
+        error=ax_hw_cylinder(&fastener,shaft,&actual.cylinder,actual.end,&actual.bore);
         if(error||actual.bore){if(!error)error=PRO_TK_INVALID_TYPE;goto done;}
         memcpy(actual.contact,actual.cylinder.point,sizeof(actual.contact));
         memcpy(actual.plane.direction,actual.cylinder.direction,sizeof(actual.plane.direction));
@@ -152,6 +148,19 @@ static ProError ax_hw_audit(ProMdl assembly,const PartCommand *cmd,double mm,Par
             if(start<=0.05&&end>0.01)matches[j]++;
         }
     }
+done:
+    free(scan);
+    return error;
+}
+
+static ProError ax_hw_audit(ProMdl assembly,const PartCommand *cmd,double mm,PartText *out){
+    AxComponent base={0};
+    AxHardwareSite sites[12];
+    int matches[12]={0},n=cmd->count-6;
+    ProError error=ax_hw_occurrence(assembly,cmd->arg[2],mm,&base);
+    if(!error)error=ax_hw_sites(&base,cmd,6,mm,sites);
+    if(!error)error=ax_hw_count_placements(assembly,cmd->arg[4],cmd->arg[5],sites,n,mm,matches);
+    if(error)return error;
     int missing=0,duplicate=0;
     for(int i=0;i<n;i++){
         if(!matches[i])missing++;
@@ -160,9 +169,7 @@ static ProError ax_hw_audit(ProMdl assembly,const PartCommand *cmd,double mm,Par
             !matches[i]?L"漏装":matches[i]>1?L"重复安装":L"已安装",matches[i]);
     }
     part_text_add(out,L"检查 %d 个孔位，漏装 %d，重复安装 %d。\n",n,missing,duplicate);
-done:
-    free(scan);
-    return error;
+    return PRO_TK_NO_ERROR;
 }
 
 static ProError ax_hardware(ProMdl assembly,const PartCommand *cmd,int kind,double mm,PartText *out){

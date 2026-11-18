@@ -20,12 +20,13 @@
 #include <ProRibbon.h>
 #include <ProDrawing.h>
 #include "功能/runtime_paths/output_storage.inc"
+#include "功能/modeling_rules/modeling_rule_store.inc"
 
 static char dialog_name[] = "codex_native_assistant";
 static int created = 0;
 static wchar_t history[64000];
 #include "native_chat_ui.h"
-static HANDLE ai_process = NULL;
+static HANDLE ai_process = NULL; /* Non-null while the resident worker has an active turn. */
 static ULONGLONG ai_started;
 static ULONGLONG ai_requested;
 static wchar_t conversation[24000];
@@ -33,21 +34,28 @@ static wchar_t memory[12000];
 static int store_ready = 0;
 static ModelPlan pending_plan = {0};
 static ProMdlName expected_active_model = L"";
+static void experience_capture(const wchar_t *role,const wchar_t *text);
 static void save_turn(const wchar_t *role, const wchar_t *text);
 static wchar_t ai_dir[MAX_PATH], ai_output[MAX_PATH];
 static void ai_poll(char *dialog, ProUITimerID timer, ProAppData data);
 
-#include "功能/assistant/ai_cleanup.inc"
+
 
 
 #include "功能/assistant/trace.inc"
+#include "功能/assistant/resident_channel.inc"
+#include "功能/assistant/ai_cleanup.inc"
 
 #include "native_model.h"
+#define BWTL_COMPANY_SOURCE_BINDING 1
+static ProError company_source_resolve(const wchar_t *name,ProMdlType type,ProMdl *model,int *loaded);
+static void company_source_note_placement(ProMdl model);
 #include "part_tools.h"
 #include "part_selfcheck.h"
 static PartSnapshot request_snapshot={0};
 static PartCommand pending_part={0};
 static int request_requires_current=0;
+static int request_attachment_turn;
 #include "part_prompt.h"
 #include "foundation_prompt.h"
 #include "solid_prompt.h"
@@ -74,7 +82,10 @@ static void append(const wchar_t *text);
 static void append_card(const wchar_t *role,const wchar_t *text);
 #include "功能/assistant/smart_committed_part.inc"
 #include "smart_checkpoint.h"
+#define BWTL_COMPONENT_OPEN_HOST 1
+#define BWTL_TASK_CONTEXT_HOST 1
 #include "smart_session.h"
+#include "功能/assistant/component_open_receipt.inc"
 
 #include "功能/assistant/execute_part_command.inc"
 
@@ -98,13 +109,20 @@ static void append_card(const wchar_t *role,const wchar_t *text);
 #include "功能/assistant/execute_model_plan.inc"
 
 
+#include "功能/assistant/default_assembly_chat.inc"
+#include "功能/assistant/assembly_child_chat.inc"
+#include "功能/modeling_rules/modeling_part_intent.inc"
+#include "功能/assistant/native_model_window.inc"
+#include "功能/assistant/default_part_chat.inc"
 #include "功能/assistant/verify_active_command.inc"
 
 
 #include "功能/assistant/build_pending_command.inc"
 
 
+#include "功能/modeling_rules/assembly_experience.inc"
 #include "功能/assistant/memory_command.inc"
+#include "功能/modeling_rules/modeling_rule_chat.inc"
 
 
 #include "功能/assistant/read_model.inc"
@@ -112,17 +130,36 @@ static void append_card(const wchar_t *role,const wchar_t *text);
 
 static void imitation_write_progress(FILE *prompt,ProMdl active);
 static void imitation_memory_report(PartText *out);
+static UINT imitation_pending;
 static void imitation_queue_action(UINT action);
 static int method_explicit(const wchar_t *text);
 static int method_prompt_write(FILE *prompt,const wchar_t *request,wchar_t kind);
 #include "功能/assembly/ax_learning_store.inc"
 #include "功能/assembly/ax_learning_capture.inc"
+#include "功能/assistant/capability_inventory.inc"
+#include "功能/assistant/chat_request_context.inc"
+#include "功能/chat_file_analysis/attachment_analysis.inc"
+#include "功能/company_design/library_source_binding.inc"
+#include "功能/company_design/library_files.inc"
+#include "功能/company_design/fastener_directory.inc"
+#include <errno.h>
+#include "功能/company_design/fastener_catalog.inc"
+#include "功能/company_design/library_model.inc"
+#include "功能/company_design/company_drawing.inc"
+#include "功能/company_design/library_dispatch.inc"
 #include "功能/assistant/ai_send.inc"
 
 
+#include "功能/assistant/resident_tool.inc"
 #include "功能/assistant/ai_poll.inc"
 
 
+#include "功能/assembly_naming/assembly_naming_chat.inc"
+#include "功能/assistant/assembly_same_number_chat.inc"
+#include "功能/assistant/assembly_selected_chat.inc"
+static int camera_standard_chat(const wchar_t *text);
+#include "功能/company_design/fastener_save.inc"
+#include "功能/company_design/fastener_chat.inc"
 #include "功能/assistant/run_local.inc"
 
 
@@ -144,9 +181,20 @@ static HWND native_backend_window;
 
 #include "功能/assistant/native_workdir_action.inc"
 #include "功能/model_imitation/imitation_run.inc"
+
+static ProError fastener_bso_verify_copy(ProMdl source,ProMdl copy,PartText *out){
+    ProMdl generic=NULL;
+    ProError family=ProFaminstanceGenericGet(copy,PRO_B_TRUE,&generic);
+    if(family!=PRO_TK_E_NOT_FOUND)return family?family:PRO_TK_BAD_CONTEXT;
+    ImitationShapeMetrics shape;
+    ProError error=part_health(copy);
+    if(!error)error=imitation_shape_read(source,&shape);
+    return error?error:imitation_shape_verify_mode(source,copy,&shape,0,out);
+}
 #include "功能/model_imitation/imitation_resize.inc"
 #include "功能/model_imitation/imitation_local.inc"
 #include "功能/model_imitation/imitation_ui.inc"
+#include "功能/camera_standard/camera_standard_chat.inc"
 #include "功能/screenshot_markup/markup_capture.inc"
 #include "功能/screenshot_markup/markup_apply.inc"
 

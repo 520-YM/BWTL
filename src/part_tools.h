@@ -133,6 +133,9 @@ typedef struct { wchar_t *text;size_t size;int truncated; } PartText;
 
 #include "foundation_tools.h"
 
+#ifdef BWTL_RUNTIME_PATHS_H
+#include "功能/assembly_naming/assembly_rename.inc"
+#endif
 #include "功能/part_tools/part_execute.inc"
 
 #endif

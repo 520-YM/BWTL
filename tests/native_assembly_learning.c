@@ -107,7 +107,7 @@ static int learning_capture_test(uiCmdCmdId id,uiCmdValue *value,void *data){
     HMENU menu=native_imitation_menu_create();
     wchar_t label[60]=L"";
     if(menu){
-        GetMenuStringW(menu,IMITATION_ASSEMBLY_LEARN,label,_countof(label),MF_BYCOMMAND);
+        GetMenuStringW(GetSubMenu(menu,6),IMITATION_ASSEMBLY_LEARN,label,_countof(label),MF_BYCOMMAND);
         DestroyMenu(menu);
     }
     learning_check(!wcscmp(label,L"装配学习"),"imitation menu action is visible");

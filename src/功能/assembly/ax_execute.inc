@@ -4,6 +4,7 @@ static ProError ax_execute(ProMdl assembly,const PartCommand *cmd,wchar_t *repor
     ProError error;
     double scale=1;
     if(assembly_plan_valid(cmd->count,(wchar_t (*)[PART_TOKEN_MAX])cmd->arg)!=1)return PRO_TK_BAD_INPUTS;
+    if(kind==AX_OPEN)return ax_open_component(assembly,cmd->arg[2],&out);
     if(ax_recovery_uncertain&&ax_mutates(kind)&&!ax_delete_preview(cmd)){
         part_text_add(&out,L"上次恢复未能核实，当前会话已停止装配写入。\n");
         return PRO_TK_BAD_CONTEXT;
@@ -11,6 +12,17 @@ static ProError ax_execute(ProMdl assembly,const PartCommand *cmd,wchar_t *repor
     if(kind!=AX_TREE&&kind!=AX_Q_REGEN&&kind!=AX_Q_REPORT&&kind!=AX_V_ISOLATE&&kind!=AX_V_VIEW&&(error=ax_master(assembly))){
         part_text_add(&out,L"本操作需要活动装配处于主表示，且动态定位关闭。\n");
         return error;
+    }
+    ProMdl top=assembly;
+    PartCommand scoped={0};
+    if(cmd->count>=4&&!wcscmp(cmd->arg[cmd->count-2],L"IN")){
+        const wchar_t *parent_path=cmd->arg[cmd->count-1];
+        error=ax_nested_parent(top,parent_path,&assembly,&out);
+        if(error)goto done;
+        part_text_add(&out,L"父装配 %ls，以下组件编号相对该父装配。\n",parent_path);
+        scoped=*cmd;
+        scoped.count-=2;
+        cmd=&scoped;
     }
     if(kind!=AX_Q_REGEN&&kind!=AX_Q_REPORT&&(error=qa_mm_per_unit(assembly,&scale)))goto done;
     switch(kind){
@@ -26,9 +38,10 @@ static ProError ax_execute(ProMdl assembly,const PartCommand *cmd,wchar_t *repor
     case AX_STEP:error=ax_step(assembly,cmd,&out);break;
     case AX_REFS:error=ax_placement_refs(assembly,cmd->arg[2],&out);break;
     case AX_PLACEMENT:error=ax_placement_status(assembly,cmd->arg[2],scale,&out);break;
-    case AX_FIX:case AX_MATE:case AX_PARALLEL:case AX_OFFSET:case AX_COAX:case AX_THREE:case AX_FASTENER:case AX_EDIT_OFFSET:
+    case AX_FIX:case AX_MATE:case AX_PARALLEL:case AX_OFFSET:case AX_COAX:case AX_THREE:case AX_FASTENER:case AX_EDIT_OFFSET:case AX_PLANE_ANGLE:
         error=ax_placement_write(assembly,cmd,kind,scale,&out);break;
     case AX_INSERT_ASM:case AX_NEW_ASM:error=ax_subassembly(assembly,cmd,kind,scale,&out);break;
+    case AX_NEW_PART:error=ax_new_part(assembly,cmd,scale,&out);break;
     case AX_DELETE_COMPONENT:error=ax_delete_component(assembly,cmd,&out);break;
     case AX_ROTATE_COMPONENT:case AX_FLIP_COMPONENT:case AX_UNFIX_COMPONENT:
         error=ax_component_pose(assembly,cmd,kind,scale,&out);break;
@@ -80,6 +93,14 @@ static ProError ax_execute(ProMdl assembly,const PartCommand *cmd,wchar_t *repor
     case AX_B_SPARE:case AX_B_ROUTE:case AX_B_NATIVE:case AX_B_PACK:
         error=ax_bom_delivery(assembly,cmd,kind,&out);break;
     default:error=kind>AW_NONE?aw_execute(assembly,cmd,kind,scale,&out):PRO_TK_BAD_INPUTS;break;
+    }
+    if(!error&&top!=assembly){
+        error=part_regenerate(top);
+        if(!error)error=part_health(top);
+        if(error){
+            part_text_add(&out,L"父装配已修改，顶层重生成未核实；模型尚未保存。\n");
+            ax_uncertain(&out);
+        }
     }
 done:
     if(error)part_text_add(&out,L"%ls 未完成（Creo %d）。请核对组件路径、装配状态和操作范围。\n",cmd->arg[0],error);

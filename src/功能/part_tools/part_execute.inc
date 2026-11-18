@@ -26,6 +26,10 @@ static ProError part_execute(const PartCommand *cmd,const PartSnapshot *snapshot
     }
     if((e=part_check_binding(cmd,snapshot,&model))){swprintf_s(text,capacity,L"未执行：活动模型、工作目录或模型版本与请求时不一致。请针对当前模型重新发送指令（错误码%d）。",e);return e;}
     int assembly=cmd->verb==PART_FOUNDATION?ax_kind(cmd->arg[0]):AX_NONE;
+    if(cmd->verb==PART_DISPLAY&&snapshot->type==PRO_MDL_ASSEMBLY&&snapshot->window_model==model){
+        PartText out={text,capacity,0};
+        return ax_open_component(model,cmd->arg[2],&out);
+    }
     if(assembly){
         if(snapshot->type!=PRO_MDL_ASSEMBLY||snapshot->window_model!=model){
             wcscpy_s(text,capacity,L"请激活目标顶层装配后重发。");
@@ -37,6 +41,16 @@ static ProError part_execute(const PartCommand *cmd,const PartSnapshot *snapshot
         }
         return ax_execute(model,cmd,text,capacity);
     }
+#ifdef BWTL_RUNTIME_PATHS_H
+    if(snapshot->type==PRO_MDL_ASSEMBLY&&cmd->verb==PART_RENAME){
+        if(snapshot->window_model!=model){
+            wcscpy_s(text,capacity,L"请先激活要改名的顶层装配。");
+            return PRO_TK_BAD_CONTEXT;
+        }
+        PartText report={text,capacity,0};
+        return assembly_rename_apply(model,cmd->arg[2],&report);
+    }
+#endif
     int repair=delivery==DV_HEAL||(delivery==DV_REF&&!wcscmp(cmd->arg[3],L"MISSING"));
     int status_read=cmd->verb==PART_FOUNDATION&&org_kind(cmd->arg[0])==ORG_STATUS;
     if(cmd->verb!=PART_READ && !repair && !status_read && (snapshot->unhealthy || part_health(model))){wcscpy_s(text,capacity,L"未执行：当前零件存在失败特征，先修复重生成问题。");return PRO_TK_BAD_CONTEXT;}

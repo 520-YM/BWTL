@@ -1,4 +1,5 @@
 static void save_turn(const wchar_t *role, const wchar_t *text) {
+    experience_capture(role,text);
     wchar_t prefix[100];
     swprintf_s(prefix, 100, L"\n%ls：", role);
     store_tail_add(conversation, 24000, prefix);

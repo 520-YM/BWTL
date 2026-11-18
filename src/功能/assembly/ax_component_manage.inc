@@ -1,37 +1,12 @@
 static ProError ax_load_subassembly(const wchar_t *name,ProMdl *model,int *loaded){
-    *loaded=0;
-    ProError error=ProMdlnameInit((wchar_t *)name,PRO_MDL_ASSEMBLY,model);
-    if(error!=PRO_TK_E_NOT_FOUND)return error;
-    ProPath directory,pattern,leaf=L"",path;
-    if((error=ProDirectoryCurrentGet(directory)))return error;
-    if(swprintf_s(pattern,_countof(pattern),L"%ls\\%ls.asm.*",directory,name)<0)return PRO_TK_BAD_INPUTS;
-    WIN32_FIND_DATAW file;
-    HANDLE search=FindFirstFileW(pattern,&file);
-    if(search==INVALID_HANDLE_VALUE)return PRO_TK_E_NOT_FOUND;
-    int latest=0;
-    do{
-        const wchar_t *dot=wcsrchr(file.cFileName,L'.');
-        int revision;
-        if(!(file.dwFileAttributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT))&&
-           (file.nFileSizeHigh||file.nFileSizeLow)&&dot&&part_integer(dot+1,&revision)&&revision>latest){
-            latest=revision;
-            wcscpy_s(leaf,_countof(leaf),file.cFileName);
-        }
-    }while(FindNextFileW(search,&file));
-    FindClose(search);
-    if(!latest)return PRO_TK_E_NOT_FOUND;
-    if(swprintf_s(path,_countof(path),L"%ls\\%ls",directory,leaf)<0)return PRO_TK_BAD_INPUTS;
-    error=ProMdlFiletypeLoad(path,PRO_MDLFILE_ASSEMBLY,PRO_B_FALSE,model);
-    if(!error)*loaded=1;
-    return error;
+    return ax_load_native(name,PRO_MDL_ASSEMBLY,model,loaded);
 }
-
 static ProError ax_new_subassembly(const wchar_t *name,ProMdl *model){
     ProPath path;
-    ProMdl source=NULL,existing=NULL;
+    ProMdl source=NULL;
     TemplateDatums original={0},copy={0};
-    if(!part_target_available(NULL,name,L"asm")||!ProMdlnameInit((wchar_t *)name,PRO_MDL_ASSEMBLY,&existing))return PRO_TK_E_FOUND;
-    ProError error=ProConfigoptionGet(L"template_designasm",path);
+    ProError error=ax_target_collision(name,PRO_MDL_ASSEMBLY);
+    if(!error)error=ProConfigoptionGet(L"template_designasm",path);
     if(error)return error;
     if(!path[0])return PRO_TK_E_NOT_FOUND;
     if((error=ProMdlFiletypeLoad(path,PRO_MDLFILE_ASSEMBLY,PRO_B_FALSE,&source))||
@@ -50,35 +25,39 @@ static void ax_discard_occurrence(ProMdl assembly,ProAsmcomp *occurrence,PartTex
 }
 
 static ProError ax_subassembly(ProMdl assembly,const PartCommand *cmd,int kind,double mm,PartText *out){
-    ProMdl model=NULL,actual_model=NULL;
+    ProMdl model=NULL;
     ProAsmcomp occurrence={0};
     AxScan *scan=NULL;
-    ProMatrix wanted={{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}},actual;
+    ProMatrix wanted;
+    const int mode=ax_initial_pose(cmd,3,mm,wanted);
     int loaded=0;
-    double child_mm;
     ProError error=kind==AX_NEW_ASM?ax_new_subassembly(cmd->arg[2],&model):ax_load_subassembly(cmd->arg[2],&model,&loaded);
-    if(error)goto done;
+    if(error){
+        if(kind==AX_INSERT_ASM&&error==PRO_TK_E_NOT_FOUND)
+            part_text_add(out,L"未找到 %ls.asm。已查询当前会话、工作目录和本实例的公司标准件库。\n",cmd->arg[2]);
+        if(kind==AX_INSERT_ASM&&error==PRO_TK_E_FOUND)
+            part_text_add(out,L"公司标准件库的多个产品目录都有 %ls.asm。请明确完整路径或唯一版本，重新读取后再装入。\n",cmd->arg[2]);
+        if(kind==AX_INSERT_ASM&&error==PRO_TK_E_IN_USE)
+            part_text_add(out,L"所选子装配版本无法核对，或 Creo 中的同名模型已被修改。请核对模型来源后重试。\n");
+        goto done;
+    }
     if(assembly==model){error=PRO_TK_BAD_CONTEXT;goto done;}
-    if((error=part_health(model))||(error=ax_master(model))||
-       (error=qa_mm_per_unit(model,&child_mm))||(error=ax_scan(model,1,&scan)))goto done;
-    if(!part_close(child_mm,mm)||scan->suppressed){error=PRO_TK_BAD_CONTEXT;goto done;}
+    if((error=part_health(model))||(error=ax_master(model))||(error=ax_scan(model,1,&scan)))goto done;
+    if(scan->suppressed){error=PRO_TK_BAD_CONTEXT;goto done;}
     for(int i=0;i<scan->count;i++)if(scan->occurrences[i].model==assembly){error=PRO_TK_BAD_CONTEXT;goto done;}
-    for(int i=0;i<3;i++)wanted[3][i]=as_arg(cmd,3+i)/mm;
-    if((error=ProAsmcompAssemble((ProAssembly)assembly,(ProSolid)model,wanted,&occurrence))||
-       (error=part_regenerate(assembly))||(error=ax_packaged(&occurrence))||
-       (error=ProAsmcompMdlGet(&occurrence,&actual_model))||(error=ax_actual_pose(assembly,&occurrence,actual)))goto done;
-    if(actual_model!=model||!ax_same_pose(wanted,actual,mm)){error=PRO_TK_GENERAL_ERROR;goto done;}
-    part_text_add(out,L"%ls子装配 %ls，实例 ID:%d，含 %d 个下级实例。初始位置已核对，顶层装配未保存。\n",
-        kind==AX_NEW_ASM?L"已新建并装入":L"已装入",cmd->arg[2],occurrence.id,scan->count);
+    error=ax_place_model(assembly,model,wanted,mode,mm,&occurrence,out);
+    if(error)goto done;
+#ifdef BWTL_COMPANY_SOURCE_BINDING
+    if(kind==AX_INSERT_ASM)company_source_note_placement(model);
+#endif
+    const wchar_t *placement=mode==AX_PLACE_DEFAULT?L"默认":mode==AX_PLACE_FIXED?L"坐标固定":L"坐标初始";
+    part_text_add(out,L"%ls子装配 %ls，实例 ID:%d，含 %d 个下级实例。%ls定位已核对，父装配未保存。\n",
+        kind==AX_NEW_ASM?L"已新建并装入":L"已装入",cmd->arg[2],occurrence.id,scan->count,placement);
 done:
     free(scan);
-    if(error){
-        ax_discard_occurrence(assembly,&occurrence,out);
-        if(model&&(kind==AX_NEW_ASM||loaded)&&!ax_recovery_uncertain)ProMdlErase(model);
-    }
+    if(error&&model&&(kind==AX_NEW_ASM||loaded)&&!ax_recovery_uncertain)ProMdlErase(model);
     return error;
 }
-
 static ProError ax_component_named(ProMdl assembly,const wchar_t *id,const wchar_t *name,AxComponent *component){
     ProMdlName actual;
     ProError error=ax_component_resolve(assembly,id,component);
@@ -192,7 +171,7 @@ static ProError ax_component_pose(ProMdl assembly,const PartCommand *cmd,int kin
     int count=0,attempted=0;
     ProError error;
     if((error=ax_component_resolve(assembly,cmd->arg[2],&target))||
-       (error=ax_ordinary_direct(&target.feature))||(error=ax_leaf_without_children(&target.feature))||
+       (error=ax_ordinary_occurrence(&target.feature,1))||(error=ax_leaf_without_children(&target.feature))||
        (error=ax_actual_pose(assembly,&target.feature,before))||(error=ProAsmcompPositionGet(&target.feature,initial))||
        (error=ax_root_path(assembly,&root)))return error;
     memcpy(wanted,before,sizeof(wanted));

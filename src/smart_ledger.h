@@ -13,7 +13,7 @@ static void smart_protocol_key(const PartCommand *cmd,int failed,wchar_t key[SMA
     for(int i=0;i<cmd->count;i++){
         if(i==2&&cmd->verb==PART_FOUNDATION){
             if(pn_kind(cmd->arg[0]))continue;
-            if(failed&&!wcscmp(cmd->arg[0],L"SKETCH_CREATE"))continue;
+            if(failed&&(!wcscmp(cmd->arg[0],L"SKETCH_CREATE")||!wcscmp(cmd->arg[0],L"SMT_CUT")))continue;
         }
         const wchar_t *token=cmd->arg[i];
         for(;*token;token++)key[used++]=i<2?towupper(*token):*token;

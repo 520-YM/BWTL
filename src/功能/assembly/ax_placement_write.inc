@@ -55,9 +55,9 @@ static int ax_constraint_equal(ProAsmcompconstraint a,ProAsmcompconstraint b,dou
     if(!ax_selection_equal(aa,ab,0)||!ax_selection_equal(ba,bb,component_id)||
        (side_aa!=side_ab&&!(side_aa==PRO_DATUM_SIDE_NONE&&side_ab==PRO_DATUM_SIDE_YELLOW))||
        (side_ba!=side_bb&&!(side_ba==PRO_DATUM_SIDE_NONE&&side_bb==PRO_DATUM_SIDE_YELLOW)))return 0;
-    if(ax_offset_type(x)){
+    if(ax_offset_type(x)||ax_angle_type(x)){
         double u,v;
-        if(ProAsmcompconstraintOffsetGet(a,&u)||ProAsmcompconstraintOffsetGet(b,&v)||fabs((u-v)*mm)>1e-5)return 0;
+        if(ProAsmcompconstraintOffsetGet(a,&u)||ProAsmcompconstraintOffsetGet(b,&v)||fabs(u-v)*(ax_angle_type(x)?1:mm)>1e-5)return 0;
     }
     return 1;
 }
@@ -120,6 +120,13 @@ static ProError ax_verify_relation(ProAsmcompconstraint row,ProMatrix pose,doubl
         ad_cross(delta,base.direction,radial);
         return fabs(cosine)>1-1e-7&&sqrt(ad_dot(radial,radial))*mm<0.001?PRO_TK_NO_ERROR:PRO_TK_GENERAL_ERROR;
     }
+    if(ax_angle_type(type)){
+        double wanted;
+        if((error=ProAsmcompconstraintOffsetGet(row,&wanted)))return error;
+        if(type==PRO_ASM_MATE_ANG_OFF)cosine=-cosine;
+        const double actual=acos(fmax(-1,fmin(1,cosine)))*180.0/3.14159265358979323846;
+        return fabs(actual-fabs(wanted))<0.001?PRO_TK_NO_ERROR:PRO_TK_GENERAL_ERROR;
+    }
     int mating=type==PRO_ASM_MATE||type==PRO_ASM_MATE_OFF;
     if((mating?-cosine:cosine)<1-1e-7)return PRO_TK_GENERAL_ERROR;
     if(type==PRO_ASM_ORIENT)return PRO_TK_NO_ERROR;
@@ -136,7 +143,7 @@ static ProError ax_add_relation(ProAsmcompconstraint **rows,AxComponent *base,Ax
     ProAsmcompconstraint row=NULL;
     ProError error=ProAsmcompconstraintAlloc(&row);
     if(error)return error;
-    if(type!=PRO_ASM_FIX){
+    if(type!=PRO_ASM_FIX&&type!=PRO_ASM_DEF_PLACEMENT){
         error=ax_ref_resolve(base,base_token,1,&a,base_geometry);
         if(!error)error=ax_ref_resolve(part,part_token,0,&b,part_geometry);
         if(error)goto done;
@@ -152,7 +159,7 @@ static ProError ax_add_relation(ProAsmcompconstraint **rows,AxComponent *base,Ax
     error=ProAsmcompconstraintTypeSet(row,type);
     if(!error&&a)error=ProAsmcompconstraintAsmreferenceSet(row,a,PRO_DATUM_SIDE_NONE);
     if(!error&&b)error=ProAsmcompconstraintCompreferenceSet(row,b,PRO_DATUM_SIDE_NONE);
-    if(!error&&ax_offset_type(type))error=ProAsmcompconstraintOffsetSet(row,offset);
+    if(!error&&(ax_offset_type(type)||ax_angle_type(type)))error=ProAsmcompconstraintOffsetSet(row,offset);
     if(!error)error=ProArrayObjectAdd((ProArray *)rows,PRO_VALUE_UNUSED,1,&row);
 done:
     if(error)ProAsmcompconstraintFree(row);
@@ -170,7 +177,7 @@ static ProError ax_simple_rows(ProAsmcompconstraint *rows,int count){
         if(error)return error;
         if((flags&~PRO_ASM_CONSTR_ATTR_FORCE)||
            !(type==PRO_ASM_MATE||type==PRO_ASM_ALIGN||type==PRO_ASM_INSERT||
-             type==PRO_ASM_ORIENT||type==PRO_ASM_CSYS||ax_offset_type(type)))return PRO_TK_BAD_CONTEXT;
+             type==PRO_ASM_ORIENT||type==PRO_ASM_CSYS||ax_offset_type(type)||ax_angle_type(type)))return PRO_TK_BAD_CONTEXT;
     }
     return PRO_TK_NO_ERROR;
 }
@@ -192,14 +199,14 @@ static ProError ax_placement_write(ProMdl assembly,const PartCommand *cmd,int ki
     AxGeometry bases[3],parts[3];
     double part_mm,base_mm;
     int count=0,requested_count=0,attempted=0,edit_index=-1;
-    int added=kind==AX_EDIT_OFFSET?0:kind==AX_THREE?3:kind==AX_FASTENER?2:1;
+    int added=kind==AX_EDIT_OFFSET?0:kind==AX_THREE?3:(kind==AX_FASTENER||kind==AX_PLANE_ANGLE)?2:1;
     ProError error;
     const wchar_t *const descriptions[]={L"固定",L"平面贴合",L"平面平行",L"平面偏距",L"轴孔同轴",
         L"三面定位",L"紧固件定位",L"定位偏距修改"};
 #define AP_STEP(call) do{if((error=(call))){trace("assembly placement " #call,error);goto done;}}while(0)
     AP_STEP(ax_root_path(assembly,&root));
     AP_STEP(ax_component_resolve(assembly,cmd->arg[2],&component));
-    AP_STEP(ax_ordinary_direct(&component.feature));
+    AP_STEP(ax_ordinary_occurrence(&component.feature,1));
     AP_STEP(ax_leaf_without_children(&component.feature));
     AP_STEP(ax_check_default_set(&component.feature));
     AP_STEP(qa_mm_per_unit(component.model,&part_mm));
@@ -207,7 +214,7 @@ static ProError ax_placement_write(ProMdl assembly,const PartCommand *cmd,int ki
     AP_STEP(ax_actual_pose(assembly,&component.feature,previous));
     AP_STEP(ProAsmcompPositionGet(&component.feature,initial));
     AP_STEP(ax_read_constraints(&component.feature,&root,&original,&count));
-    if(count+added>AX_PLACEMENT_LIMIT||((kind==AX_FIX||kind==AX_THREE||kind==AX_FASTENER)&&count)){
+    if(count+added>AX_PLACEMENT_LIMIT||((kind==AX_FIX||kind==AX_THREE||kind==AX_FASTENER||kind==AX_PLANE_ANGLE)&&count)){
         error=PRO_TK_BAD_CONTEXT;goto done;
     }
     AP_STEP(ax_simple_rows(original,count));
@@ -245,8 +252,23 @@ static ProError ax_placement_write(ProMdl assembly,const PartCommand *cmd,int ki
             if(kind==AX_COAX||(kind==AX_FASTENER&&i==0))type=PRO_ASM_INSERT;
             if(kind==AX_PARALLEL)type=PRO_ASM_ORIENT;
             if(kind==AX_OFFSET)type=PRO_ASM_ALIGN_OFF;
+            if(kind==AX_PLANE_ANGLE)type=i?PRO_ASM_ALIGN_ANG_OFF:PRO_ASM_INSERT;
+            const double offset=kind==AX_OFFSET?as_arg(cmd,6)/mm:kind==AX_PLANE_ANGLE&&i?as_arg(cmd,8):0;
             AP_STEP(ax_add_relation(&requested,&base,&component,cmd->arg[4+2*i],cmd->arg[5+2*i],
-                type,kind==AX_OFFSET?as_arg(cmd,6)/mm:0,&bases[i],&parts[i]));
+                type,offset,&bases[i],&parts[i]));
+        }
+        if(kind==AX_PLANE_ANGLE){
+            ProVector base_delta,part_delta;
+            ad_sub(bases[0].point,bases[1].point,base_delta);
+            ad_sub(parts[0].point,parts[1].point,part_delta);
+            if(bases[0].type!=AX_GEOM_AXIS||parts[0].type!=AX_GEOM_AXIS||
+               fabs(ad_dot(bases[0].direction,bases[1].direction))>1e-7||
+               fabs(ad_dot(parts[0].direction,parts[1].direction))>1e-7||
+               fabs(ad_dot(base_delta,bases[1].direction))*mm>0.001||
+               fabs(ad_dot(part_delta,parts[1].direction))*mm>0.001){
+                part_text_add(out,L"角度定位要求两侧的基准轴分别位于所选基准面内。\n");
+                error=PRO_TK_BAD_INPUTS;goto done;
+            }
         }
         if(kind==AX_FASTENER){
             FdRef bore_ref={0};
@@ -283,7 +305,7 @@ static ProError ax_placement_write(ProMdl assembly,const PartCommand *cmd,int ki
     AP_STEP(ProAsmcompIsUnderconstrained(&component.feature,&under));
     if(under&&(kind==AX_THREE||kind==AX_FIX)){error=PRO_TK_GENERAL_ERROR;goto done;}
     part_text_add(out,L"%ls 已完成%ls，已重生成并核对定位，未保存。%ls\n",
-        cmd->arg[2],descriptions[kind-AX_FIX],under?L" Creo 报告该组件仍有自由度。":L"");
+        cmd->arg[2],kind==AX_PLANE_ANGLE?L"平面角度定位":descriptions[kind-AX_FIX],under?L" Creo 报告该组件仍有自由度。":L"");
 done:
     if(error&&attempted){
         if(!ax_placement_restored(assembly,&component,&root,original,count,previous,mm)){

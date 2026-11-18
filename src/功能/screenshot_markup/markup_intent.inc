@@ -288,7 +288,7 @@ static int markup_intent_prompt(const MarkupCapture *capture,const MarkupRequest
 }
 
 static int markup_start_intent(void){
-    if(!storage_directory_on_drive(runtime_data,L'E'))return 0;
+    if(!storage_directory_on_drive(runtime_data,storage_data_drive()))return 0;
     wchar_t exe[MAX_PATH],command[2048];
     if(!runtime_codex(exe))return 0;
     wchar_t base[MAX_PATH];
@@ -303,7 +303,7 @@ static int markup_start_intent(void){
     }
     wchar_t cache[MAX_PATH];
     if(swprintf_s(cache,_countof(cache),L"%ls\\markup-codex",runtime_data)<0||
-       (!CreateDirectoryW(cache,NULL)&&GetLastError()!=ERROR_ALREADY_EXISTS)||!storage_directory_on_drive(cache,L'E')){
+       (!CreateDirectoryW(cache,NULL)&&GetLastError()!=ERROR_ALREADY_EXISTS)||!storage_directory_on_drive(cache,storage_data_drive())){
         markup_ai_cleanup();
         return 0;
     }

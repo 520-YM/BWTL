@@ -16,11 +16,11 @@ static void native_poll_action(void);
 static void native_cancel_action(void);
 static void native_details_action(void);
 static void native_company_action(void);
-static void native_workdir_action(UINT action);
+static void native_workdir_action(UINT action,wchar_t *project_name);
 static void native_imitation_action(UINT action);
 static void native_feature_list_action(void);
 static HWND native_window, native_history, native_prompt, native_title;
-static HWND native_stop_button,native_preview;
+static HWND native_stop_button,native_preview,native_elapsed_label,native_attach_button,native_clear_button;
 static volatile LONG native_busy;
 static HWND native_buttons[3];
 static HWND native_top_buttons[5];
@@ -48,30 +48,50 @@ static int native_ui_history(const wchar_t *text);
 #define CHAT_WORKDIR 4114
 #define CHAT_IMITATION 4115
 #define CHAT_RESERVED_3 4116
+#define CHAT_TIME_TICK 4117
+#define CHAT_TIME_BEGIN (WM_APP+35)
+#define CHAT_TIME_END (WM_APP+36)
+#define CHAT_ATTACHMENTS_SENT (WM_APP+37)
 #define CHAT_HISTORY_TEXT (WM_APP+31)
 #define CHAT_DESTROY (WM_APP+32)
 #define CHAT_BUSY (WM_APP+34)
 #define BWTL_WORKDIR_REQUEST (WM_APP+49)
 #define BWTL_IMITATION_REQUEST (WM_APP+50)
-enum {WORKDIR_VIEW=1,WORKDIR_OPEN,WORKDIR_COPY,WORKDIR_PICK};
+enum {WORKDIR_VIEW=1,WORKDIR_OPEN,WORKDIR_COPY,WORKDIR_PICK,WORKDIR_CREATE};
 enum {IMITATION_CURRENT=1,IMITATION_FILE,IMITATION_STRICT,IMITATION_DIAGNOSE,
       IMITATION_COMPARE,IMITATION_BATCH,IMITATION_LIBRARY,IMITATION_BATCH_LIBRARY,IMITATION_BATCH_PREVIEW,
       IMITATION_COVERAGE,IMITATION_OPEN_STANDARD,IMITATION_LEARN,IMITATION_COMPARE_FLAT,IMITATION_NEUTRAL,IMITATION_MANUAL,IMITATION_ASSEMBLY_LEARN,IMITATION_MEMORY,
-      IMITATION_CSYS_METHOD,IMITATION_SHEET_CUT_METHOD};
+      IMITATION_CSYS_METHOD,IMITATION_SHEET_CUT_METHOD,IMITATION_STUDY,IMITATION_GO_COMPANY};
 static void native_set_busy(int busy){if(native_window)SendMessageW(native_window,CHAT_BUSY,busy,0);}
 static void native_layout(void);
 static void native_attachment_changed(void){if(native_preview)native_layout();}
 static void native_attachment_error(const wchar_t *text){MessageBoxW(native_window,text,L"BWTL",MB_OK|MB_ICONWARNING);}
-static void native_choose_images(void){
-    OPENFILENAMEW ofn={0};wchar_t path[MAX_PATH]=L"",error[256];
-    ofn.lStructSize=sizeof(ofn);ofn.hwndOwner=native_window;ofn.lpstrFilter=L"图片 (PNG/JPEG/BMP/WebP)\0*.png;*.jpg;*.jpeg;*.bmp;*.webp\0所有文件\0*.*\0";
-    ofn.lpstrFile=path;ofn.nMaxFile=MAX_PATH;ofn.Flags=OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR;ofn.lpstrTitle=L"选择要发给BWTL分析的图片";
-    if(GetOpenFileNameW(&ofn)){
-        if(native_image_import(path,error,256))native_attachment_changed();
-        else native_attachment_error(error);
+static void native_choose_attachments(void){
+    OPENFILENAMEW dialog={0};
+    wchar_t files[2048]=L"",path[MAX_PATH],error[256],first_error[256]=L"";
+    dialog.lStructSize=sizeof(dialog);
+    dialog.hwndOwner=native_window;
+    dialog.lpstrFilter=L"可分析文件\0*.pdf;*.stp;*.step;*.prt;*.prt.*;*.asm;*.asm.*;*.png;*.jpg;*.jpeg;*.bmp;*.webp;*.gif;*.tif;*.tiff;*.txt;*.csv;*.tsv;*.md;*.json;*.log\0所有文件\0*.*\0";
+    dialog.lpstrFile=files;
+    dialog.nMaxFile=_countof(files);
+    dialog.Flags=OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR|OFN_EXPLORER|OFN_ALLOWMULTISELECT;
+    dialog.lpstrTitle=L"添加分析附件（PDF、Creo 模型、图片或文本）";
+    if(!GetOpenFileNameW(&dialog))return;
+    const wchar_t *leaf=files+wcslen(files)+1;
+    if(!*leaf){
+        if(!native_attachment_import(files,error,_countof(error)))wcscpy_s(first_error,_countof(first_error),error);
+    }else for(;*leaf;leaf+=wcslen(leaf)+1){
+        if(swprintf_s(path,_countof(path),L"%ls\\%ls",files,leaf)<0)
+            wcscpy_s(error,_countof(error),L"文件路径太长。");
+        else if(native_attachment_import(path,error,_countof(error)))continue;
+        if(!first_error[0])wcscpy_s(first_error,_countof(first_error),error);
+        if(native_attachment_count()>=NATIVE_ATTACHMENT_MAX)break;
     }
+    native_attachment_changed();
+    if(first_error[0])native_attachment_error(first_error);
 }
 
+#include "功能/native_chat_ui/native_request_timer.inc"
 #include "功能/native_chat_ui/native_layout.inc"
 
 
@@ -92,60 +112,13 @@ static void native_choose_images(void){
 
 #include "功能/native_chat_ui/native_prompt_proc.inc"
 
+#include "功能/native_chat_ui/native_grouped_menu.inc"
 #include "native_feature_catalog.h"
 #include "功能/native_chat_ui/native_workdir_menu.inc"
+#include "功能/native_chat_ui/native_company_menu.inc"
 #include "功能/native_chat_ui/native_industrial_theme.inc"
 
-static HMENU native_imitation_menu_create(void){
-    HMENU menu=CreatePopupMenu();
-    if(!menu)return NULL;
-    AppendMenuW(menu,MF_STRING,IMITATION_CURRENT,L"按原步骤重建当前模型");
-    AppendMenuW(menu,MF_STRING,IMITATION_FILE,L"选择模型文件并按原步骤重建…");
-    AppendMenuW(menu,MF_STRING,IMITATION_STRICT,L"按原步骤重建并试改尺寸");
-    AppendMenuW(menu,MF_STRING,IMITATION_MANUAL,L"按原步骤重建（参照不明确时手选）");
-    AppendMenuW(menu,MF_STRING,IMITATION_DIAGNOSE,L"诊断当前模型与参照");
-    AppendMenuW(menu,MF_STRING,IMITATION_BATCH_PREVIEW,L"批量预检模型与参照…");
-    AppendMenuW(menu,MF_STRING,IMITATION_COMPARE,L"与另一零件比对…");
-    AppendMenuW(menu,MF_STRING,IMITATION_COMPARE_FLAT,L"比对钣金展开…");
-    AppendMenuW(menu,MF_STRING,IMITATION_NEUTRAL,L"从 STEP／IGES 推断并重建…");
-    AppendMenuW(menu,MF_STRING,IMITATION_BATCH,L"批量按原步骤重建…");
-    AppendMenuW(menu,MF_STRING,IMITATION_LEARN,L"保存最近的建模方法");
-    AppendMenuW(menu,MF_STRING,IMITATION_ASSEMBLY_LEARN,L"装配学习");
-    AppendMenuW(menu,MF_STRING,IMITATION_MEMORY,L"查看学习记忆");
-    HMENU methods=CreatePopupMenu();
-    if(methods){
-        AppendMenuW(methods,MF_STRING,IMITATION_CSYS_METHOD,L"装配坐标系定位");
-        AppendMenuW(methods,MF_STRING,IMITATION_SHEET_CUT_METHOD,L"钣金首壁与独立切口");
-        if(!AppendMenuW(menu,MF_POPUP,(UINT_PTR)methods,L"已验证的做法"))DestroyMenu(methods);
-    }
-    AppendMenuW(menu,MF_SEPARATOR,0,NULL);
-    AppendMenuW(menu,MF_STRING,IMITATION_LIBRARY,L"将上次结果存为公司标准件");
-    AppendMenuW(menu,MF_STRING,IMITATION_BATCH_LIBRARY,L"将上次批量通过项存为公司标准件");
-    AppendMenuW(menu,MF_STRING,IMITATION_OPEN_STANDARD,L"打开已验收标准件…");
-    AppendMenuW(menu,MF_SEPARATOR,0,NULL);
-    AppendMenuW(menu,MF_STRING,IMITATION_COVERAGE,L"已验收范围");
-    return menu;
-}
-
-static void native_imitation_menu(HWND button){
-    HMENU menu=native_imitation_menu_create();
-    if(!menu)return;
-    RECT at;
-    if(GetWindowRect(button,&at)){
-        UINT action=TrackPopupMenu(menu,TPM_RETURNCMD|TPM_NONOTIFY|TPM_LEFTALIGN,at.left,at.bottom,0,native_window,NULL);
-        const wchar_t *draft=NULL;
-        if(action==IMITATION_CSYS_METHOD)
-            draft=L"用已学的坐标系定位法，把当前总装里的组件〔待填：组件型号或当前实例 ID〕"
-                L"按案例〔待填：源装配名，或上次学习的案例〕定位。核对新组件和当前总装的两个坐标系后直接执行。";
-        else if(action==IMITATION_SHEET_CUT_METHOD)
-            draft=L"按已学的钣金首壁与独立切口建模方法，新建一块矩形钣金板。"
-                L"长〔待填：毫米〕，宽〔待填：毫米〕，板厚〔待填：毫米〕，"
-                L"圆形贯穿切口直径〔待填：毫米〕，圆心〔待填：草绘坐标 X、Y，或居中〕。直接建模。";
-        if(draft){native_prompt_set(draft);SetFocus(native_prompt);}
-        else if(action)native_imitation_action(action);
-    }
-    DestroyMenu(menu);
-}
+#include "功能/native_chat_ui/native_imitation_menu.inc"
 
 #include "功能/screenshot_markup/markup_editor.inc"
 #include "功能/native_chat_ui/native_window_proc.inc"

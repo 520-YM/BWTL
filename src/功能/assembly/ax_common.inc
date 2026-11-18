@@ -57,7 +57,7 @@ static int ax_path_label(const int *ids,int count,wchar_t *label,size_t capacity
     return 1;
 }
 
-static ProError ax_ordinary_direct(ProAsmcomp *feature){
+static ProError ax_ordinary_occurrence(ProAsmcomp *feature,int allow_assembly){
     ProBoolean readonly,embedded,flexible,substitute;
     ProGroupStatus group;
     ProPatternStatus pattern;
@@ -71,7 +71,11 @@ static ProError ax_ordinary_direct(ProAsmcomp *feature){
        (error=ProFeaturePatternStatusGet(feature,&pattern))||
        (error=ProAsmcompMdldataGet(feature,&type,NULL,NULL)))return error;
     return !readonly&&!embedded&&!flexible&&!substitute&&group==PRO_GROUP_NONE&&
-        pattern==PRO_PATTERN_NONE&&type==PRO_MDL_PART?PRO_TK_NO_ERROR:PRO_TK_BAD_CONTEXT;
+        pattern==PRO_PATTERN_NONE&&(type==PRO_MDL_PART||(allow_assembly&&type==PRO_MDL_ASSEMBLY))?PRO_TK_NO_ERROR:PRO_TK_BAD_CONTEXT;
+}
+
+static ProError ax_ordinary_direct(ProAsmcomp *feature){
+    return ax_ordinary_occurrence(feature,0);
 }
 
 static ProError ax_leaf_without_children(ProAsmcomp *feature){

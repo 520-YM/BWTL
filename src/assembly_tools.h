@@ -7,7 +7,6 @@
 #include <ProSimprep.h>
 #include "功能/assembly/ax_common.inc"
 #include "功能/assembly/ax_tree.inc"
-#include "功能/assembly/ax_insert.inc"
 #include "功能/assembly/ax_constraint.inc"
 #include "功能/assembly/ax_move.inc"
 #include "功能/assembly/ax_state.inc"
@@ -18,7 +17,10 @@
 #include "功能/assembly/ax_placement_refs.inc"
 #include "功能/assembly/ax_placement_status.inc"
 #include "功能/assembly/ax_placement_write.inc"
+#include "功能/assembly/ax_native_source.inc"
+#include "功能/assembly/ax_insert.inc"
 #include "功能/assembly/ax_component_manage.inc"
+#include "功能/assembly/ax_new_part.inc"
 #include "功能/assembly/ax_component_references.inc"
 #include "功能/assembly/ax_occurrence_batch.inc"
 #include "功能/assembly/ax_hardware_geometry.inc"
@@ -85,5 +87,9 @@
 #include "功能/assembly/ax_workbench_posture.inc"
 #include "功能/assembly/ax_workbench_process.inc"
 #include "功能/assembly/ax_workbench_execute.inc"
+#include "功能/assembly/ax_nested_parent.inc"
+static void ax_return_note_open(ProMdl root,int root_window,ProMdl child,int child_window,const wchar_t *occurrence,const wchar_t *directory);
+#include "功能/assembly/ax_component_open.inc"
+#include "功能/assembly/ax_component_return.inc"
 #include "功能/assembly/ax_execute.inc"
 #endif

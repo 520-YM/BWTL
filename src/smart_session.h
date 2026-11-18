@@ -6,6 +6,7 @@
 static int smart_active,smart_followup,smart_readonly,smart_steps,smart_failures,smart_failures_without_progress;
 static int smart_total_failures,smart_progress,smart_paused,smart_chain,smart_duplicate_replan;
 static wchar_t smart_goal[6001],smart_feedback[PART_TEXT_MAX],smart_details[SMART_DETAILS_CAP],smart_new_model_result[1024];
+static wchar_t smart_latest_request[6001],smart_prior_goal[6001];
 static wchar_t smart_last_failure[1530],smart_last_failure_brief[360];
 static NativeImage smart_images[NATIVE_IMAGE_MAX];static int smart_image_count;
 static ULONGLONG smart_started;
@@ -18,6 +19,9 @@ static void ai_send(const wchar_t *value);
 static void smart_queue_next(void);
 static int smart_unsafe_receipt(const wchar_t *receipt);
 #include "功能/assistant/smart_failure_brief.inc"
+#ifdef BWTL_TASK_CONTEXT_HOST
+#include "功能/assistant/chat_task_evidence.inc"
+#endif
 
 static int smart_sequence_request(const wchar_t *text){
     static const wchar_t *const words[]={L"然后",L"接着",L"随后",L"之后",L"再开",L"再加",L"再做",L"再建",L"再倒",L"再切",L"分步完成",L"连续执行",L"做到哪步算哪步",L"能做多少做多少"};
@@ -31,8 +35,15 @@ static const wchar_t *smart_details_tail(size_t maximum){
     return line?line+2:smart_details+length-maximum;
 }
 
+static int smart_new_plan_allowed(void){
+    return smart_intent==SMART_INTENT_NEW&&!smart_readonly&&!smart_progress&&!smart_target_model;
+}
+
 static void smart_finish(void){smart_active=smart_followup=smart_sheetmetal_demo=0;native_set_busy(0);}
 static void smart_reply(const wchar_t *text){
+#ifdef BWTL_RESIDENT_CHANNEL
+    if(resident_tool_running()){resident_tool_result(-1,text);return;}
+#endif
     wchar_t *combined=NULL;
     if(smart_failures_without_progress&&smart_last_failure_brief[0]){
         size_t capacity=wcslen(text)+wcslen(smart_last_failure_brief)+2;
@@ -50,9 +61,19 @@ static void smart_reply(const wchar_t *text){
 
 static void smart_begin(const wchar_t *value){
     wchar_t combined[6001];ProMdl prior_target=smart_target_model;
-    int supplement=smart_waiting_for_user&&(!smart_readonly||smart_intent==SMART_INTENT_CLARIFY)&&!smart_readonly_override(value)&&smart_short_reply(value)&&wcslen(smart_goal)<4000&&wcslen(value)<1500;
+    static const wchar_t *const new_task[]={L"另外",L"换个",L"换一个",L"另建",L"另画",L"新建",L"再画一个",L"重新画"};
+    wcsncpy_s(smart_latest_request,_countof(smart_latest_request),value,_TRUNCATE);
+    int supplement=smart_waiting_for_user&&(!smart_readonly||smart_intent==SMART_INTENT_CLARIFY)&&
+        !smart_readonly_override(value)&&!model_request_explicit_new(value)&&
+        !smart_has_text(value,new_task,_countof(new_task))&&
+        smart_short_reply(value)&&wcslen(smart_goal)<4000&&wcslen(value)<1500;
     int retain=supplement&&smart_steps>0;
-    if(supplement){swprintf_s(combined,6001,L"原任务：%ls\n用户补充/确认（以此为准）：%ls",smart_goal,value);value=combined;}
+    smart_prior_goal[0]=0;
+    if(supplement){
+        wcscpy_s(smart_prior_goal,_countof(smart_prior_goal),smart_goal);
+        swprintf_s(combined,6001,L"原任务：%ls\n用户补充或确认（以本次为准）：%ls",smart_prior_goal,value);
+        value=combined;
+    }
     smart_active=1;smart_followup=0;smart_started=GetTickCount64();
     smart_paused=smart_waiting_for_user=smart_local_plan=smart_stale_permission_retry=smart_duplicate_replan=smart_protocol_replan=smart_sheetmetal_demo=0;
     if(!retain){
@@ -154,16 +175,35 @@ static void smart_step(const PartCommand *cmd,const wchar_t *operation,ProError 
         smart_describe_failure(cmd,receipt,smart_last_failure_brief,_countof(smart_last_failure_brief));
     }
     smart_record_tool(entry);
+#ifdef BWTL_TASK_CONTEXT_HOST
+    chat_task_record(cmd,label,error,receipt,unsafe||smart_unsafe_receipt(receipt));
+#endif
+    int tool=0;
+#ifdef BWTL_RESIDENT_CHANNEL
+    tool=resident_tool_running();
+#endif
     if(unsafe||smart_unsafe_receipt(receipt)){
+#ifdef BWTL_RESIDENT_CHANNEL
+        if(tool){resident_tool_result(error?error:-1,receipt);ai_cleanup();}
+#endif
         smart_pause(L"原生回执或模型版本提示状态需要核对，已停止自动操作",0);
         return;
     }
-    if(final||smart_local_plan){smart_reply(receipt);return;}
+    if(!tool&&(final||smart_local_plan)){smart_reply(receipt);return;}
     if(smart_failures_without_progress>=SMART_MAX_FAILURES_WITHOUT_PROGRESS)stop_reason=L"尚未取得新的建模进展，失败次数已达上限";
     else if(smart_failures>=SMART_MAX_FAILURES)stop_reason=L"本轮累计失败次数已达上限";
     else if(smart_steps>=SMART_MAX_STEPS)stop_reason=L"已达到本任务步骤上限";
     else if(GetTickCount64()-smart_started>1200000)stop_reason=L"本轮任务已超时";
-    if(stop_reason){smart_pause(stop_reason,1);return;}
+    if(stop_reason){
+#ifdef BWTL_RESIDENT_CHANNEL
+        if(tool){resident_tool_result(error?error:-1,receipt);ai_cleanup();}
+#endif
+        smart_pause(stop_reason,1);
+        return;
+    }
+#ifdef BWTL_RESIDENT_CHANNEL
+    if(tool){resident_tool_result(error,receipt);return;}
+#endif
     smart_queue_next();
 }
 
@@ -187,6 +227,17 @@ static int smart_protocol_allowed(const PartCommand *command){
         if(!smart_progress&&!independent&&!smart_read_command(command))return 0;
         if(smart_progress&&independent)return 0;
     }
+#ifdef BWTL_COMPONENT_OPEN_HOST
+    if(command->verb==PART_DISPLAY||(command->verb==PART_FOUNDATION&&ax_kind(command->arg[0])==AX_OPEN)){
+        const wchar_t *const no_open[]={L"不要打开",L"别打开",L"不打开",L"如何打开",L"怎么打开",L"是不是不能打开"};
+        const wchar_t *const opening[]={L"打开",L"显示",L"切换到"};
+        if(smart_has_text(smart_latest_request,no_open,_countof(no_open)))return 0;
+        if(smart_intent!=SMART_INTENT_LOCAL&&!smart_has_text(smart_goal,opening,_countof(opening))&&
+           !(smart_progress&&smart_steps&&smart_intent==SMART_INTENT_NEW&&
+             request_snapshot.type==PRO_MDL_ASSEMBLY&&
+             (wcsstr(smart_details,L"ASM_NEW_PART")||wcsstr(smart_details,L"ASM_NEW_ASM"))))return 0;
+    }
+#endif
     if(command->verb==PART_SAVE&&smart_intent!=SMART_INTENT_LOCAL&&
        (!wcsstr(smart_goal,L"保存")||wcsstr(smart_goal,L"不保存")||wcsstr(smart_goal,L"别保存")||
         wcsstr(smart_goal,L"不要保存")||wcsstr(smart_goal,L"暂不保存")))return 0;

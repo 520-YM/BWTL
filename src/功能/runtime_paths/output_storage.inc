@@ -6,6 +6,11 @@ static wchar_t storage_output_drive(void){
     return letter>=L'A'&&letter<=L'Z'?letter:L'?';
 }
 
+static wchar_t storage_data_drive(void){
+    wchar_t drive=storage_output_drive();
+    return drive?drive:towupper(runtime_data[0]);
+}
+
 static int storage_directory_on_drive(const wchar_t *directory,wchar_t drive){
     if(!directory||towupper(directory[0])!=drive||directory[1]!=L':')return 0;
     HANDLE handle=CreateFileW(directory,FILE_READ_ATTRIBUTES,FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,
@@ -40,4 +45,4 @@ static int storage_prepare_output(void){
         !ProConfigoptSet(L"override_store_back",L"yes");
 }
 
-static const wchar_t storage_output_message[]=L"BWTL 的文件只写入 E 盘。请在「工作目录」中选择 E 盘上的目录，再执行操作。";
+static const wchar_t storage_output_message[]=L"请在「工作目录」中选择安装时指定的数据盘目录，再执行操作。";

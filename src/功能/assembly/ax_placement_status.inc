@@ -6,6 +6,10 @@ static ProError ax_read_constraints(ProAsmcomp *component,ProAsmcomppath *owner,
     return error||!*rows?error:ProArraySizeGet((ProArray)*rows,count);
 }
 
+static int ax_angle_type(ProAsmcompConstrType type){
+    return type==PRO_ASM_ALIGN_ANG_OFF||type==PRO_ASM_MATE_ANG_OFF;
+}
+
 static int ax_offset_type(ProAsmcompConstrType type){
     return type==PRO_ASM_ALIGN_OFF||type==PRO_ASM_MATE_OFF;
 }
@@ -13,12 +17,14 @@ static int ax_offset_type(ProAsmcompConstrType type){
 static const wchar_t *ax_constraint_label(ProAsmcompConstrType type){
     switch(type){
     case PRO_ASM_FIX:return L"固定";
+    case PRO_ASM_DEF_PLACEMENT:return L"默认定位";
     case PRO_ASM_MATE:return L"贴合";
     case PRO_ASM_ORIENT:return L"平行";
     case PRO_ASM_ALIGN:return L"重合或同轴";
     case PRO_ASM_INSERT:return L"圆柱同轴";
     case PRO_ASM_ALIGN_OFF:case PRO_ASM_MATE_OFF:return L"偏距";
     case PRO_ASM_CSYS:return L"坐标系重合";
+    case PRO_ASM_ALIGN_ANG_OFF:case PRO_ASM_MATE_ANG_OFF:return L"平面角度";
     default:return L"其他原生约束";
     }
 }
@@ -66,7 +72,7 @@ static ProError ax_placement_status(ProMdl assembly,const wchar_t *token,double 
         ProAsmcompConstrType type;
         if((error=ProAsmcompconstraintTypeGet(rows[i],&type)))break;
         part_text_add(out,L"%d %ls",i+1,ax_constraint_label(type));
-        if(type!=PRO_ASM_FIX){
+        if(type!=PRO_ASM_FIX&&type!=PRO_ASM_DEF_PLACEMENT){
             ProSelection base=NULL,part=NULL;
             ProDatumside side;
             wchar_t a[260],b[260];
@@ -76,7 +82,10 @@ static ProError ax_placement_status(ProMdl assembly,const wchar_t *token,double 
             ax_selection_label(part,b,_countof(b));
             part_text_add(out,L" %ls ↔ %ls",a,b);
         }
-        if(ax_offset_type(type)){
+        if(ax_angle_type(type)){
+            double angle;
+            if(!ProAsmcompconstraintOffsetGet(rows[i],&angle))part_text_add(out,L" 角度 %.10g°",angle);
+        }else if(ax_offset_type(type)){
             double offset;
             if(!ProAsmcompconstraintOffsetGet(rows[i],&offset))part_text_add(out,L" 偏距 %.10g mm",offset*mm);
         }

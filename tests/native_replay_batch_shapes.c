@@ -268,8 +268,8 @@ static int batch_shapes_test(uiCmdCmdId command,uiCmdValue *value,void *data)
     model_background_mode=1;
     HMENU menu=native_imitation_menu_create();
     wchar_t menu_label[40]=L"";
-    const int menu_ok=menu&&GetMenuStringW(menu,IMITATION_COMPARE_FLAT,menu_label,_countof(menu_label),MF_BYCOMMAND)>0&&
-        !wcscmp(menu_label,L"比对钣金展开…")&&GetMenuState(menu,IMITATION_COMPARE,MF_BYCOMMAND)!=UINT_MAX;
+    const int menu_ok=menu&&GetMenuStringW(GetSubMenu(menu,4),IMITATION_COMPARE_FLAT,menu_label,_countof(menu_label),MF_BYCOMMAND)>0&&
+        !wcscmp(menu_label,L"比对钣金展开…")&&GetMenuState(GetSubMenu(menu,4),IMITATION_COMPARE,MF_BYCOMMAND)!=UINT_MAX;
     if(menu)DestroyMenu(menu);
     fwprintf(log,L"FLAT MENU=%d\n",menu_ok);
     int passed=0;

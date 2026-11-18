@@ -59,7 +59,22 @@ static void execute_part_command(void){
         smart_reply(!smart_readonly&&!wcscmp(command.arg[0],L"FEATURE_DELETE")?smart_delete_block_message:smart_operation_block());
         return;
     }
-    if(command.verb!=PART_READ&&!storage_prepare_output()){smart_reply(storage_output_message);return;}
+    int opening_component=(command.verb==PART_FOUNDATION&&ax_kind(command.arg[0])==AX_OPEN)||
+        (command.verb==PART_DISPLAY&&request_snapshot.type==PRO_MDL_ASSEMBLY);
+    if(opening_component){
+        ProError error=part_execute(&command,&request_snapshot,result,_countof(result));
+        if(!error){
+            component_open_pending=command;
+            component_open_waiting=1;
+            error=ProMacroLoad(L"~ Command \x0060" L"BWTLComponentOpenConfirm\x0060;");
+            if(!error)return;
+            component_open_cancel();
+            wcscpy_s(result,_countof(result),L"Creo 已接收打开请求，但无法调度活动窗口核对。请看 Creo 当前窗口。");
+        }
+        smart_step(&command,L"打开装配组件",error,result[0]?result:L"Creo 未能打开该装配组件。",0,1,0);
+        return;
+    }
+    if(command.verb!=PART_READ&&command.verb!=PART_DISPLAY&&!storage_prepare_output()){smart_reply(storage_output_message);return;}
     if(command.verb==PART_IMITATE){
         PartText receipt={result,_countof(result),0};
         ProPath delivered;
@@ -96,10 +111,11 @@ static void execute_part_command(void){
     int quality_report_flow=quality>=AX_Q_REGEN&&quality<AX_Q_REPORT&&
         (wcsstr(smart_goal,L"检查报告")||wcsstr(smart_goal,L"质量报告")||
          wcsstr(smart_goal,L"检查结果汇总"));
-    int assembly_lookup=quality_report_flow||(foundation&&((smart_intent==SMART_INTENT_CURRENT&&
+    int assembly_lookup=quality_report_flow||(foundation&&(((smart_intent==SMART_INTENT_CURRENT||(smart_intent==SMART_INTENT_NEW&&smart_progress&&request_snapshot.type==PRO_MDL_ASSEMBLY))&&
         (ax_read_diagnostic(ax_kind(verb))||ax_delete_preview(&command)))||
         (smart_intent==SMART_INTENT_READ&&(ax_motion_inspection_request(smart_goal)||aw_request(smart_goal))&&ax_read_diagnostic(ax_kind(verb)))));
     int final=quality==AX_Q_REPORT||independent||(special&&!smart_chain&&!assembly_lookup)||command.verb==PART_DISPLAY;
+    if(resident_tool_running()&&!independent&&command.verb!=PART_DISPLAY&&quality!=AX_Q_REPORT)final=0;
     int write=!smart_read_command(&command);
     if(smart_block_duplicate(&command))return;
     if((command.verb==PART_DIMS||command.verb==PART_PARAM||command.verb==PART_SUPPRESS||command.verb==PART_RESUME)&&!part_selfcheck_passed){
@@ -109,7 +125,11 @@ static void execute_part_command(void){
 
     SmartPartSignature before={0};
     fd_sketch_rolled_back_model=NULL;
-    if(smart_sketch_can_check(&command,&request_snapshot))before=smart_part_signature(request_snapshot.model);
+    sh_cut_rolled_back_model=NULL;
+    double before_thickness=0;
+    if(smart_sketch_can_check(&command,&request_snapshot)||
+       smart_smt_cut_capture(&command,&request_snapshot,&before_thickness))
+        before=smart_part_signature(request_snapshot.model);
     bwtl_warn_traceback(&command);
     ProError error=part_execute(&command,&request_snapshot,result,PART_TEXT_MAX);
     trace("PERF native_execute_ms",(int)(GetTickCount64()-execution_started));
@@ -119,14 +139,15 @@ static void execute_part_command(void){
         if(error){
             ProMdl target=NULL;
             unsafe=part_check_binding(&command,&request_snapshot,&target)!=PRO_TK_NO_ERROR;
-            if(!final&&smart_sketch_rechecked(&command,&request_snapshot,&before,error)){
+            if(!final&&(smart_sketch_rechecked(&command,&request_snapshot,&before,error)||
+                        smart_smt_cut_rechecked(&command,&request_snapshot,&before,before_thickness,error))){
                 target=request_snapshot.model;
                 unsafe=!smart_binding_set(target,request_snapshot.window_model,request_snapshot.directory);
                 if(!unsafe){
                     smart_committed_part=before;
                     PartText feedback={result,_countof(result),0};
                     part_text_add(&feedback,L"\n已复核活动零件、工作目录、已有特征和尺寸。保留已完成步骤，从当前零件继续。"
-                        L"先按本轮实测数据换参照或草绘方法，避免重复原操作。");
+                        L"根据本轮实测数据选择不同参照或受支持的加工方式，继续尚未完成的操作。");
                 }
             }else if(!unsafe&&!final&&(!smart_readonly||assembly_lookup)){
                 unsafe=!smart_binding_set(target,request_snapshot.window_model,request_snapshot.directory);

@@ -68,7 +68,7 @@ static ProError references_candidate(FILE *log){
     if(!error&&replay_validate_pick(target,PRO_SURFACE,&search,no,&actual)!=PRO_TK_INVALID_ITEM)error=PRO_TK_INCOMPLETE;
     if(!error&&replay_validate_pick(target,PRO_SURFACE,&search,other_model,&actual)!=PRO_TK_INVALID_ITEM)error=PRO_TK_INCOMPLETE;
     HMENU menu=native_imitation_menu_create();
-    if(!error&&(!menu||GetMenuState(menu,IMITATION_MANUAL,MF_BYCOMMAND)==(UINT)-1))error=PRO_TK_INCOMPLETE;
+    if(!error&&(!menu||GetMenuState(GetSubMenu(menu,3),IMITATION_MANUAL,MF_BYCOMMAND)==(UINT)-1))error=PRO_TK_INCOMPLETE;
     if(menu)DestroyMenu(menu);
     if(yes)ProSelectionFree(&yes);
     if(no)ProSelectionFree(&no);

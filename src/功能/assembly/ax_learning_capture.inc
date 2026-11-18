@@ -1,3 +1,4 @@
+#include "ax_study_rules.inc"
 typedef struct {
     int subassemblies,placed,missing,poses,constraints,incomplete;
 } AxLearningStats;
@@ -237,6 +238,13 @@ static ProError ax_learning_save(ProMdl assembly,PartText *out){
         part_text_add(out,L"其中 %d 个实例的定位当前不可读取，另有 %d 处读取缺项。%ls下次装配时会按目标的实际参照重新核对。\n",
             stats.missing,stats.incomplete,scan->limited?L"装配树已达到读取上限。":L"");
     part_text_add(out,L"装配记忆已自动保存：%ls\n打开目标装配后，可以说「按上次学的装配方法，把需要的组件装起来」。\n",path);
+    error=ax_study_capture(assembly,scan,source,out);
     free(scan);
-    return PRO_TK_NO_ERROR;
+    return error;
 }
+
+#include "ax_study_place.inc"
+
+#include "ax_study_session.inc"
+#include "ax_study_verify.inc"
+#include "ax_study_chat.inc"

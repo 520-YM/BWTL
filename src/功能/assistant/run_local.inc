@@ -1,21 +1,38 @@
-static void run_local(char *dialog, char *component, ProAppData data) {
+#include "../order_revision/or_files.inc"
+#include "../order_revision/or_inputs.inc"
+#include "../order_revision/or_measure.inc"
+#include "../order_revision/or_delivery.inc"
+#include "../order_revision/or_chat.inc"
+#include "../assembly/ax_flow.inc"
+#include "../standard_interface/std_chat.inc"
+#include "../mounting_plates/mounting_plates.inc"
+#include "../cabinet_parts/cbp_chat.inc"
+#include "../sheetmetal/sh_plate_chat.inc"
+#include "../sheetmetal/sh_four_holes_chat.inc"
+#include "component_open_chat.inc"
+#include "return_assembly_chat.inc"
+static void run_local_dispatch(char *dialog, char *component, ProAppData data) {
     wchar_t *value = NULL;
     ModelPlan centered_plan={0};int centered;
     ProError error = native_prompt_get(&value) ? PRO_TK_NO_ERROR : PRO_TK_GENERAL_ERROR;
     trace("ProUITextareaValueGet", error);
     if (error != PRO_TK_NO_ERROR || !value) return;
+    if(!smart_active&&!ai_process){
+        memset(&default_assembly_pending,0,sizeof(default_assembly_pending));
+        assembly_child_pending=0;
+    }
     {
         size_t length = wcslen(value);
         while (length && iswspace(value[length - 1])) value[--length] = 0;
-        if (!length) {if(native_image_count){free(value);value=_wcsdup(L"请分析这些图片，说明你能看出的内容、设计需求和需要补充的信息，先不要修改模型。");if(!value)return;}else{free(value);return;}}
+        if (!length) {if(native_attachment_count()){free(value);value=_wcsdup(L"请分析本条附件，概括主要内容、尺寸或结构并说明还需核对的地方。");if(!value)return;}else{free(value);return;}}
     }
     {
         UINT command=0;
-        if(!wcscmp(value,L"添加图片"))command=CHAT_ATTACH;
-        else if(!wcscmp(value,L"清除图片"))command=CHAT_CLEAR_IMAGES;
+        if(!wcscmp(value,L"添加图片")||!wcscmp(value,L"添加附件"))command=CHAT_ATTACH;
+        else if(!wcscmp(value,L"清除图片")||!wcscmp(value,L"清空附件"))command=CHAT_CLEAR_IMAGES;
         else if(!wcscmp(value,L"执行明细"))command=CHAT_DETAILS;
         else if(!wcscmp(value,L"插件功能"))command=CHAT_FEATURES;
-        else if(!wcscmp(value,L"公司标准"))command=CHAT_COMPANY;
+        else if(!wcscmp(value,L"标准文件")||!wcscmp(value,L"公司标准"))command=CHAT_COMPANY;
         if(command){
             native_prompt_set(L"");
             PostMessageW(native_window,WM_COMMAND,command,0);
@@ -23,6 +40,15 @@ static void run_local(char *dialog, char *component, ProAppData data) {
             return;
         }
     }
+    native_request_timer_begin();
+    if(native_attachment_count()){ai_send(value);free(value);return;}
+    if(!native_image_count&&experience_chat(value)){free(value);return;}
+    if(!native_image_count&&modeling_rule_chat(value)){free(value);return;}
+    if(!smart_active&&!ai_process&&wcscmp(value,L"继续上次任务")&&!(smart_paused&&smart_resume_request(value))){
+        company_root_count=0;
+        company_source_reset();
+    }
+    if(ax_study_chat(value)){free(value);return;}
     if(!wcscmp(value,L"查看学习记忆")||!wcscmp(value,L"装配学习")||!wcscmp(value,L"学习当前装配")){
         if(native_busy||smart_active||ai_process)append(L"请等待当前任务完成。");
         else{
@@ -32,9 +58,14 @@ static void run_local(char *dialog, char *component, ProAppData data) {
         free(value);
         return;
     }
-    if(!wcscmp(value,L"继续上次任务")){
+    if(!native_image_count&&default_part_resume_chat(value)){free(value);return;}
+    if(!wcscmp(value,L"继续上次任务")||(smart_paused&&smart_resume_request(value))){
         if(smart_active)append(L"当前任务仍在运行。");
-        else if(!smart_resume())append(L"本会话没有可继续的任务，或活动模型、版本、工作目录与暂停时不同。");
+        else if(smart_resume()){
+            wcsncpy_s(smart_latest_request,_countof(smart_latest_request),value,_TRUNCATE);
+            append_card(L"你",value);
+            save_turn(L"用户",value);
+        }else append(L"本会话没有可继续的任务，或活动模型、版本、工作目录与暂停时不同。");
         native_prompt_set(L"");free(value);return;
     }
     if(wcsstr(value,L"〔待填：")){
@@ -45,6 +76,27 @@ static void run_local(char *dialog, char *component, ProAppData data) {
     if(!wcscmp(value,L"应用已验升级")||!wcscmp(value,L"功能开发")||!wcscmp(value,L"功能开发（升级插件）")){
         append(L"BWTL 更新在 Codex 中处理。");native_prompt_set(L"");free(value);return;
     }
+    if(return_assembly_chat(value)||component_open_chat(value)){free(value);return;}
+    if(fastener_chat(value)){free(value);return;}
+    if(default_part_chat(value)){free(value);return;}
+    int inventory_intent=native_image_count?0:catalog_quick_intent(value,conversation);
+    if(inventory_intent){
+        if(!native_busy&&!smart_active&&!ai_process){
+            wchar_t *report=catalog_message(inventory_intent);
+            append_card(L"你",value);
+            save_turn(L"用户",value);
+            native_prompt_set(L"");
+            append_card(L"AI",report?report:catalog_read_failed);
+            save_turn(L"助手",report?report:catalog_read_failed);
+            free(report);
+        }
+        free(value);
+        return;
+    }
+    if(!native_image_count&&(sh_four_holes_chat(value)||sh_plate_chat(value))){free(value);return;}
+    if(!native_image_count&&(camera_standard_chat(value)||assembly_naming_chat(value)||assembly_selected_chat(value)||assembly_same_number_sheet_chat(value))){free(value);return;}
+    if(or_chat(value)||ax_flow_chat(value)||std_chat(value)||mount_chat(value)||cbp_chat(value)){free(value);return;}
+    if(!native_image_count&&(assembly_child_chat(value)||assembly_default_chat(value))){free(value);return;}
     centered=model_centered_request(value,&centered_plan);
     if(centered){
         if(native_busy)append(L"请等待当前任务完成。");
@@ -75,7 +127,7 @@ static void run_local(char *dialog, char *component, ProAppData data) {
     else if (wcscmp(value, L"查看方案") == 0) { show_pending_plan(); native_prompt_set(L""); }
     else if (wcscmp(value, L"执行建模") == 0) { execute_model_plan(); native_prompt_set(L""); }
     else if (wcscmp(value,L"取消建模")==0 || wcscmp(value,L"取消操作")==0) {
-        smart_cancel();foundation_reset();
+        fastener_open_cancel();default_part_cancel();smart_cancel();foundation_reset();
         memset(&pending_part,0,sizeof(pending_part));
         pending_plan.ready = 0;
         save_pending_plan();
@@ -99,4 +151,10 @@ static void run_local(char *dialog, char *component, ProAppData data) {
     else
         ai_send(value);
     free(value);
+}
+
+/* Synchronous requests have no busy/final-reply transition. Async work owns its finish. */
+static void run_local(char *dialog,char *component,ProAppData data){
+    run_local_dispatch(dialog,component,data);
+    if(!native_busy&&!smart_active&&!ai_process&&!imitation_pending)native_request_timer_finish();
 }

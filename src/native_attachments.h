@@ -69,13 +69,14 @@ static int native_images_snapshot(NativeImage out[NATIVE_IMAGE_MAX]){
     int i,n;AcquireSRWLockShared(&native_image_lock);n=native_image_count;
     for(i=0;i<n;i++){out[i]=native_images[i];out[i].thumbnail=NULL;}ReleaseSRWLockShared(&native_image_lock);return n;
 }
+#include "功能/chat_file_analysis/attachment_queue.inc"
 static int native_images_clipboard(HWND owner,wchar_t *error,size_t cap){
-    int result=0;HANDLE handle;wchar_t temp[MAX_PATH],path[MAX_PATH];error[0]=0;
+    int result=0;HANDLE handle;wchar_t path[MAX_PATH];error[0]=0;
     if(!OpenClipboard(owner))return 0;
     if((handle=GetClipboardData(CF_HDROP))!=NULL){
-        UINT count=DragQueryFileW((HDROP)handle,0xffffffff,NULL,0),i;wchar_t files[4][MAX_PATH];count=count>4?4:count;
+        UINT count=DragQueryFileW((HDROP)handle,0xffffffff,NULL,0),i;wchar_t files[NATIVE_ATTACHMENT_MAX][MAX_PATH]={0};if(count>NATIVE_ATTACHMENT_MAX)count=NATIVE_ATTACHMENT_MAX;
         for(i=0;i<count;i++)DragQueryFileW((HDROP)handle,i,files[i],MAX_PATH);CloseClipboard();
-        for(i=0;i<count;i++)if(native_image_import(files[i],error,cap))result=1;return result;
+        for(i=0;i<count;i++)if(files[i][0]&&native_attachment_import(files[i],error,cap))result=1;return result;
     }
     if((handle=GetClipboardData(CF_DIB))!=NULL){
         SIZE_T size=GlobalSize(handle);BYTE *data=GlobalLock(handle);BITMAPFILEHEADER head={0};BITMAPINFOHEADER *info=(BITMAPINFOHEADER *)data;HANDLE file;DWORD wrote;
@@ -83,10 +84,13 @@ static int native_images_clipboard(HWND owner,wchar_t *error,size_t cap){
         head.bfType=0x4d42;head.bfSize=(DWORD)(sizeof(head)+size);head.bfOffBits=sizeof(head)+info->biSize;
         if(info->biBitCount<=8)head.bfOffBits+=(info->biClrUsed?info->biClrUsed:(1u<<info->biBitCount))*4;
         if(info->biCompression==BI_BITFIELDS&&info->biSize==40)head.bfOffBits+=12;
-        GetTempPathW(MAX_PATH,temp);swprintf_s(path,MAX_PATH,L"%lsBWTL-clipboard-%lu-%llu.bmp",temp,GetCurrentProcessId(),GetTickCount64());
+        if(native_attachment_count()>=NATIVE_ATTACHMENT_MAX||!native_attachment_root[0]||
+           swprintf_s(path,MAX_PATH,L"%ls\\clipboard-%lu-%llu.bmp",native_attachment_root,GetCurrentProcessId(),GetTickCount64())<0){
+            GlobalUnlock(handle);CloseClipboard();wcscpy_s(error,cap,L"附件已满或目录尚未就绪。");return 0;
+        }
         file=CreateFileW(path,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_TEMPORARY,NULL);
         if(file!=INVALID_HANDLE_VALUE){result=WriteFile(file,&head,sizeof(head),&wrote,NULL)&&wrote==sizeof(head)&&WriteFile(file,data,(DWORD)size,&wrote,NULL)&&wrote==size;CloseHandle(file);}
-        GlobalUnlock(handle);CloseClipboard();if(result){result=native_image_import(path,error,cap);DeleteFileW(path);}return result;
+        GlobalUnlock(handle);CloseClipboard();if(file!=INVALID_HANDLE_VALUE){if(result)result=native_image_import(path,error,cap);DeleteFileW(path);}return result;
     }
     CloseClipboard();return 0;
 }

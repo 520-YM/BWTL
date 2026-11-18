@@ -16,7 +16,12 @@ static int model_plan_parse(const wchar_t *answer, ModelPlan *p) {
             if (!token) return 0;
             if (wcscmp(token,L"EMPTY_SOLID")==0 || wcscmp(token,L"EMPTY_SHEETMETAL")==0 || wcscmp(token,L"EMPTY_ASSEMBLY")==0) {
                 candidate.empty_kind = wcscmp(token,L"EMPTY_SOLID")==0 ? 1 : wcscmp(token,L"EMPTY_SHEETMETAL")==0 ? 2 : 3;
-                if(wcstok_s(NULL,L" \t\r",&state))return 0;
+                wchar_t *assembly_name=wcstok_s(NULL,L" \t\r",&state);
+                if(assembly_name){
+                    if(candidate.empty_kind!=3||!model_assembly_name_valid(assembly_name)||
+                       wcstok_s(NULL,L" \t\r",&state))return 0;
+                    wcscpy_s(candidate.assembly_name,_countof(candidate.assembly_name),assembly_name);
+                }
                 goto line_complete;
             }
             if (wcscmp(token, L"BOX") == 0) candidate.cylinder = 0;

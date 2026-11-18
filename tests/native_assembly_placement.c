@@ -29,11 +29,11 @@ static int placement_run(uiCmdCmdId id,uiCmdValue *value,void *data){
     ProMdlName root_name=L"PLACEMENT_FIXTURE",base_name=L"TEST_BASE",bracket_name=L"TEST_BRACKET",bolt_name=L"TEST_BOLT";
     const char *stage="placement setup";
     ProMdl root=NULL;
-    ProAsmcomp bottom={0},same[5]={0},fastener[3]={0};
+    ProAsmcomp bottom={0},same[6]={0},fastener[3]={0};
     ProMatrix before,after;
     double mm;
     int window;
-    wchar_t text[800],base_id[32],ids[5][32],bolt_ids[3][32];
+    wchar_t text[800],base_id[32],ids[6][32],bolt_ids[3][32];
     ProError error;
 #define SETUP(call) do{if((error=(call))){trace("placement setup " #call,error);check(0,"setup");goto done;}}while(0)
 #define PLACE(reject,expected,format,...) (swprintf_s(text,_countof(text),L"CREO_OP " format,__VA_ARGS__),command(root,text,reject,expected))
@@ -49,6 +49,10 @@ static int placement_run(uiCmdCmdId id,uiCmdValue *value,void *data){
     SETUP(run(base,text,0));
     swprintf_s(text,_countof(text),L"CREO_OP DATUM_AXIS %ls TEST_BOLT_AXIS CYLINDER SURFACE:%d",bolt_name,bolt_faces.cylinder);
     SETUP(run(bolt,text,0));
+    swprintf_s(text,_countof(text),L"CREO_OP DATUM_AXIS %ls TEST_ANGLE PLANES PLANE:RIGHT PLANE:TOP",base_name);
+    SETUP(run(base,text,0));
+    swprintf_s(text,_countof(text),L"CREO_OP DATUM_AXIS %ls TEST_ANGLE PLANES PLANE:RIGHT PLANE:TOP",bracket_name);
+    SETUP(run(bracket,text,0));
     model_background_mode=0;
     SETUP(model_create_empty(3,root_name,&stage));
     SETUP(ProMdlnameInit(root_name,PRO_MDL_ASSEMBLY,&root));
@@ -57,7 +61,7 @@ static int placement_run(uiCmdCmdId id,uiCmdValue *value,void *data){
     SETUP(qa_mm_per_unit(root,&mm));
     SETUP(add_component(root,base,0,&bottom));
     ax_path_label(&bottom.id,1,base_id,_countof(base_id));
-    for(int i=0;i<5;i++){
+    for(int i=0;i<6;i++){
         ProMatrix initial={{1,0,0,0},{0,1,0,0},{0,0,1,0},{20.0*i,15.0*i,20,1}};
         SETUP(ProAsmcompAssemble((ProAssembly)root,(ProSolid)bracket,initial,&same[i]));
         ax_path_label(&same[i].id,1,ids[i],_countof(ids[i]));
@@ -110,6 +114,8 @@ static int placement_run(uiCmdCmdId id,uiCmdValue *value,void *data){
     PLACE(0,NULL,L"ASM_OFFSET %ls %ls ROOT PLANE:ASM_FRONT PLANE:FRONT -12",root_name,ids[4]);
     SETUP(ax_actual_pose(root,&same[4],after));
     check(fabs(after[3][2]*mm+12)<0.001,"negative offset places component in signed direction");
+    PLACE(0,L"已完成平面角度定位",L"ASM_PLANE_ANGLE %ls %ls %ls AXIS:TEST_ANGLE AXIS:TEST_ANGLE PLANE:TOP PLANE:TOP 35",root_name,ids[5],base_id);
+    PLACE(0,L"角度 35°",L"ASM_PLACEMENT %ls %ls",root_name,ids[5]);
     check(!ax_recovery_uncertain,"no unverified recovery");
     check(!part_health(root),"healthy final native assembly");
 done:

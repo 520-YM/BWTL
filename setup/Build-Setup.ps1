@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [string]$SourceRoot=(Split-Path -Parent $PSScriptRoot),
     [Parameter(Mandatory=$true)][string]$WorkDirectory,

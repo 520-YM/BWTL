@@ -1,5 +1,245 @@
 [
   {
+    "symbol": "fastener_save_project",
+    "original": "src/功能/assistant/native_company_action.inc",
+    "kind": "feature-group",
+    "file": "src/功能/company_design/fastener_save.inc"
+  },
+  {
+    "symbol": "experience_chat",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "feature-group",
+    "file": "src/功能/modeling_rules/assembly_experience.inc"
+  },
+  {
+    "symbol": "fastener_chat",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "feature-group",
+    "file": "src/功能/company_design/fastener_chat.inc"
+  },
+  {
+    "symbol": "modeling_rule_save",
+    "original": "src/assistant.c",
+    "kind": "feature-group",
+    "file": "src/功能/modeling_rules/modeling_rule_store.inc"
+  },
+  {
+    "symbol": "modeling_rule_chat",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "feature-group",
+    "file": "src/功能/modeling_rules/modeling_rule_chat.inc"
+  },
+  {
+    "symbol": "modeling_part_parse",
+    "original": "src/功能/assistant/default_part_chat.inc",
+    "kind": "feature-group",
+    "file": "src/功能/modeling_rules/modeling_part_intent.inc"
+  },
+  {
+    "symbol": "company_fastener_catalog_build",
+    "original": "src/功能/assistant/native_company_action.inc",
+    "kind": "feature-group",
+    "file": "src/功能/company_design/fastener_catalog.inc"
+  },
+  {
+    "symbol": "company_fastener_resolve",
+    "original": "src/功能/assistant/native_company_action.inc",
+    "kind": "feature-group",
+    "file": "src/功能/company_design/fastener_directory.inc"
+  },
+  {
+    "symbol": "ax_return_parent",
+    "original": "src/功能/assembly/ax_component_open.inc",
+    "kind": "feature-group",
+    "file": "src/功能/assembly/ax_component_return.inc"
+  },
+  {
+    "symbol": "return_assembly_chat",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "feature-group",
+    "file": "src/功能/assistant/return_assembly_chat.inc"
+  },
+  {
+    "symbol": "sh_four_holes_current",
+    "original": "src/功能/sheetmetal/sh_execute.inc",
+    "kind": "feature-group",
+    "file": "src/功能/sheetmetal/sh_four_holes_current.inc"
+  },
+  {
+    "symbol": "sh_four_holes_chat",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "feature-group",
+    "file": "src/功能/sheetmetal/sh_four_holes_chat.inc"
+  },
+  {
+    "symbol": "chat_task_record",
+    "original": "src/smart_session.h",
+    "kind": "feature-group",
+    "file": "src/功能/assistant/chat_task_evidence.inc"
+  },
+  {
+    "symbol": "default_part_chat",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "feature-group",
+    "file": "src/功能/assistant/default_part_chat.inc"
+  },
+  {
+    "symbol": "ax_open_component",
+    "original": "src/功能/assembly/ax_execute.inc",
+    "kind": "feature-group",
+    "file": "src/功能/assembly/ax_component_open.inc"
+  },
+  {
+    "symbol": "component_open_chat",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "feature-group",
+    "file": "src/功能/assistant/component_open_chat.inc"
+  },
+  {
+    "symbol": "component_open_confirm",
+    "original": "src/功能/assistant/execute_part_command.inc",
+    "kind": "feature-group",
+    "file": "src/功能/assistant/component_open_receipt.inc"
+  },
+  {
+    "kind": "feature-group",
+    "original": "src/功能/assistant/resident_tool.inc",
+    "file": "src/功能/company_design/library_files.inc",
+    "symbol": "company_list"
+  },
+  {
+    "kind": "feature-group",
+    "original": "src/功能/chat_file_analysis/attachment_analysis.inc",
+    "file": "src/功能/company_design/library_model.inc",
+    "symbol": "company_library_model"
+  },
+  {
+    "kind": "feature-group",
+    "original": "src/功能/assembly/ax_native_source.inc",
+    "file": "src/功能/company_design/library_source_binding.inc",
+    "symbol": "company_source_pin"
+  },
+  {
+    "kind": "feature-group",
+    "original": "src/功能/assistant/resident_tool.inc",
+    "file": "src/功能/company_design/company_drawing.inc",
+    "symbol": "company_drawing_export"
+  },
+  {
+    "kind": "feature-group",
+    "original": "src/功能/assistant/resident_tool.inc",
+    "file": "src/功能/company_design/library_dispatch.inc",
+    "symbol": "company_library_dispatch"
+  },
+  {
+    "kind": "feature-group",
+    "original": "scripts/Start-BWTLCodexSession.ps1",
+    "file": "scripts/Read-BWTLLibraryDocument.ps1",
+    "symbol": "Get-BwtlLibraryDocumentItems"
+  },
+  {
+    "symbol": "native_attachment_import",
+    "kind": "feature-group",
+    "file": "src/功能/chat_file_analysis/attachment_queue.inc",
+    "original": "src/native_attachments.h"
+  },
+  {
+    "symbol": "attachment_cad_report",
+    "kind": "feature-group",
+    "file": "src/功能/chat_file_analysis/attachment_analysis.inc",
+    "original": "src/assistant.c"
+  },
+  {
+    "symbol": "Get-BwtlAttachmentInputs",
+    "kind": "feature-group",
+    "file": "scripts/Read-BWTLChatAttachment.ps1",
+    "original": "scripts/Start-BWTLCodexSession.ps1"
+  },
+  {
+    "symbol": "native_request_timer",
+    "file": "src/功能/native_chat_ui/native_request_timer.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "feature-group"
+  },
+  {
+    "symbol": "assembly_selected_chat",
+    "file": "src/功能/assistant/assembly_selected_chat.inc",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "ax_placement_write",
+    "file": "src/功能/assembly/ax_placement_write.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "assembly_naming_chat",
+    "kind": "function",
+    "file": "src/功能/assembly_naming/assembly_naming_chat.inc",
+    "original": "src/功能/assistant/run_local.inc"
+  },
+  {
+    "symbol": "assembly_rename_apply",
+    "kind": "function",
+    "file": "src/功能/assembly_naming/assembly_rename.inc",
+    "original": "src/功能/part_tools/part_execute.inc"
+  },
+  {
+    "symbol": "assembly_same_number_sheet_chat",
+    "kind": "function",
+    "file": "src/功能/assistant/assembly_same_number_chat.inc",
+    "original": "src/功能/assistant/run_local.inc"
+  },
+  {
+    "symbol": "ax_nested_parent",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_nested_parent.inc",
+    "original": "src/功能/assembly/ax_execute.inc"
+  },
+  {
+    "symbol": "ax_load_native",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_native_source.inc",
+    "original": "src/功能/assembly/ax_insert.inc"
+  },
+  {
+    "symbol": "ax_new_part_in",
+    "kind": "function",
+    "file": "src/功能/assembly/ax_new_part.inc",
+    "original": "src/功能/assembly/ax_execute.inc"
+  },
+  {
+    "symbol": "camera_standard_build",
+    "kind": "function",
+    "file": "src/功能/camera_standard/camera_standard_chat.inc",
+    "original": "src/功能/assistant/run_local.inc"
+  },
+  {
+    "symbol": "cad_rebuild_bracket",
+    "kind": "function",
+    "file": "src/功能/camera_standard/camera_bracket.inc",
+    "original": "src/功能/camera_standard/camera_standard_chat.inc"
+  },
+  {
+    "symbol": "cad_finish_mounts",
+    "kind": "function",
+    "file": "src/功能/camera_standard/camera_mount.inc",
+    "original": "src/功能/camera_standard/camera_standard_chat.inc"
+  },
+  {
+    "symbol": "project_copy_create",
+    "file": "src/功能/workspace_projects/project_copy.inc",
+    "original": "src/功能/assistant/native_workdir_action.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "project_dialog_get_name",
+    "file": "src/功能/workspace_projects/project_dialog.inc",
+    "original": "src/功能/native_chat_ui/native_workdir_menu.inc",
+    "kind": "function"
+  },
+  {
     "symbol": "replay_blend_missing_tree",
     "file": "src/功能/model_imitation/imitation_replay_blend.inc",
     "kind": "function"
@@ -33,9 +273,8 @@
     "kind": "function",
     "file": "src/功能/model_imitation/imitation_replay_manual.inc",
     "symbol": "replay_manual_reference"
-  }
-,
-{
+  },
+  {
     "symbol": "imitation_neutral_load",
     "file": "src/功能/model_imitation/imitation_infer_flat.inc",
     "kind": "function"
@@ -2250,11 +2489,6 @@
     "file": "src/功能/assembly/ax_placement_status.inc"
   },
   {
-    "symbol": "ax_placement_write",
-    "kind": "function",
-    "file": "src/功能/assembly/ax_placement_write.inc"
-  },
-  {
     "symbol": "ax_subassembly",
     "kind": "function",
     "file": "src/功能/assembly/ax_component_manage.inc"
@@ -3035,12 +3269,12 @@
     "original": "src/assembly_tools.h",
     "kind": "function"
   },
-{
-  "symbol": "ax_layout_copy",
-  "file": "src/功能/assembly/ax_layout_copy.inc",
-  "original": "src/assembly_tools.h",
-  "kind": "function"
-},
+  {
+    "symbol": "ax_layout_copy",
+    "file": "src/功能/assembly/ax_layout_copy.inc",
+    "original": "src/assembly_tools.h",
+    "kind": "function"
+  },
   {
     "symbol": "ax_field_shim",
     "file": "src/功能/assembly/ax_field_shim.inc",
@@ -3407,12 +3641,12 @@
     "original": "src/sheetmetal_production_tools.h",
     "kind": "function"
   },
-{
-  "symbol": "smy_prompt_write",
-  "file": "src/sheetmetal_prompt.h",
-  "original": "src/sheetmetal_prompt.h",
-  "kind": "function"
-},
+  {
+    "symbol": "smy_prompt_write",
+    "file": "src/sheetmetal_prompt.h",
+    "original": "src/sheetmetal_prompt.h",
+    "kind": "function"
+  },
   {
     "symbol": "bwtl_warn_traceback",
     "file": "src/功能/assistant/traceback_risk.inc",
@@ -3646,8 +3880,7 @@
     "file": "src/功能/model_imitation/imitation_replay_material.inc",
     "original": "src/功能/model_imitation/imitation_run.inc",
     "kind": "function"
-  }
-,
+  },
   {
     "symbol": "imitation_library_write_receipt",
     "file": "src/功能/model_imitation/imitation_library_receipt.inc",
@@ -3713,5 +3946,188 @@
     "file": "src/功能/model_imitation/imitation_replay_quilt_edit.inc",
     "original": "src/功能/model_imitation/imitation_replay.inc",
     "kind": "function"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/assembly/ax_study_rules.inc",
+    "symbol": "ax_study_capture"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/assembly/ax_study_place.inc",
+    "symbol": "ax_study_place"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/assembly/ax_study_session.inc",
+    "symbol": "ax_study_demo_start"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/assembly/ax_study_verify.inc",
+    "symbol": "ax_study_mark"
+  },
+  {
+    "kind": "function",
+    "file": "src/功能/assembly/ax_study_chat.inc",
+    "symbol": "ax_study_chat"
+  },
+  {
+    "file": "src/功能/order_revision/or_inputs.inc",
+    "symbol": "or_import",
+    "kind": "function"
+  },
+  {
+    "file": "src/功能/order_revision/or_measure.inc",
+    "symbol": "or_mapping",
+    "kind": "function"
+  },
+  {
+    "file": "src/功能/order_revision/or_delivery.inc",
+    "symbol": "or_tasks",
+    "kind": "function"
+  },
+  {
+    "file": "src/功能/order_revision/or_chat.inc",
+    "symbol": "or_chat",
+    "kind": "function"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/cabinet_parts/cbp_chat.inc",
+    "symbol": "cbp_chat"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/cabinet_parts/cbp_common.inc",
+    "symbol": "cbp_common"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/cabinet_parts/cbp_air_baffle.inc",
+    "symbol": "cbp_air_baffle"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/assistant/chat_request_context.inc",
+    "symbol": "chat_prompt_latest"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/assistant/capability_inventory.inc",
+    "symbol": "catalog_collect"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/cabinet_parts/cbp_hinge_guard.inc",
+    "symbol": "cbp_hinge_guard"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/cabinet_parts/cbp_rain_strip.inc",
+    "symbol": "cbp_rain_strip"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/cabinet_parts/cbp_roller_plate.inc",
+    "symbol": "cbp_roller_plate"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/cabinet_parts/cbp_transition_plate.inc",
+    "symbol": "cbp_transition_plate"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/assistant/default_assembly_chat.inc",
+    "symbol": "assembly_default_chat"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/assembly/ax_new_part.inc",
+    "symbol": "ax_new_part"
+  },
+  {
+    "kind": "module",
+    "file": "src/功能/assistant/assembly_child_chat.inc",
+    "symbol": "assembly_child_chat"
+  },
+  {
+    "symbol": "native_grouped_menu",
+    "file": "src/功能/native_chat_ui/native_grouped_menu.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_feature_menu_create",
+    "file": "src/功能/native_chat_ui/native_feature_groups.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_imitation_menu_create",
+    "file": "src/功能/native_chat_ui/native_imitation_menu.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_company_menu_create",
+    "file": "src/功能/native_chat_ui/native_company_menu.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "native_workdir_menu_create",
+    "file": "src/功能/native_chat_ui/native_workdir_menu.inc",
+    "original": "src/native_chat_ui.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "sh_plate_chat",
+    "file": "src/功能/sheetmetal/sh_plate_chat.inc",
+    "original": "src/功能/assistant/run_local.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "model_request_explicit_new",
+    "file": "src/功能/model_plan/model_request_current.inc",
+    "original": "src/功能/model_plan/model_request_current.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "resident_submit",
+    "file": "src/功能/assistant/resident_channel.inc",
+    "original": "src/功能/assistant/ai_send.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "resident_tool_command",
+    "file": "src/功能/assistant/resident_tool.inc",
+    "original": "src/功能/assistant/execute_part_command.inc",
+    "kind": "function"
+  },
+  {
+    "symbol": "store_session_begin",
+    "file": "src/功能/chat_store/store_session.inc",
+    "original": "src/chat_store.h",
+    "kind": "function"
+  },
+  {
+    "symbol": "fastener_bso_chat",
+    "original": "src/功能/company_design/fastener_chat.inc",
+    "kind": "feature-group",
+    "file": "src/功能/company_design/fastener_bso_chat.inc"
+  },
+  {
+    "symbol": "fastener_bso_read",
+    "original": "src/功能/company_design/fastener_chat.inc",
+    "kind": "feature-group",
+    "file": "src/功能/company_design/fastener_bso_family.inc"
+  },
+  {
+    "symbol": "fastener_bso_place",
+    "original": "src/功能/company_design/fastener_chat.inc",
+    "kind": "feature-group",
+    "file": "src/功能/company_design/fastener_bso_placement.inc"
   }
 ]

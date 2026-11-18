@@ -1,6 +1,6 @@
 {
-  "version": "0.23.0-preview.5",
-  "previous_release": "0.23.0-preview.4",
+  "version": "0.23.0-preview.6",
+  "previous_release": "0.23.0-preview.5",
   "attempted": true,
   "exit_code": 0,
   "unlocked": true,
@@ -8,12 +8,12 @@
   "requires_toolkit_development_license": false,
   "target_creo": "10.0.0.0",
   "cross_machine_verified": false,
-  "binary_sha256": "c8779e6b2499cf5bb9ef3932b449b3250bb30c7038a94d5e053f4e69bda7dced",
-  "noninteractive_suites": 11,
+  "binary_sha256": "35818b0502bcd4d58823f1cdcbce4daf93198749a1d06659c072d30f3e1928e5",
+  "noninteractive_suites": 12,
   "native_selectable_storage_suites": 3,
   "payload_policy": "Release package contains source, tools, resources, tests, guides and the verified DLL.",
-  "validation": "docs/releases/0.23.0-preview.5.md",
-  "release_notes": "docs/releases/0.23.0-preview.5.md",
+  "validation": "docs/releases/0.23.0-preview.6.md",
+  "release_notes": "docs/releases/0.23.0-preview.6.md",
   "method_library": "Persistent assembly and native part learning with user-selected data drive, example cases and request-adapted recall.",
   "method_library_validation": "Independent Creo 10 sessions persisted and reused an assembly location and editable sheet-metal plate via the ordinary Codex conversation."
 }

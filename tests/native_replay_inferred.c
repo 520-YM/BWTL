@@ -37,7 +37,7 @@ static int inferred_case(uiCmdCmdId id,uiCmdValue *value,void *data)
     setvbuf(log,NULL,_IONBF,0);
     model_background_mode=1;
     HMENU menu=native_imitation_menu_create();
-    const int menu_ok=menu&&GetMenuState(menu,IMITATION_NEUTRAL,MF_BYCOMMAND)!=(UINT)-1;
+    const int menu_ok=menu&&GetMenuState(GetSubMenu(menu,3),IMITATION_NEUTRAL,MF_BYCOMMAND)!=(UINT)-1;
     if(menu)DestroyMenu(menu);
     fwprintf(log,L"NEUTRAL MENU=%d\n",menu_ok);
     const ProError step=inferred_trial(log,PRO_INTF_EXPORT_STEP,1);

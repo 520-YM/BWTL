@@ -13,7 +13,14 @@ __declspec(dllexport) int user_initialize(int argc, char **argv, char *version, 
     }
     trace("BWTL v23 direct collaboration and vision", 0);
     wcscpy_s(smx_data_directory,_countof(smx_data_directory),runtime_data);
-    store_ready = store_init(runtime_data);
+    wcscpy_s(ax_standard_data_directory,_countof(ax_standard_data_directory),runtime_data);
+    store_ready = storage_output_directory(runtime_data)&&store_init(runtime_data)&&store_session_begin();
+    if(!store_ready){
+        wcscpy_s(error_buffer,80,L"BWTL 无法归档聊天，请检查 E 盘数据目录权限。");
+        trace("Create process chat archive failed",(int)GetLastError());
+        runtime_isolation_end();
+        return PRO_TK_CANT_WRITE;
+    }
     if (store_ready) {
         if (!store_read(L"recent-context.txt", conversation, 24000) || !store_read(L"memory.txt", memory, 12000)) store_ready = 0;
         {
@@ -24,18 +31,13 @@ __declspec(dllexport) int user_initialize(int argc, char **argv, char *version, 
         }
     }
     trace("Persistent store ready", store_ready);
+    trace("Modeling rule seed",modeling_rule_seed());
     if(store_ready)store_read(L"last-native-details.txt",smart_details,SMART_DETAILS_CAP);
-    swprintf_s(native_attachment_root,MAX_PATH,L"%ls\\attachments",runtime_data);
+    swprintf_s(native_attachment_root,MAX_PATH,L"%ls\\attachments",store_session_root);
     CreateDirectoryW(native_attachment_root,NULL);
-    {
-        wchar_t temp[MAX_PATH];
-        GetTempPathW(MAX_PATH, temp);
-        swprintf_s(ai_dir, MAX_PATH, L"%lsCreoCodex-%lu", temp, GetCurrentProcessId());
-        CreateDirectoryW(ai_dir, NULL);
-        swprintf_s(ai_output, MAX_PATH, L"%ls\\answer.txt", ai_dir);
-        /* Per-process temporary files keep simultaneous Creo sessions separate. */
-    
-    }
+    if(swprintf_s(ai_dir,MAX_PATH,L"%ls\\codex-session-%lu-%llu",runtime_data,GetCurrentProcessId(),GetTickCount64())<0||
+       !CreateDirectoryW(ai_dir,NULL)||!storage_output_directory(ai_dir)||
+       !resident_path(ai_output,L"answer.txt"))return PRO_TK_CANT_WRITE;
     error = ProCmdActionAdd("CodexNativeOpen", open_window, uiProeImmediate, access_command, PRO_B_TRUE, PRO_B_TRUE, &command);
     trace("ProCmdActionAdd", error);
     if (error != PRO_TK_NO_ERROR) { swprintf_s(error_buffer,80,L"Command registration failed: %d",error); return error; }
@@ -52,6 +54,13 @@ __declspec(dllexport) int user_initialize(int argc, char **argv, char *version, 
     error=ProCmdActionAdd("CodexNativeInspect",inspect_native_command,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);
     if(error)return error;
     error=ProCmdActionAdd("BWTLSmartContinue",smart_continue_command,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);if(error)return error;
+    error=ProCmdActionAdd("BWTLComponentOpenConfirm",component_open_confirm,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);if(error)return error;
+    error=ProCmdActionAdd("BWTLReturnAssemblyConfirm",return_assembly_confirm,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);if(error)return error;
+    error=ProCmdActionAdd("BWTLFastenerMenu",fastener_menu_command,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);if(error)return error;
+    error=ProCmdActionAdd("BWTLFastenerOpenConfirm",fastener_open_confirm,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);if(error)return error;
+    error=ProCmdActionAdd("BWTLDefaultPartContinue",default_part_continue,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);if(error)return error;
+    error=ProCmdActionAdd("BWTLAttachmentCleanup",attachment_cleanup_command,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);if(error)return error;
+    error=ProCmdActionAdd("BWTLResidentTool",resident_tool_command,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);if(error)return error;
     error=ProCmdActionAdd("BWTLWorkingDirectory",working_directory_command,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);
     if(error)return error;
     error=ProCmdActionAdd("BWTLImitateModel",imitation_ui_command,uiProe2ndImmediate,access_command,PRO_B_TRUE,PRO_B_TRUE,&command);

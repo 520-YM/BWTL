@@ -4,9 +4,11 @@
 #include <stdio.h>
 #include <wchar.h>
 #include <string.h>
+#include <stdlib.h>
 #include <windows.h>
 
-static wchar_t store_root[MAX_PATH];
+static wchar_t store_root[MAX_PATH],store_session_root[MAX_PATH],store_archive_root[MAX_PATH];
+#define BWTL_CHAT_SESSION_STORE 1
 
 #include "功能/chat_store/store_path.inc"
 
@@ -23,6 +25,8 @@ static wchar_t store_root[MAX_PATH];
 
 #include "功能/chat_store/store_write.inc"
 
+
+#include "功能/chat_store/store_session.inc"
 
 #include "功能/chat_store/store_log.inc"
 

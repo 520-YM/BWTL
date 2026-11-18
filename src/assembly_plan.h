@@ -20,7 +20,7 @@ enum AssemblyCommand {
     AX_FIELD_SHIM,AX_FIELD_MARK,AX_FIELD_AUDIT,
     AX_Q_REGEN,AX_Q_GAPS,AX_Q_INTERF,AX_Q_HOLES,AX_Q_FLUSH,AX_Q_COPLANE,AX_Q_STACK,AX_Q_SUPPORT,AX_Q_SPACE,AX_Q_REPORT,
     AX_V_REP,AX_V_ISOLATE,AX_V_VIEW,AX_V_SECTION,AX_V_EXPLODE,AX_V_SEQUENCE,AX_V_CONFIG,AX_V_APPLY,AX_V_COMPARE,AX_V_ORDER,
-    AX_B_TREE,AX_B_BUY,AX_B_DIFF,AX_B_CHECK,AX_B_FAST,AX_B_WIRE,AX_B_SPARE,AX_B_ROUTE,AX_B_NATIVE,AX_B_PACK
+    AX_B_TREE,AX_B_BUY,AX_B_DIFF,AX_B_CHECK,AX_B_FAST,AX_B_WIRE,AX_B_SPARE,AX_B_ROUTE,AX_B_NATIVE,AX_B_PACK,AX_NEW_PART,AX_PLANE_ANGLE,AX_OPEN
 };
 
 static int aw_kind(const wchar_t *verb);
@@ -49,7 +49,7 @@ static int ax_kind(const wchar_t *verb){
         L"ASM_V_REP",L"ASM_V_ISOLATE",L"ASM_V_VIEW",L"ASM_V_SECTION",L"ASM_V_EXPLODE",
         L"ASM_V_SEQUENCE",L"ASM_V_CONFIG",L"ASM_V_APPLY",L"ASM_V_COMPARE",L"ASM_V_ORDER",
         L"ASM_B_TREE",L"ASM_B_BUY",L"ASM_B_DIFF",L"ASM_B_CHECK",L"ASM_B_FAST",L"ASM_B_WIRE",
-        L"ASM_B_SPARE",L"ASM_B_ROUTE",L"ASM_B_NATIVE",L"ASM_B_PACK"
+        L"ASM_B_SPARE",L"ASM_B_ROUTE",L"ASM_B_NATIVE",L"ASM_B_PACK",L"ASM_NEW_PART",L"ASM_PLANE_ANGLE",L"ASM_OPEN"
     };
     for(int i=0;i<_countof(names);i++)
         if(!wcscmp(verb,names[i]))return i+1;
@@ -60,7 +60,7 @@ static int ax_request(const wchar_t *text){
     static const wchar_t *const terms[]={L"ASM_",L"组件树",L"放入装配",L"装入组件",L"装配坐标系",
         L"组件位置",L"抑制组件",L"恢复组件",L"装配间隙",L"组件间隙",L"干涉检查",L"装配质量",
         L"装配BOM",L"装配 BOM",L"装配STEP",L"装配 STEP",L"定位参照",L"定位状态",L"固定组件",L"平面贴合",L"平面平行",
-        L"平面偏距",L"轴孔同轴",L"三面定位",L"紧固件定位",L"定位偏距",L"安装面贴",L"子装配",L"复制组件",L"替换组件",L"删除组件",L"旋转组件",
+        L"平面偏距",L"轴孔同轴",L"三面定位",L"紧固件定位",L"定位偏距",L"安装面贴",L"子装配",L"子零件",L"同号钣金",L"坐标定位",L"平面夹角",L"装配角度",L"复制组件",L"替换组件",L"删除组件",L"旋转组件",
         L"翻转组件",L"解除固定",L"定位参照",L"组件阵列",L"孔阵列",L"镜像布置",L"紧固件",L"压铆件",L"屏幕与窗口",L"玻璃与面框",L"电源与安装板",L"PCB",L"风扇与风口",
         L"滤网",L"导轨",L"锁扣",L"铰链",L"密封条",L"销轴连接",L"滑块连接",L"圆柱连接",L"角度限位",L"行程限位",
         L"机构位置",L"运动干涉",L"开启空间",L"抽出空间",L"工具操作空间",L"安装基准",L"空间包络",L"骨架布局",
@@ -90,13 +90,23 @@ static int ax_path_parse(const wchar_t *token,int ids[AX_PATH_DEPTH]){
     }
 }
 
+static int ax_open_selector_valid(const wchar_t *selector){
+    int path[AX_PATH_DEPTH];
+    if(ax_path_parse(selector,path))return 1;
+    size_t length=wcslen(selector);
+    if(length>4&&(!_wcsicmp(selector+length-4,L".prt")||!_wcsicmp(selector+length-4,L".asm")))length-=4;
+    if(!length||length>=PART_TOKEN_MAX)return 0;
+    wchar_t name[PART_TOKEN_MAX];
+    return !wcsncpy_s(name,_countof(name),selector,length)&&dv_safe_leaf(name);
+}
+
 static int ax_csys_token(const wchar_t *token){return !wcsncmp(token,L"CSYS:",5)&&fd_name(token+5);}
 
 static int ax_delete_preview(const PartCommand *cmd){
     return !wcscmp(cmd->arg[0],L"ASM_DELETE_COMPONENT")&&cmd->count==5&&!wcscmp(cmd->arg[4],L"CHECK");
 }
 
-static int ax_read_diagnostic(int kind){return kind==AX_TREE||kind==AX_REFS||kind==AX_PLACEMENT||kind==AX_Q_REGEN||kind==AX_Q_REPORT||aw_diagnostic(kind);}
+static int ax_read_diagnostic(int kind){return kind==AX_TREE||kind==AX_OPEN||kind==AX_REFS||kind==AX_PLACEMENT||kind==AX_Q_REGEN||kind==AX_Q_REPORT||aw_diagnostic(kind);}
 static int ax_motion_inspection_request(const wchar_t *text){
     const wchar_t *terms[]={L"运动干涉",L"开启空间",L"抽出空间",L"工具操作空间",
         L"第287项",L"第288项",L"第289项",L"第290项",
@@ -104,7 +114,7 @@ static int ax_motion_inspection_request(const wchar_t *text){
     for(int i=0;i<_countof(terms);i++)if(wcsstr(text,terms[i]))return 1;
     return 0;
 }
-static int ax_mutates(int kind){return aw_mutates(kind)||(kind>=AX_INSERT&&kind<=AX_STATE)||(kind>=AX_FIX&&kind<AX_SEAL_CHECK&&kind!=AX_FASTENER_FIT&&kind!=AX_FASTENER_AUDIT)||(kind>=AX_JOINT_PIN&&kind<=AX_MOTION_PRESET)||(kind>=AX_LAYOUT_DATUM&&kind<=AX_LAYOUT_DIM)||(kind>=AX_FIELD_CUT&&kind<=AX_FIELD_MARK)||(kind>=AX_V_REP&&kind<=AX_V_ORDER&&kind!=AX_V_COMPARE);}
+static int ax_mutates(int kind){return (kind==AX_NEW_PART||kind==AX_PLANE_ANGLE)||aw_mutates(kind)||(kind>=AX_INSERT&&kind<=AX_STATE)||(kind>=AX_FIX&&kind<AX_SEAL_CHECK&&kind!=AX_FASTENER_FIT&&kind!=AX_FASTENER_AUDIT)||(kind>=AX_JOINT_PIN&&kind<=AX_MOTION_PRESET)||(kind>=AX_LAYOUT_DATUM&&kind<=AX_LAYOUT_DIM)||(kind>=AX_FIELD_CUT&&kind<=AX_FIELD_MARK)||(kind>=AX_V_REP&&kind<=AX_V_ORDER&&kind!=AX_V_COMPARE);}
 
 static int ax_ref_token(const wchar_t *token){
     int id;
@@ -328,8 +338,29 @@ static int ax_b_plan_valid(int kind,int count,wchar_t args[][PART_TOKEN_MAX]){
 
 #include "功能/assembly/ax_workbench_plan.inc"
 
+static int ax_placement_parent_allowed(int kind){
+    switch(kind){
+    case AX_INSERT:case AX_NEW_PART:case AX_INSERT_ASM:case AX_NEW_ASM:
+    case AX_CSYS:case AX_FIX:case AX_MATE:case AX_PARALLEL:case AX_OFFSET:case AX_COAX:
+    case AX_THREE:case AX_FASTENER:case AX_EDIT_OFFSET:case AX_PLANE_ANGLE:case AX_UNFIX_COMPONENT:return 1;
+    default:return 0;
+    }
+}
+
+static int ax_initial_pose_valid(int count,wchar_t args[][PART_TOKEN_MAX],int first){
+    if(count==first+1)return !wcscmp(args[first],L"DEFAULT");
+    if(count>first&&!wcscmp(args[count-1],L"FIX"))--count;
+    if(count!=first+3&&count!=first+6)return 0;
+    for(int i=first;i<first+3;i++)if(!qa_number(args[i],-1e6,1e6))return 0;
+    for(int i=first+3;i<count;i++)if(!qa_number(args[i],-360,360))return 0;
+    return 1;
+}
 static int assembly_plan_valid(int count,wchar_t args[][PART_TOKEN_MAX]){
     int kind=ax_kind(args[0]),path[AX_PATH_DEPTH];
+    if(count>=4&&!wcscmp(args[count-2],L"IN")){
+        if(!ax_placement_parent_allowed(kind)||!ax_path_parse(args[count-1],path))return -1;
+        count-=2;
+    }
     if(kind>AW_NONE)return aw_valid(kind,count,args);
     switch(kind){
     case AX_Q_REGEN:case AX_Q_GAPS:case AX_Q_INTERF:case AX_Q_HOLES:case AX_Q_FLUSH:
@@ -343,10 +374,9 @@ static int assembly_plan_valid(int count,wchar_t args[][PART_TOKEN_MAX]){
         return ax_b_plan_valid(kind,count,args);
     case AX_NONE:return 0;
     case AX_TREE:case AX_MASS:return count==2?1:-1;
+    case AX_OPEN:return count==3&&ax_open_selector_valid(args[2])?1:-1;
     case AX_INSERT:
-        if(count!=6||!dv_safe_leaf(args[2])||!_wcsicmp(args[1],args[2]))return -1;
-        for(int i=3;i<6;i++)if(!qa_number(args[i],-1e6,1e6))return -1;
-        return 1;
+        return count>=4&&dv_safe_leaf(args[2])&&_wcsicmp(args[1],args[2])&&ax_initial_pose_valid(count,args,3)?1:-1;
     case AX_CSYS:
         return count==5&&ax_path_parse(args[2],path)==1&&ax_csys_token(args[3])&&ax_csys_token(args[4])?1:-1;
     case AX_MOVE:
@@ -379,10 +409,17 @@ static int assembly_plan_valid(int count,wchar_t args[][PART_TOKEN_MAX]){
         for(int i=0;i<pairs*2;i++)if(!ax_ref_token(args[4+i]))return -1;
         return kind==AX_OFFSET&&!ax_offset_number(args[6])?-1:1;
     }
+    case AX_NEW_PART:
+        return count>=4&&dv_safe_leaf(args[2])&&
+            (!wcscmp(args[3],L"SOLID")||!wcscmp(args[3],L"SHEETMETAL"))&&
+            (count==4||ax_initial_pose_valid(count,args,4))?1:-1;
     case AX_INSERT_ASM:case AX_NEW_ASM:
-        if(count!=6||!dv_safe_leaf(args[2])||!_wcsicmp(args[1],args[2]))return -1;
-        for(int i=3;i<6;i++)if(!qa_number(args[i],-1e6,1e6))return -1;
-        return 1;
+        return count>=4&&dv_safe_leaf(args[2])&&_wcsicmp(args[1],args[2])&&ax_initial_pose_valid(count,args,3)?1:-1;
+    case AX_PLANE_ANGLE:
+        return count==9&&ax_path_parse(args[2],path)==1&&(!wcscmp(args[3],L"ROOT")||ax_path_parse(args[3],path))&&
+            !wcsncmp(args[4],L"AXIS:",5)&&ax_ref_token(args[4])&&!wcsncmp(args[5],L"AXIS:",5)&&ax_ref_token(args[5])&&
+            !wcsncmp(args[6],L"PLANE:",6)&&ax_ref_token(args[6])&&!wcsncmp(args[7],L"PLANE:",6)&&ax_ref_token(args[7])&&
+            qa_number(args[8],0.001,179.999)?1:-1;
     case AX_COPY_COMPONENT:
         return count==5&&ax_path_parse(args[2],path)==1&&
             (!wcscmp(args[3],L"ROOT")||ax_path_parse(args[3],path))&&

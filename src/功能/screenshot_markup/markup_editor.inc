@@ -9,7 +9,8 @@ static int markup_count,markup_retake,markup_thinking;
 static MarkupTool markup_tool;
 static int markup_dragging,markup_waiting;
 
-enum {MARKUP_TOOL_CIRCLE=901, MARKUP_TOOL_ARROW, MARKUP_TOOL_BOX, MARKUP_SEND, MARKUP_CLOSE, MARKUP_UNDO, MARKUP_CLEAR, MARKUP_INPUT};
+enum {MARKUP_TOOL_CIRCLE=901, MARKUP_TOOL_ARROW, MARKUP_TOOL_BOX, MARKUP_SEND, MARKUP_CLOSE, MARKUP_UNDO, MARKUP_CLEAR, MARKUP_INPUT,
+    MARKUP_TOOLS_LABEL, MARKUP_MANAGEMENT_LABEL, MARKUP_SUBMIT_LABEL};
 static const wchar_t markup_class[]=L"BWTLMarkupEditor";
 static const wchar_t markup_canvas_class[]=L"BWTLMarkupCanvas";
 
@@ -231,13 +232,27 @@ static LRESULT CALLBACK markup_editor_proc(HWND window,UINT message,WPARAM w,LPA
     case WM_SIZE:{
         if(w==SIZE_MINIMIZED)return 0;
         int width=LOWORD(l),height=HIWORD(l);
-        HWND controls[]={markup_tools[0],markup_tools[1],markup_tools[2],GetDlgItem(window,MARKUP_UNDO),
-            GetDlgItem(window,MARKUP_CLEAR),markup_canvas,markup_input,markup_status,markup_send,GetDlgItem(window,MARKUP_CLOSE)};
-        RECT layout[]={{12,10,68,26},{88,10,68,26},{164,10,68,26},{240,10,86,26},{334,10,86,26},
-            {12,45,max(1,width-24),max(1,height-155)},
-            {12,max(50,height-103),max(1,width-24),27},
-            {12,max(80,height-69),max(1,width-255),60},
-            {max(12,width-228),max(80,height-46),126,29},{max(12,width-92),max(80,height-46),80,29}};
+#define MARKUP_PX(px) MulDiv((px),native_dpi,96)
+        const int padding=MARKUP_PX(12),tool_y=MARKUP_PX(31),submit_x=width-MARKUP_PX(228);
+        HWND controls[]={GetDlgItem(window,MARKUP_TOOLS_LABEL),markup_tools[0],markup_tools[1],markup_tools[2],
+            GetDlgItem(window,MARKUP_MANAGEMENT_LABEL),GetDlgItem(window,MARKUP_UNDO),GetDlgItem(window,MARKUP_CLEAR),
+            markup_canvas,markup_input,markup_status,GetDlgItem(window,MARKUP_SUBMIT_LABEL),markup_send,GetDlgItem(window,MARKUP_CLOSE)};
+        RECT layout[]={
+            {padding,MARKUP_PX(10),MARKUP_PX(220),MARKUP_PX(18)},
+            {padding,tool_y,MARKUP_PX(68),MARKUP_PX(26)},
+            {MARKUP_PX(88),tool_y,MARKUP_PX(68),MARKUP_PX(26)},
+            {MARKUP_PX(164),tool_y,MARKUP_PX(68),MARKUP_PX(26)},
+            {MARKUP_PX(252),MARKUP_PX(10),MARKUP_PX(180),MARKUP_PX(18)},
+            {MARKUP_PX(252),tool_y,MARKUP_PX(86),MARKUP_PX(26)},
+            {MARKUP_PX(346),tool_y,MARKUP_PX(86),MARKUP_PX(26)},
+            {padding,MARKUP_PX(65),max(1,width-2*padding),max(1,height-MARKUP_PX(175))},
+            {padding,height-MARKUP_PX(103),max(1,width-2*padding),MARKUP_PX(27)},
+            {padding,height-MARKUP_PX(69),max(1,submit_x-2*padding),MARKUP_PX(60)},
+            {submit_x,height-MARKUP_PX(69),MARKUP_PX(216),MARKUP_PX(18)},
+            {submit_x,height-MARKUP_PX(46),MARKUP_PX(126),MARKUP_PX(29)},
+            {width-MARKUP_PX(92),height-MARKUP_PX(46),MARKUP_PX(80),MARKUP_PX(29)}
+        };
+#undef MARKUP_PX
         const UINT flags=SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOREDRAW;
         HDWP positions=BeginDeferWindowPos(_countof(controls));
         for(int i=0;positions&&i<_countof(controls);i++)if(controls[i])
@@ -248,8 +263,17 @@ static LRESULT CALLBACK markup_editor_proc(HWND window,UINT message,WPARAM w,LPA
         return 0;
     }
     case WM_GETMINMAXINFO:
-        ((MINMAXINFO *)l)->ptMinTrackSize=(POINT){500,340};
+        ((MINMAXINFO *)l)->ptMinTrackSize=(POINT){MulDiv(500,native_dpi,96),MulDiv(340,native_dpi,96)};
         return 0;
+    case WM_CTLCOLORSTATIC:{
+        const int id=GetDlgCtrlID((HWND)l);
+        if(id==MARKUP_TOOLS_LABEL||id==MARKUP_MANAGEMENT_LABEL||id==MARKUP_SUBMIT_LABEL){
+            SetBkMode((HDC)w,TRANSPARENT);
+            SetTextColor((HDC)w,CHAT_TEXT_COLOR);
+            return (LRESULT)GetSysColorBrush(COLOR_BTNFACE);
+        }
+        break;
+    }
     case WM_COMMAND:{
         int id=LOWORD(w);
         if(id==MARKUP_INPUT&&HIWORD(w)==EN_CHANGE){
@@ -312,9 +336,12 @@ static int markup_ui_open(HWND owner,MarkupImage *image){
     wchar_t title[180];
     swprintf_s(title,_countof(title),L"截图改图 · %ls",image->name);
     HWND window=CreateWindowExW(WS_EX_TOOLWINDOW,markup_class,title,WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,
-        CW_USEDEFAULT,CW_USEDEFAULT,820,600,owner,NULL,module,NULL);
+        CW_USEDEFAULT,CW_USEDEFAULT,MulDiv(820,native_dpi,96),MulDiv(600,native_dpi,96),owner,NULL,module,NULL);
     if(!window)return 0;
     markup_window=window;
+    HWND tools_label=markup_child(window,L"STATIC",L"标注方式",SS_LEFT,MARKUP_TOOLS_LABEL);
+    HWND management_label=markup_child(window,L"STATIC",L"标注管理",SS_LEFT,MARKUP_MANAGEMENT_LABEL);
+    HWND submit_label=markup_child(window,L"STATIC",L"提交",SS_LEFT,MARKUP_SUBMIT_LABEL);
     const wchar_t *labels[]={L"圈选",L"箭头",L"框选"};
     for(int i=0;i<3;i++)markup_tools[i]=markup_child(window,L"BUTTON",labels[i],BS_RADIOBUTTON|WS_TABSTOP,MARKUP_TOOL_CIRCLE+i);
     HWND undo=markup_child(window,L"BUTTON",L"撤销一处",WS_TABSTOP,MARKUP_UNDO);
@@ -325,7 +352,7 @@ static int markup_ui_open(HWND owner,MarkupImage *image){
     markup_send=markup_child(window,L"BUTTON",L"发送并改图",WS_TABSTOP,MARKUP_SEND);
     HWND close=markup_child(window,L"BUTTON",L"关闭",WS_TABSTOP,MARKUP_CLOSE);
     if(!markup_tools[0]||!markup_tools[1]||!markup_tools[2]||!markup_canvas||!markup_input||
-       !markup_status||!markup_send||!close||!undo||!clear){DestroyWindow(window);return 0;}
+       !markup_status||!markup_send||!close||!undo||!clear||!tools_label||!management_label||!submit_label){DestroyWindow(window);return 0;}
     markup_display=image;
     markup_tool=MARKUP_CIRCLE;
     SendMessageW(markup_tools[0],BM_SETCHECK,BST_CHECKED,0);

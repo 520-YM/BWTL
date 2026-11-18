@@ -55,9 +55,15 @@ static int verify_active_command(uiCmdCmdId command,uiCmdValue *value,void *data
         smart_target_model=active;
         swprintf_s(message,256,L"当前活动模型：%ls。",name);
         int pinned=smart_binding_set(active,active,request_snapshot.directory);
+        if(assembly_default_after_create(active,name,pinned))return 0;
+        if(assembly_child_after_create(active,name,pinned))return 0;
         if(smart_sheetmetal_demo){verify_sheetmetal_demo(active,name,pinned);return 0;}
-        smart_step(NULL,L"新建模型",0,smart_new_model_result[0]?smart_new_model_result:message,1,0,!pinned);
+        const wchar_t *receipt=smart_new_model_result[0]?smart_new_model_result:message;
+        if(pinned)chat_task_record_bound(active,active,name,request_snapshot.directory,L"新建模型",0,receipt,0,smart_steps+1);
+        smart_step(NULL,L"新建模型",0,receipt,1,0,!pinned);
     }else{
+        memset(&default_assembly_pending,0,sizeof(default_assembly_pending));
+        assembly_child_pending=0;
         trace("Active model mismatch",error?error:-1);
         smart_step(NULL,L"核对新模型活动窗口",error?error:PRO_TK_BAD_CONTEXT,L"新模型已创建，活动窗口未能核对。",0,1,1);
 

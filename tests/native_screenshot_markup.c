@@ -62,15 +62,31 @@ static int check(uiCmdCmdId id,uiCmdValue *value,void *data){
         fprintf(receipt,"FULL_WINDOW=%d WIDTH=%d HEIGHT=%d HOLES=%d\n",complete,image->width,image->height,image->count);
         if(!complete||image->count!=6){done(0);return 0;}
         export_bitmap(image);
-        MoveWindow(markup_window,0,0,1210,690,TRUE);
-        MoveWindow(markup_window,0,0,520,365,TRUE);
-        MoveWindow(markup_window,0,0,890,620,TRUE);
-        RECT canvas,child;
-        GetClientRect(markup_window,&canvas);
-        GetWindowRect(markup_canvas,&child);
-        int resized=child.right-child.left==canvas.right-24&&child.bottom-child.top==canvas.bottom-155;
-        fprintf(receipt,"RESIZED=%d\n",resized);
-        if(!resized){done(0);return 0;}
+        const SIZE sizes[]={{1210,690},{520,365},{890,620}};
+        int resized=1,grouped=1;
+        for(int i=0;i<_countof(sizes);i++){
+            if(!MoveWindow(markup_window,0,0,MulDiv(sizes[i].cx,native_dpi,96),MulDiv(sizes[i].cy,native_dpi,96),TRUE)){
+                done(0);return 0;
+            }
+            RECT client,image_rect,tools,management,submit,circle,box,undo,send,input;
+            GetClientRect(markup_window,&client);
+            GetWindowRect(markup_canvas,&image_rect);
+            int padding=MulDiv(12,native_dpi,96);
+            resized=resized&&image_rect.right-image_rect.left==client.right-2*padding&&
+                image_rect.bottom-image_rect.top==client.bottom-MulDiv(175,native_dpi,96);
+            grouped=grouped&&GetWindowRect(GetDlgItem(markup_window,MARKUP_TOOLS_LABEL),&tools)&&
+                GetWindowRect(GetDlgItem(markup_window,MARKUP_MANAGEMENT_LABEL),&management)&&
+                GetWindowRect(GetDlgItem(markup_window,MARKUP_SUBMIT_LABEL),&submit)&&
+                GetWindowRect(markup_tools[0],&circle)&&GetWindowRect(markup_tools[2],&box)&&
+                GetWindowRect(GetDlgItem(markup_window,MARKUP_UNDO),&undo)&&
+                GetWindowRect(markup_send,&send)&&GetWindowRect(markup_input,&input)&&
+                tools.bottom<=circle.top&&tools.left==circle.left&&
+                management.bottom<=undo.top&&management.left==undo.left&&box.right<undo.left&&
+                undo.bottom<image_rect.top&&image_rect.bottom<input.top&&input.bottom<submit.top&&
+                submit.bottom<=send.top&&submit.left==send.left;
+        }
+        fprintf(receipt,"RESIZED=%d GROUPED=%d\n",resized,grouped);
+        if(!resized||!grouped){done(0);return 0;}
         mark_at(image,image->holes[0].x,image->holes[0].y,MARKUP_TOOL_CIRCLE);
         SetWindowTextW(markup_input,L"这个孔改 Ø5");
         wchar_t feedback[256];
@@ -128,13 +144,19 @@ static int check(uiCmdCmdId id,uiCmdValue *value,void *data){
         for(int i=0;i<image->count;i++)if(image->holes[i].feature==features[5])
             mark_at(image,image->holes[i].x,image->holes[i].y,MARKUP_TOOL_CIRCLE);
         SetWindowTextW(markup_input,L"这个孔改 Ø5");
+        GetWindowTextW(markup_status,status,_countof(status));
+        int located=markup_count==1&&wcsstr(status,L"Ø4 → Ø5 mm")!=NULL;
+        fprintf(receipt,"SINGLE_CIRCLE_TARGET=%d\n",located);
+        if(!located){done(0);return 0;}
         phase=5;
-        PostMessageW(markup_window,WM_COMMAND,MARKUP_SEND,0);
+        SendMessageW(markup_window,WM_COMMAND,MARKUP_SEND,0);
+        if(!markup_waiting){fprintf(receipt,"SINGLE_CIRCLE_SUBMITTED=0\n");done(0);}
         return 0;
     }
     if(phase==5&&!markup_waiting){
         wchar_t status[1000];
         GetWindowTextW(markup_status,status,_countof(status));
+        if(wcsstr(status,L"正在处理你的要求"))return 0;
         int pass=markup_retake&&check_diameter(features[5],5)&&wcsstr(status,L"Ø4 → 5 mm");
         for(int i=0;i<5;i++)pass=pass&&check_diameter(features[i],8);
         fprintf(receipt,"SINGLE_CIRCLE_EDIT_AND_READBACK=%d\n",pass);

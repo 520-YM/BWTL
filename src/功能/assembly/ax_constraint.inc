@@ -40,7 +40,7 @@ static ProError ax_constrain(ProMdl assembly,const PartCommand *cmd,double scale
     ProError error;
 #define AC_STEP(call) do{if((error=(call))){trace("assembly csys " #call,error);goto done;}}while(0)
     AC_STEP(ax_component_resolve(assembly,cmd->arg[2],&component));
-    AC_STEP(ax_ordinary_direct(&component.feature));
+    AC_STEP(ax_ordinary_occurrence(&component.feature,1));
     AC_STEP(ax_leaf_without_children(&component.feature));
     AC_STEP(ax_packaged(&component.feature));
     AC_STEP(qa_mm_per_unit(component.model,&part_scale));

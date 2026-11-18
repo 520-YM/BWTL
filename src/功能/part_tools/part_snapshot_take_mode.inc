@@ -1,8 +1,8 @@
-static ProError part_snapshot_take_mode(ProMdl model,PartSnapshot *s,int full){
+static ProError part_snapshot_take_options(ProMdl model,PartSnapshot *s,int full,int bind_window){
     ProError e;ProModelitem item;ProUnitsystem units;ProUnititem mm;ProUnitConversion conv;ProMassProperty mass;
     part_snapshot_clear(s);s->model=model;
-    if((e=ProMdlCurrentGet(&s->window_model)))return e;
-    if(s->window_model!=model){
+    if(bind_window&&(e=ProMdlCurrentGet(&s->window_model)))return e;
+    if(s->window_model&&s->window_model!=model){
         ProMdlType window_type;ProMdl active=NULL;
         if(!ProMdlTypeGet(s->window_model,&window_type)&&window_type==PRO_MDL_ASSEMBLY&&!ProMdlActiveGet(&active)&&active==model){
             s->in_assembly=1;if((e=ProMdlVerstampGet(s->window_model,&s->parent_stamp)))return e;
@@ -38,4 +38,8 @@ static ProError part_snapshot_take_mode(ProMdl model,PartSnapshot *s,int full){
     }
     if(!ProSolidMassPropertyGet((ProSolid)model,NULL,&mass)){s->mass=mass.mass;s->has_mass=1;}
     return 0;
+}
+
+static ProError part_snapshot_take_mode(ProMdl model,PartSnapshot *s,int full){
+    return part_snapshot_take_options(model,s,full,1);
 }

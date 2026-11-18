@@ -3,7 +3,7 @@ static const wchar_t *smart_failed_action(const PartCommand *cmd){
         {L"SMT_SKETCH",L"画钣金草绘"},{L"SKETCH_CREATE",L"画草绘"},{L"SKETCH_ADD",L"补画草绘"},
         {L"SMT_FIRST_WALL",L"创建第一块钣金壁"},{L"SMT_CUT",L"在钣金上切口"},
         {L"SMT_FLANGE",L"创建钣金凸缘"},{L"SMT_BEND",L"创建折弯"},{L"CASE_TRAY",L"制作钣金托盘"},
-        {L"EDGE_ROUND",L"倒圆角"},{L"EDGE_CHAMFER",L"倒角"},{L"HOLE_CREATE",L"开孔"},
+        {L"SMT_FLAT4",L"在钣金平板加工四个通孔"},{L"EDGE_ROUND",L"倒圆角"},{L"EDGE_CHAMFER",L"倒角"},{L"HOLE_CREATE",L"开孔"},
         {L"ASM_W_ALIGN",L"定位装配组件"},{L"ASM_W_ALIGN_BATCH",L"批量定位装配组件"}
     };
     if(cmd){
@@ -21,16 +21,30 @@ static const wchar_t *smart_failed_action(const PartCommand *cmd){
 
 /* Use evidence from this native receipt. An error number alone cannot identify the cause. */
 static void smart_describe_failure(const PartCommand *cmd,const wchar_t *receipt,wchar_t *out,size_t capacity){
-    const wchar_t *cause=L"Creo 回执没有说明具体原因";
+    const wchar_t *named=wcsstr(receipt,L"\n失败原因：");
+    if(named){
+        named+=wcslen(L"\n失败原因：");
+        size_t count=wcscspn(named,L"\r\n");
+        while(count&&named[count-1]==L'。')count--;
+        const wchar_t *state=smart_unsafe_receipt(receipt)?L"。改动是否撤回还没有确认":
+            wcsstr(receipt,L"已核对移除本次特征")?L"。本次失败特征已撤回，原板保留":L"";
+        swprintf_s(out,capacity,L"简单说：%.*ls%ls。",(int)(count>200?200:count),named,state);
+        return;
+    }
+    if(cmd&&!wcscmp(cmd->arg[0],L"SMT_FLAT4")&&receipt[0]){
+        swprintf_s(out,capacity,L"简单说：%.230ls",receipt);
+        return;
+    }
+    const wchar_t *cause=L"现有记录没有说明具体原因";
     const wchar_t *effect=L"";
     if(wcsstr(receipt,L"与请求时不一致"))
         cause=L"当前模型、模型版本或工作目录与提交时对不上，插件在动模型前停下了";
     else if(wcsstr(receipt,L"regenerate and verify native feature")||
             wcsstr(receipt,L"verify sketch feature and parent datums"))
-        cause=L"在重新生成或检查特征时没通过，Creo 没说明具体是哪项检查出了问题";
+        cause=L"当前回执只定位到重新生成或检查特征的阶段";
     else if(wcsstr(receipt,L"regenerate sheetmetal feature")||wcsstr(receipt,L"verify healthy sheetmetal feature")||
             wcsstr(receipt,L"verify native sheetmetal type, parents, thickness and dimensions"))
-        cause=L"在重新生成或检查钣金特征时没通过，Creo 没说明具体是哪项检查出了问题";
+        cause=L"钣金特征未通过 BWTL 验收，现有记录只定位到检查阶段";
     else if(wcsstr(receipt,L"solve referenced sketch")||wcsstr(receipt,L"fd_section_solve("))
         cause=L"Creo 没能解出草绘的形状和约束";
     else if(wcsstr(receipt,L"create sketch geometry and dimensions")||wcsstr(receipt,L"test rejected sketch dimension input")||

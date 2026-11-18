@@ -7,7 +7,10 @@ static int memory_command(const wchar_t *value) {
     if (wcscmp(value, L"新对话") == 0) {
         if (ai_process) { append(L"请等待 AI 回答完成，再开始新对话。"); return 1; }
         if (!store_ready || !store_write(L"recent-context.txt", L"")) { append(L"新对话创建失败，旧上下文已保留。"); return 1; }
+        experience_last_reply[0]=0;
         conversation[0] = 0; history[0] = 0;
+        chat_task_forget();
+        resident_reset_thread=1;
         foundation_reset();memset(&pending_part,0,sizeof(pending_part));part_snapshot_clear(&request_snapshot);
         pending_plan.ready = 0;
         save_pending_plan();
@@ -32,6 +35,7 @@ static int memory_command(const wchar_t *value) {
     }
     if (!store_ready || !store_write(L"memory.txt", candidate)) { append(L"保存记忆失败，原记忆未改变。"); return 1; }
     wcscpy_s(memory, 12000, candidate);
+    if(forget)resident_reset_thread=1;
     /* Memory commands are not added to recent chat, so forgetting really
        removes the rule from the next prompt rather than quoting it again. */
     store_log(L"记忆管理", forget ? L"已删除一条长期记忆。" : L"已添加一条长期记忆。");

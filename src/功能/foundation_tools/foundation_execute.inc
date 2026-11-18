@@ -8,6 +8,14 @@ static ProError foundation_execute(const PartCommand *cmd,ProMdl model,wchar_t *
         PartText out={report,capacity,0};
         return smx_execute(model,cmd,smx_kind(verb),&out);
     }
+    if(type==PRO_MDL_PART&&sh_kind(verb)==SH_FLAT4){
+        if(sheetmetal_plan_valid(cmd->count,(wchar_t (*)[PART_TOKEN_MAX])cmd->arg)!=1)return PRO_TK_BAD_INPUTS;
+        if(sub!=PROMDLSTYPE_PART_SHEETMETAL){
+            wcscpy_s(report,capacity,L"请激活需要打孔的原生钣金平板。");
+            return PRO_TK_BAD_CONTEXT;
+        }
+        return sh_four_holes_current(model,as_arg(cmd,2),as_arg(cmd,3),as_arg(cmd,4),report,capacity);
+    }
     if(type==PRO_MDL_PART&&sh_kind(verb))return sh_execute(cmd,model,report,capacity);
     if(type==PRO_MDL_PART&&pn_kind(verb))return pn_execute(cmd,model,sub==PROMDLSTYPE_PART_SHEETMETAL,report,capacity);
     if(type==PRO_MDL_PART&&org_kind(verb))return org_execute(cmd,model,report,capacity);
