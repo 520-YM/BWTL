@@ -54,7 +54,7 @@ static const NativeFeatureSection native_feature_sections[]={
         {L"订单改型",{L"订单改型"}}
     }},
     {L"对话与任务",{
-        {L"对话与图片",{L"对话与图片"}},
+        {NATIVE_FEATURE_ATTACHMENTS_GROUP,{NATIVE_FEATURE_ATTACHMENTS_GROUP}},
         {L"聊天记录与记忆",{L"聊天记录与记忆"}},
         {L"任务控制",{L"任务控制"}}
     }}

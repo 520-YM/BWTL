@@ -29,6 +29,14 @@ static int organized_feature_coverage(HMENU menu,size_t *total){
         L"检查与交付",L"公司标准与订单",L"对话与任务"
     };
     if(!menu||GetMenuItemID(menu,0)!=FEATURE_LIST_COMMAND)return 0;
+    HMENU chat=organized_find_group(menu,L"对话与任务");
+    HMENU attachments=chat?organized_find_group(chat,L"对话与附件"):NULL;
+    if(!attachments||GetMenuItemCount(attachments)!=3)return 0;
+    for(int i=0;i<3;i++){
+        UINT command=GetMenuItemID(attachments,i);
+        if(!command||command>_countof(native_features)||
+           wcscmp(native_features[command-1].label,(const wchar_t *const[]){L"分析附件",L"添加附件",L"清空附件"}[i]))return 0;
+    }
     int group_count=0,root_count=GetMenuItemCount(menu);
     for(int i=0;i<root_count;i++)if(GetSubMenu(menu,i))group_count++;
     if(group_count!=_countof(categories))return 0;
@@ -65,7 +73,7 @@ static int organized_trial(uiCmdCmdId id,uiCmdValue *value,void *data){
     FILE *log=fopen("organized-menus.log","w");
     if(!log){ProEngineerEnd();return 0;}
     HMENU features=native_feature_menu_create(),imitation=native_imitation_menu_create();
-    HMENU workdir=native_workdir_menu_create(),company=native_company_menu_create();
+    HMENU workdir=native_workdir_menu_create(),company=native_company_menu_create(NULL);
     size_t count=0;
     int have_features=organized_feature_coverage(features,&count);
     int have_imitation=organized_imitation_coverage(imitation,company);

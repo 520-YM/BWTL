@@ -6,8 +6,10 @@ typedef struct {
     const wchar_t *draft; /* A null draft starts a category. */
 } NativeFeature;
 
+#define NATIVE_FEATURE_ATTACHMENTS_GROUP L"对话与附件"
+
 static const NativeFeature native_features[]={
-    {L"对话与附件",NULL},
+    {NATIVE_FEATURE_ATTACHMENTS_GROUP,NULL},
     {L"分析附件",L"请分析本条附件，并说明读到的数据和需要核对的地方。"},
     {L"添加附件",L"添加附件"},
     {L"清空附件",L"清空附件"},
@@ -542,7 +544,10 @@ static const NativeFeature native_features[]={
 
 static void native_feature_menu(HWND button){
     HMENU menu=native_feature_menu_create();
-    if(!menu)return;
+    if(!menu){
+        MessageBoxW(native_window,L"插件功能菜单未能加载，请重新打开 BWTL 后再试。",L"BWTL",MB_OK|MB_ICONWARNING);
+        return;
+    }
     UINT selection=native_grouped_menu(button,menu,L"插件功能",NATIVE_GROUPED_FEATURES);
     DestroyMenu(menu);
     if(selection==FEATURE_LIST_COMMAND){

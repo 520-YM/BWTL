@@ -45,7 +45,8 @@
     "Assembly experience persistence and menu fastener open-save",
     "Prior chat and verified model creation evidence carried to follow-up prompts; same-session attachment context",
     "Resolve managed company library aliases and native BSO M3x6 read, project copy and single-batch placement",
-    "Preview.6: public data-drive configuration and application-managed camera model manifest"
+    "Preview.6: public data-drive configuration and application-managed camera model manifest",
+    "0.23.0-preview.7: validated BWTL-only task window transitions and shared feature menu attachment group."
   ],
   "Files": [
     {
@@ -138,7 +139,7 @@
     },
     {
       "Path": "src/功能/assistant/ai_send.inc",
-      "SHA256": "138f0f11a89b36b9aab9f84389402d14bd25f915a05e745443b8e4afebf24540"
+      "SHA256": "fcd2c5379cfa48603b6f35f01498e20d9b8acc435a12d9aabdd2f4c5e69760cb"
     },
     {
       "Path": "src/功能/assistant/append_card.inc",
@@ -162,7 +163,7 @@
     },
     {
       "Path": "src/功能/assistant/execute_part_command.inc",
-      "SHA256": "f181690f23e59f66efe2e93387391622170f03509bfffbad57961368b39460af"
+      "SHA256": "c200207aa2007bcf1b97b2fca58c3051ae98ca3a1682fbcd39b3a5a4b62ac8f4"
     },
     {
       "Path": "src/功能/assistant/inspect_native_command.inc",
@@ -946,7 +947,7 @@
     },
     {
       "Path": "build.cmd",
-      "SHA256": "d4a9b22642b1453a62071dffc4061da5d3950496579e6502e8bcfb95f3e15be5"
+      "SHA256": "91a2cdd55c60b648c32664b749c98b4e63d4fd27a2d298ff1e3cc1777c226d26"
     },
     {
       "Path": "tests/Test-LegacyCompatibility.ps1",

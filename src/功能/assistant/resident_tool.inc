@@ -75,6 +75,8 @@ static void resident_snapshot(void){
     part_snapshot_clear(&captured);
 }
 
+static void return_assembly_start_task(void);
+
 static int resident_tool_command(uiCmdCmdId command,uiCmdValue *value,void *data){
     if(!resident_tool_queued)return 0;
     resident_tool_queued=0;
@@ -102,6 +104,11 @@ static int resident_tool_command(uiCmdCmdId command,uiCmdValue *value,void *data
     }
     const wchar_t *problem=resident_refresh_model();
     if(problem){resident_tool_result(-1,problem);return 0;}
+    if(!wcscmp(resident_operation,L"CREO_RETURN_PARENT")){
+        resident_used_tool=1;
+        return_assembly_start_task();
+        return 0;
+    }
     if(!wcscmp(resident_operation,L"CREO_SNAPSHOT")){
         resident_snapshot();
         return 0;

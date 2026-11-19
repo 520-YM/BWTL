@@ -71,7 +71,9 @@ static void execute_part_command(void){
             component_open_cancel();
             wcscpy_s(result,_countof(result),L"Creo 已接收打开请求，但无法调度活动窗口核对。请看 Creo 当前窗口。");
         }
-        smart_step(&command,L"打开装配组件",error,result[0]?result:L"Creo 未能打开该装配组件。",0,1,0);
+        int continuing=!smart_local_plan&&!smart_readonly&&(smart_chain||resident_tool_running());
+        smart_step(&command,L"打开装配组件",error,result[0]?result:L"Creo 未能打开该装配组件。",0,!continuing,
+                   continuing&&!smart_binding_valid());
         return;
     }
     if(command.verb!=PART_READ&&command.verb!=PART_DISPLAY&&!storage_prepare_output()){smart_reply(storage_output_message);return;}
@@ -118,6 +120,14 @@ static void execute_part_command(void){
     if(resident_tool_running()&&!independent&&command.verb!=PART_DISPLAY&&quality!=AX_Q_REPORT)final=0;
     int write=!smart_read_command(&command);
     if(smart_block_duplicate(&command))return;
+    if(!independent&&smart_target_model&&request_snapshot.model==smart_target_model&&
+       _wcsicmp(command.arg[1],request_snapshot.name)&&smart_binding_valid()){
+        swprintf_s(result,_countof(result),L"本次操作尚未执行。当前已核对目标是 %ls.%ls。"
+            L"请先读取新目标的参照，再按当前模型继续尚未完成的步骤。",request_snapshot.name,
+            request_snapshot.type==PRO_MDL_ASSEMBLY?L"ASM":L"PRT");
+        smart_step(&command,verb,PRO_TK_BAD_CONTEXT,result,0,final,0);
+        return;
+    }
     if((command.verb==PART_DIMS||command.verb==PART_PARAM||command.verb==PART_SUPPRESS||command.verb==PART_RESUME)&&!part_selfcheck_passed){
         ProError check=part_selfcheck(result,PART_TEXT_MAX);
         if(check){smart_step(NULL,L"零件工具自检",check,result,0,1,1);return;}

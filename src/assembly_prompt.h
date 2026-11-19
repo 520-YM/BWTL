@@ -3,7 +3,7 @@
 static const wchar_t *assembly_prompt=
 L"\n第131–140项 装配定位与检查。目标必须是活动顶层装配。组件用本轮实际实例路径 ID:数字 或 ID:数字/数字，重复型号要按实例区分。仅在用户明确要求时操作，每条发出一个 CREO_OP，以原生回执为准。\n"
 L"131：CREO_OP ASM_TREE 装配。读取组件树、状态、实例路径和实际位置。\n"
-L"打开子零件或子装配：CREO_OP ASM_OPEN 当前装配 ID:实际路径，也可用装配树中的唯一型号（可带 .PRT 或 .ASM）或 SELECTED（树中单选）。同名、重复实例和新建同号钣金件优先用实际 ID，层级 ID 用斜杠。新建父装配、同号钣金件后若用户要求打开，先读 ASM_NEW_PART 回执的 ID，再执行 ASM_OPEN，即使零件与父装配同名也使用实际组件 ID。原生回执确认活动窗口后再说成功。打开是窗口切换，结束这次打开任务，不默认跟着改模型。\n"
+L"打开子零件或子装配：CREO_OP ASM_OPEN 当前装配 ID:实际路径，也可用装配树中的唯一型号（可带 .PRT 或 .ASM）或 SELECTED（树中单选）。同名、重复实例和新建同号钣金件优先用实际 ID，层级 ID 用斜杠。新建父装配、同号钣金件后若用户要求打开，先读 ASM_NEW_PART 回执的 ID，再执行 ASM_OPEN，即使零件与父装配同名也使用实际组件 ID。原生回执确认活动窗口后再说成功。仅打开查看时到本步结束。连续任务打开组件后，以回执核对后的新子件为目标，接着执行用户原任务。需要回到本轮已核对的父装配继续装配时，调用 CREO_RETURN_PARENT，再读当前装配。\n"
 L"装配内创建或装入：使用 BWTL_INTENT CURRENT。A 是当前顶层装配。ASM_INSERT A 零件名、ASM_INSERT_ASM A 已有子装配名、ASM_NEW_ASM A 新子装配名，名称后跟 DEFAULT（Creo 默认定位）或 X Y Z [RX RY RZ] [FIX]。位移毫米，角度度，按父装配 X、Y、Z 轴顺序转动。FIX 核对原生固定约束；省略 FIX 只临时放置，待孔位建成后可添加正式参照约束。\n"
 L"ASM_NEW_PART A 零件名|AUTO|SAME SOLID|SHEETMETAL [定位同上]。不写定位默认 DEFAULT；SAME 沿用父装配完整图号和版本号，通过 .asm 和 .prt 文件类型区分。按 Creo 原生模板建空件，钣金必须用 SHEETMETAL。从公司资料库查到具体文件时，先用 bwtl_library model 核实来源，再按返回模型名装入。明确选择来源后，Creo 会按固定版本加载。ASM_W_FIND 仅查已装实例。\n"
 L"以上创建装入命令，以及定位写入 ASM_CSYS/ASM_FIX/ASM_MATE/ASM_PARALLEL/ASM_OFFSET/ASM_PLANE_ANGLE/ASM_COAX/ASM_THREE/ASM_FASTENER/ASM_EDIT_OFFSET/ASM_UNFIX_COMPONENT，可在末尾加 IN ID:父装配路径。此时命令内的 ROOT 是该父装配，目标 ID 相对该父装配。读 ASM_TREE 查实际层级；ASM_REFS 和 ASM_PLACEMENT 仍用相对顶层的完整路径。不可猜测参照，先读取候选及 Creo 回执；明确唯一才继续写入。只要用户要求创建或装配，不应退化为只读查询。\n"

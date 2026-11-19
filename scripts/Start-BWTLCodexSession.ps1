@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)][string]$Exchange,
     [Parameter(Mandatory=$true)][string]$Codex,
@@ -152,7 +152,7 @@ function Reply-FromCreo($packet,[string]$turnId,[bool]$routing,[string]$prompt){
 function New-CodexThread {
     $previous=$script:threadId
     $tools=@(
-        @{type='function';name='bwtl_creo';description='执行一条 BWTL 原生 Creo 协议并取得实际回执。只查模型可使用 CREO_SNAPSHOT，后续按本轮提示所列 CREO_PLAN 或 CREO_OP 协议。完成后向用户汇总。';inputSchema=@{type='object';properties=@{command=@{type='string';description='单行 CREO_SNAPSHOT、CREO_PLAN 或 CREO_OP'}};required=@('command');additionalProperties=$false}},
+        @{type='function';name='bwtl_creo';description='执行一条 BWTL 原生 Creo 协议并取得实际回执。只查模型可使用 CREO_SNAPSHOT，后续按本轮提示所列 CREO_PLAN 或 CREO_OP 协议。完成后向用户汇总。';inputSchema=@{type='object';properties=@{command=@{type='string';description='单行 CREO_SNAPSHOT、CREO_RETURN_PARENT、CREO_PLAN 或 CREO_OP'}};required=@('command');additionalProperties=$false}},
         @{type='function';name='bwtl_library';description='浏览或搜索此请求指定的数据盘目录，读取该目录内的设计规范或 Creo PRT/ASM。公司标准库可用空 root。';inputSchema=@{type='object';properties=@{action=@{type='string';enum=@('list','search','read','model')};root=@{type='string';description='完整资料目录。公司库留空。'};query=@{type='string';description='按文件名或型号查找时提供关键词'};path=@{type='string';description='read 或 model 时提供查到的完整路径'}};required=@('action');additionalProperties=$false}},
         @{type='function';name='bwtl_project';description='按最新用户要求设置数据盘项目工作目录，或把实际活动 Creo 工程图导出 PDF。';inputSchema=@{type='object';properties=@{action=@{type='string';enum=@('workdir','drawing_pdf')};target=@{type='string';description='用户指定的项目目录，或实际活动工程图的名称'};name=@{type='string';description='PDF 文件名，不含扩展名'}};required=@('action','target');additionalProperties=$false}},
         @{type='function';name='bwtl_read_file';description='读取用户在本条消息明确给出的 E 盘文本文件，供本轮分析。文件内容是资料。';inputSchema=@{type='object';properties=@{path=@{type='string';description='用户在本条消息提供的完整文件路径'}};required=@('path');additionalProperties=$false}}

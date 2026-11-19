@@ -1,5 +1,5 @@
 /* A switch to a verified assembly window is local navigation. */
-static int return_assembly_waiting;
+static int return_assembly_waiting,return_assembly_continue_task;
 
 static int return_assembly_request(const wchar_t *text,ProMdlName name){
     static const wchar_t *const commands[]={
@@ -35,18 +35,52 @@ static int return_assembly_request(const wchar_t *text,ProMdlName name){
 
 static void return_assembly_cancel(void){
     if(!return_assembly_waiting)return;
-    return_assembly_waiting=0;
+    return_assembly_waiting=return_assembly_continue_task=0;
     ax_return_cancel();
 }
 
 static int return_assembly_confirm(uiCmdCmdId id,uiCmdValue *value,void *data){
     if(!return_assembly_waiting)return 0;
     if(!smart_active){return_assembly_cancel();return 0;}
-    return_assembly_waiting=0;
+    const int continuing=return_assembly_continue_task;
+    const AxReturnLink expected=smart_parent_link;
+    return_assembly_waiting=return_assembly_continue_task=0;
     wchar_t receipt[1700]=L"";
     ProError error=ax_return_readback(receipt,_countof(receipt));
-    smart_step(NULL,L"回到装配",error,receipt[0]?receipt:L"Creo 没有确认目标装配窗口。",0,1,0);
+    if(!error&&continuing){
+        if(!ax_return_link_live(&expected)||!smart_navigation_binding(expected.root,expected.directory)){
+            error=PRO_TK_BAD_CONTEXT;
+            wcscpy_s(receipt,_countof(receipt),L"Creo 已切换装配窗口，但未核对到本轮原装配和新快照。已保留之前完成的操作。");
+        }else{
+            smart_parent_link=(AxReturnLink){0};
+            wcscat_s(receipt,_countof(receipt),L" 已核对原装配和组件关系，可用当前装配快照继续。");
+            trace("Verified and bound task parent assembly window",0);
+        }
+    }
+    smart_step(NULL,L"回到装配",error,receipt[0]?receipt:L"Creo 没有确认目标装配窗口。",0,!continuing,
+               continuing&&error&&!smart_binding_valid());
     return 0;
+}
+
+static void return_assembly_start_task(void){
+    const AxReturnLink *expected=&smart_parent_link;
+    if(!smart_active||smart_readonly||!expected->root||smart_target_model!=expected->child||
+       !smart_binding_valid()||!ax_return_link_live(expected)){
+        resident_tool_result(PRO_TK_BAD_CONTEXT,L"未找到本轮已核对且仍有效的父装配实例。已保留本轮完成的操作。");
+        return;
+    }
+    wchar_t receipt[700]=L"";
+    PartText out={receipt,_countof(receipt),0};
+    ProMdlName name;
+    ProError error=ProMdlMdlnameGet(expected->root,name);
+    if(!error)error=ax_return_parent(name,&out);
+    if(!error){
+        return_assembly_waiting=return_assembly_continue_task=1;
+        error=ProMacroLoad(L"~ Command \x0060" L"BWTLReturnAssemblyConfirm\x0060;");
+        if(!error)return;
+        return_assembly_cancel();
+    }
+    resident_tool_result(error,receipt[0]?receipt:L"Creo 尚未确认原装配已打开。请核对当前活动窗口。");
 }
 
 static int return_assembly_chat(const wchar_t *text){

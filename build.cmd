@@ -21,7 +21,13 @@ pushd "%~dp0"
 if not defined BWTL_BUILD_NAME set "BWTL_BUILD_NAME=BWTL"
 if not exist build mkdir build
 if not exist bin mkdir bin
-cl /nologo /MD /W3 /utf-8 /GS /DPRO_MACHINE=36 /DPRO_OS=4 /I"%PTK%\includes" /c src\assistant.c /Fobuild\assistant.obj
+findstr /r /x "[0-9][0-9A-Za-z.-]*" VERSION >nul
+if errorlevel 1 exit /b 3
+set "BWTL_RELEASE_VERSION="
+set /p BWTL_RELEASE_VERSION=<VERSION
+if not defined BWTL_RELEASE_VERSION exit /b 3
+>build\bwtl_build_version.h echo #define BWTL_BUILD_VERSION L"!BWTL_RELEASE_VERSION!"
+cl /nologo /MD /W3 /utf-8 /GS /DPRO_MACHINE=36 /DPRO_OS=4 /FI"%~dp0build\bwtl_build_version.h" /I"%PTK%\includes" /c src\assistant.c /Fobuild\assistant.obj
 if errorlevel 1 exit /b 1
 link /nologo /DLL /MACHINE:X64 /OUT:bin\%BWTL_BUILD_NAME%.dll /IMPLIB:build\%BWTL_BUILD_NAME%.lib build\assistant.obj "%PTK%\x86e_win64\obj\protk_dllmd_NU.lib" "%PTK%\x86e_win64\obj\ucore.lib" "%PTK%\x86e_win64\obj\udata.lib" kernel32.lib user32.lib wsock32.lib advapi32.lib mpr.lib winspool.lib netapi32.lib psapi.lib gdi32.lib shell32.lib comdlg32.lib ole32.lib ws2_32.lib windowscodecs.lib uuid.lib
 set "RESULT=%ERRORLEVEL%"

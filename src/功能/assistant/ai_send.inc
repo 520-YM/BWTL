@@ -194,6 +194,9 @@ static void ai_send(const wchar_t *value) {
     fwprintf(f,L"%ls",smart_prompt);
     fwprintf(f,L"\n可直接调用 bwtl_creo，每次传一条本轮列出的 CREO_PLAN 或 CREO_OP。"
         L"可用 CREO_SNAPSHOT 查看实际模型。工具回复是 Creo 的实际回执。"
+        L"任务中主动打开子件后，读取工具确认的目标再继续，必要时用 CREO_RETURN_PARENT 回到本轮已核对的父装配。"
+        L"步骤失败后先核对当前模型和已完成项；回执确认无写入或已回退时，按实测参照换一种受支持的做法，从未完成项继续。"
+        L"关键参照、目标或回退状态仍不明确时，汇总已完成项、阻塞点和已尝试的做法。"
         L"已有工具回执后继续用工具完成余下步骤，最后只写给用户的总结，不在最终回复重复协议。"
         L"文本资料可用 bwtl_read_file 读取本条用户消息明确指定的路径。\n");
     imitation_write_progress(f,request_snapshot.model);

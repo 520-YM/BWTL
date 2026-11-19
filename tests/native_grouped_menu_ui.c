@@ -8,8 +8,24 @@ static HFONT native_font;
 static int native_dpi=96;
 #include "../src/功能/native_chat_ui/native_grouped_menu.inc"
 
+static HWND native_prompt;
+static int native_busy;
+static void native_feature_list_action(void){}
+static void native_cancel_action(void){}
+#include "../src/native_feature_catalog.h"
+
 static int scenario, saw, bounds, reached;
 static HWND anchor;
+
+enum { FIXTURE_FEATURES=95 };
+
+static LRESULT CALLBACK owner_proc(HWND window,UINT message,WPARAM w,LPARAM l){
+    if(message==WM_COMMAND&&LOWORD(w)==FIXTURE_FEATURES){
+        native_feature_menu(anchor);
+        return 0;
+    }
+    return DefWindowProcW(window,message,w,l);
+}
 
 static int click(GroupedMenu *menu, int action,UINT command,HMENU target){
     for(int i=0;i<menu->count;i++){
@@ -64,6 +80,13 @@ static void CALLBACK exercise(HWND window,UINT message,UINT_PTR timer,DWORD tick
     case 5:
         SendMessageW(popup,WM_KEYDOWN,VK_ESCAPE,0);
         reached=1;
+        break;
+    case 6:
+        for(size_t index=0;index<_countof(native_features);index++){
+            if(wcscmp(native_features[index].label,L"创建零件（同号装配与钣金件）"))continue;
+            reached=click(menu,GROUPED_LEAF,(UINT)index+1,NULL);
+            break;
+        }
         break;
     }
     if(IsWindow(popup))SendMessageW(popup,WM_CLOSE,0,0);
@@ -143,12 +166,13 @@ int wmain(void){
     WNDCLASSW owner={0};
     owner.hInstance=GetModuleHandleW(NULL);
     owner.lpszClassName=L"BWTLGroupedMenuOwnerFixture";
-    owner.lpfnWndProc=DefWindowProcW;
+    owner.lpfnWndProc=owner_proc;
     if(!RegisterClassW(&owner))return 2;
     native_window=CreateWindowExW(0,owner.lpszClassName,L"BWTL fixture",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
         20,20,640,620,NULL,NULL,owner.hInstance,NULL);
-    anchor=CreateWindowExW(0,L"BUTTON",L"仿照模型",WS_VISIBLE|WS_CHILD,300,60,105,30,native_window,NULL,owner.hInstance,NULL);
-    if(!native_window||!anchor)return 3;
+    anchor=CreateWindowExW(0,L"BUTTON",L"插件功能",WS_VISIBLE|WS_CHILD,20,60,105,30,native_window,(HMENU)(INT_PTR)FIXTURE_FEATURES,owner.hInstance,NULL);
+    native_prompt=CreateWindowExW(0,L"EDIT",L"",WS_VISIBLE|WS_CHILD,20,550,360,24,native_window,NULL,owner.hInstance,NULL);
+    if(!native_window||!anchor||!native_prompt)return 3;
     native_font=CreateFontW(-16,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,
         CLIP_DEFAULT_PRECIS,CLEARTYPE_QUALITY,DEFAULT_PITCH,L"Microsoft YaHei UI");
     int pass=1;
@@ -158,7 +182,15 @@ int wmain(void){
     verify(select_menu(features,L"插件功能",NATIVE_GROUPED_FEATURES,3)==201&&reached,"FEATURE_LIST_KEYBOARD", &pass);
     verify(select_menu(compact,L"工作目录",NATIVE_GROUPED_COMPACT,4)==430&&reached,"COMPACT_LONG_LIST_SCROLL", &pass);
     verify(select_menu(imitation,L"仿照模型",NATIVE_GROUPED_IMITATION,5)==0&&reached,"ESCAPE_CANCEL", &pass);
-    verify(saw==5&&bounds==5&&IsWindowEnabled(native_window),"NARROW_SCREEN_BOUNDS_AND_OWNER_RESTORATION",&pass);
+    scenario=6;reached=0;
+    UINT_PTR timer=SetTimer(NULL,0,80,exercise);
+    if(!timer)return 4;
+    SendMessageW(anchor,BM_CLICK,0,0);
+    KillTimer(NULL,timer);
+    wchar_t draft[160];
+    GetWindowTextW(native_prompt,draft,_countof(draft));
+    verify(reached&&!wcscmp(draft,L"创建一个零件"),"PRODUCTION_FEATURE_BUTTON_WITHOUT_MODEL", &pass);
+    verify(saw==6&&bounds==6&&IsWindowEnabled(native_window),"NARROW_SCREEN_BOUNDS_AND_OWNER_RESTORATION",&pass);
     DestroyMenu(compact);DestroyMenu(features);DestroyMenu(imitation);
     DestroyWindow(native_window);
     if(native_font)DeleteObject(native_font);

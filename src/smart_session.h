@@ -11,6 +11,15 @@ static wchar_t smart_last_failure[1530],smart_last_failure_brief[360];
 static NativeImage smart_images[NATIVE_IMAGE_MAX];static int smart_image_count;
 static ULONGLONG smart_started;
 static ProMdl smart_target_model;
+#ifdef BWTL_COMPONENT_OPEN_HOST
+static AxReturnLink smart_parent_link;
+#endif
+
+static void smart_forget_parent_link(void){
+#ifdef BWTL_COMPONENT_OPEN_HOST
+    smart_parent_link=(AxReturnLink){0};
+#endif
+}
 static int smart_waiting_for_user;
 static int smart_stale_permission_retry;
 static int smart_has_details,smart_local_plan,smart_sheetmetal_demo,smart_protocol_replan;
@@ -56,7 +65,10 @@ static void smart_reply(const wchar_t *text){
     save_turn(L"助手",text);
     free(combined);
     smart_finish();
-    if(!smart_paused&&!smart_waiting_for_user)smart_binding_clear();
+    if(!smart_paused&&!smart_waiting_for_user){
+        smart_binding_clear();
+        smart_forget_parent_link();
+    }
 }
 
 static void smart_begin(const wchar_t *value){
@@ -78,6 +90,7 @@ static void smart_begin(const wchar_t *value){
     smart_paused=smart_waiting_for_user=smart_local_plan=smart_stale_permission_retry=smart_duplicate_replan=smart_protocol_replan=smart_sheetmetal_demo=0;
     if(!retain){
         smart_binding_clear();
+        smart_forget_parent_link();
         smart_steps=smart_failures=smart_total_failures=smart_failures_without_progress=smart_progress=0;
         smart_attempt_count=smart_generation=smart_has_details=0;
         smart_feedback[0]=smart_new_model_result[0]=smart_last_failure[0]=smart_last_failure_brief[0]=0;
@@ -93,6 +106,7 @@ static void smart_begin(const wchar_t *value){
 static void smart_cancel(void){
     smart_waiting_for_user=smart_paused=0;
     smart_binding_clear();
+    smart_forget_parent_link();
     smart_finish();ai_cleanup();native_stop_poll();
     memset(&pending_part,0,sizeof(pending_part));pending_plan.ready=0;
 }
